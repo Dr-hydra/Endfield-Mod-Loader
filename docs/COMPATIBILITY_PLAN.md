@@ -40,7 +40,7 @@ cmake --build build/research/compatibility --config Release
 python research/compatibility/check_published_packages.py --releases-root "F:/Better Endfield/releases" --host build/research/compatibility/Release/EMLCompatibilityHost.exe --output build/research/compatibility/published-tests
 ```
 
-当前验证范围是 Windows 原生基础装载、配置、消息、事件、启停与代次更新；Android SO 的符号及网页 API 已静态核对，但 Android 和网页运行需要后续正式适配后验证。第一人称及依赖具体游戏辅助能力的模块仍需游戏内验证，不能以 Echo 通过替代。
+当前验证范围是 Windows 原生基础装载、配置、消息、事件、启停与代次更新；Android SO 的符号及网页 API 已静态核对，但 Android 和网页运行需要后续正式适配后验证。当前没有实机游戏验证条件，按 [离线验收计划](OFFLINE_VALIDATION.md) 推进；第一人称及依赖具体游戏辅助能力的模块的游戏内效果标记未验证，不以 Echo 通过替代，也不因此阻塞产品开发。
 
 2026-10-10 验证结果：研究 Host 已仅查询原 BE 导出；3.5.1、3.5.2、3.5.3 发行附件及 3.5.4 本地附件中的原 Echo Windows DLL 均加载成功并通过生命周期/消息回归，没有重编译或修改这些 DLL/ZIP。实际 SDK 的三份公开头文件在去除注释和归一化产品前缀后与迁入定义一致。[校验基线](../research/compatibility/verified_baselines.json) 保存附件哈希与验证范围，完整 EML 产品兼容性仍待实施。
 
