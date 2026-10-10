@@ -12,7 +12,7 @@ if (!$SkipNative) {
 & $Dotnet publish (Join-Path $taskRepoRoot 'src/EModLoader.Desktop/EModLoader.Desktop.csproj') -c $Configuration -r win-x64 --self-contained true -o $taskPackage -p:PublishSingleFile=false
 if ($LASTEXITCODE -ne 0) { throw 'Desktop publish failed' }
 New-Item -ItemType Directory -Path (Join-Path $taskPackage 'runtime') -Force | Out-Null
-foreach ($taskFileName in @('EModLoader.OfflineHost.exe','EModLoader.Launcher.exe','EModLoader.Host.dll')) {
+foreach ($taskFileName in @('EModLoader.OfflineHost.exe','EModLoader.Launcher.exe','EModLoader.Host.dll','EModLoader.XInputProxy.dll')) {
     Copy-Item -LiteralPath (Join-Path $taskNativeBuild "$Configuration/$taskFileName") -Destination (Join-Path $taskPackage 'runtime') -Force
 }
 Copy-Item -LiteralPath (Join-Path $taskRepoRoot 'LICENSE') -Destination $taskPackage -Force

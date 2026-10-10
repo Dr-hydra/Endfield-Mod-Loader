@@ -16,6 +16,12 @@ internal static class Program
         string output = Path.GetFullPath(args[2]); Directory.CreateDirectory(output);
         string data = Path.Combine(output, "data"); Environment.SetEnvironmentVariable("EML_DATA_ROOT", data);
         var store = new ModuleStore(); store.EnsureAsync().GetAwaiter().GetResult();
+        string gameDirectory = Path.Combine(output, "saved game with 空格"); Directory.CreateDirectory(gameDirectory);
+        string gamePath = Path.Combine(gameDirectory, "Endfield.exe"); File.WriteAllBytes(gamePath, [0]);
+        new GamePathSettings().SaveAsync(gamePath).GetAwaiter().GetResult();
+        string testRuntime = Path.Combine(AppContext.BaseDirectory, "runtime"); Directory.CreateDirectory(testRuntime);
+        foreach (string name in new[] { "EModLoader.Launcher.exe", "EModLoader.Host.dll", "EModLoader.XInputProxy.dll" })
+            File.Copy(Path.Combine(Path.GetDirectoryName(Path.GetFullPath(args[1]))!, name), Path.Combine(testRuntime, name), true);
         var app = new EModLoader.Desktop.App(); app.InitializeComponent();
         app.Startup += async (_, _) =>
         {
@@ -23,6 +29,14 @@ internal static class Program
             int result = 1; await using var host = new HostConnection(store);
             try
             {
+                var desktop = (EModLoader.Desktop.MainWindow)app.MainWindow;
+                var pathLabel = (System.Windows.Controls.TextBox)desktop.FindName("GamePathLabel");
+                for (int i = 0; i < 100 && pathLabel.Text != gamePath; i++) await Task.Delay(100);
+                if (pathLabel.Text != gamePath) throw new Exception("Desktop did not restore the saved game path.");
+                await GameLauncher.DeployProxyAsync(store, gamePath, true);
+                if (!ProxyInstallation.IsOwned(gamePath)) throw new Exception("Actual desktop runtime did not install the owned proxy through its result pipe.");
+                await GameLauncher.DeployProxyAsync(store, gamePath, false);
+                if (File.Exists(Path.Combine(gameDirectory, "xinput1_4.dll"))) throw new Exception("Actual desktop runtime did not uninstall its proxy.");
                 var item = await store.ImportAsync(args[0]); await store.SetEnabledAsync(item.Id, true); await host.StartOfflineAsync(args[1]);
                 var window = new ModuleWindow(store, host, store.Find(item.Id)) { Owner = app.MainWindow };
                 if (firstPerson) { window.Width = 1050; window.Height = 1000; }
@@ -83,6 +97,10 @@ internal static class Program
                     if (firstPersonProof?["saved"]?["fov"]?.GetValue<int>() != 88) throw new Exception("First-person form did not persist configuration.");
                     File.WriteAllText(Path.Combine(output, "web-proof.json"), firstPersonProof!.ToJsonString());
                     using (var stream = File.Create(Path.Combine(output, "module-page.png"))) await window.Browser.CapturePreviewAsync(Microsoft.Web.WebView2.Core.CoreWebView2CapturePreviewImageFormat.Png, stream);
+                    desktop.UpdateLayout();
+                    var desktopBitmap = new RenderTargetBitmap((int)desktop.ActualWidth, (int)desktop.ActualHeight, 96, 96, PixelFormats.Pbgra32);
+                    desktopBitmap.Render(desktop); var desktopEncoder = new PngBitmapEncoder(); desktopEncoder.Frames.Add(BitmapFrame.Create(desktopBitmap));
+                    using (var stream = File.Create(Path.Combine(output, "desktop.png"))) desktopEncoder.Save(stream);
                     window.Close();
                     // Verify the real resident DLL can be disabled and initialized again.
                     await store.SetEnabledAsync(item.Id, false);
@@ -101,7 +119,7 @@ internal static class Program
                         if (i == 49) throw new Exception("First-person DLL did not reinitialize.");
                         await Task.Delay(100);
                     }
-                    Console.WriteLine("PASS: actual first-person ZIP/DLL/page imported; form persisted config; native status/offline rejection and disable/re-enable passed. No game was used.");
+                    Console.WriteLine("PASS: desktop restored the saved path; actual proxy install/uninstall IPC passed; first-person ZIP/DLL/page/config/offline/lifecycle passed. No game or interactive UAC was used.");
                     result = 0;
                     return;
                 }

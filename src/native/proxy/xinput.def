@@ -1,0 +1,17 @@
+LIBRARY EModLoader.XInputProxy.dll
+EXPORTS
+    DllMain=EMLRelay0 @1
+    XInputGetState=EMLRelay1 @2
+    XInputSetState=EMLRelay2 @3
+    XInputGetCapabilities=EMLRelay3 @4
+    XInputEnable=EMLRelay4 @5
+    XInputGetBatteryInformation=EMLRelay5 @7
+    XInputGetKeystroke=EMLRelay6 @8
+    XInputGetAudioDeviceIds=EMLRelay7 @10
+    EMLRelay8 @100 NONAME
+    EMLRelay9 @101 NONAME
+    EMLRelay10 @102 NONAME
+    EMLRelay11 @103 NONAME
+    EMLRelay12 @104 NONAME
+    EMLRelay13 @108 NONAME
+    EMLRelay14 @109 NONAME

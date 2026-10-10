@@ -12,11 +12,11 @@
           <Button Content="项目仓库 ↗" Click="Repository_Click" Margin="0,0,0,10"/>
           <Button Content="打开数据目录" Click="DataDirectory_Click" Margin="0,0,0,10"/>
         </StackPanel>
-        <StackPanel DockPanel.Dock="Bottom" VerticalAlignment="Bottom"><TextBlock Text="开发预览 · 0.1.0" Foreground="{StaticResource MutedBrush}"/><TextBlock Text="原 BE V1 模块包兼容" Foreground="{StaticResource MutedBrush}" FontSize="11" Margin="0,6,0,0"/></StackPanel>
+        <StackPanel DockPanel.Dock="Bottom" VerticalAlignment="Bottom"><TextBlock Text="开发预览 · 0.1.1" Foreground="{StaticResource MutedBrush}"/><TextBlock Text="原 BE V1 模块包兼容" Foreground="{StaticResource MutedBrush}" FontSize="11" Margin="0,6,0,0"/></StackPanel>
       </DockPanel>
     </Border>
     <Grid Grid.Column="1" Margin="28,26">
-      <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="150"/></Grid.RowDefinitions>
+      <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="150"/></Grid.RowDefinitions>
       <Grid><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
         <StackPanel><TextBlock Text="模块库" FontSize="29" FontWeight="Bold"/><TextBlock Text="导入模块，配置你的终末地体验。" Foreground="{StaticResource MutedBrush}" Margin="0,7,0,0"/></StackPanel>
         <Border Grid.Column="1" Background="#23312E" CornerRadius="6" Padding="14,10" VerticalAlignment="Center"><TextBlock x:Name="ConnectionLabel" Text="未连接" Foreground="#AAD3B7"/></Border>
@@ -24,11 +24,25 @@
       <WrapPanel Grid.Row="1" Margin="0,24,0,15">
         <Button Content="＋ 导入 ZIP" Style="{StaticResource PrimaryButton}" Click="Import_Click"/>
         <Button x:Name="OfflineButton" Content="启动离线宿主" Click="Offline_Click"/>
-        <Button Content="启动游戏" Click="LaunchGame_Click"/>
+        <Button x:Name="LaunchGameButton" Content="启动游戏" Click="LaunchGame_Click"/>
         <Button Content="刷新" Click="Refresh_Click"/>
       </WrapPanel>
-      <TextBlock Grid.Row="2" x:Name="StatusLabel" Text="已准备就绪。新导入模块默认停用。" Foreground="{StaticResource MutedBrush}" TextWrapping="Wrap" Margin="0,0,0,16"/>
-      <Grid Grid.Row="3">
+      <StackPanel Grid.Row="2" Margin="0,0,0,14">
+        <Grid><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+          <TextBlock Text="游戏路径" VerticalAlignment="Center" Margin="0,0,12,0"/>
+          <TextBox Grid.Column="1" x:Name="GamePathLabel" IsReadOnly="True" Padding="8" VerticalContentAlignment="Center"/>
+          <Button Grid.Column="2" x:Name="DetectGameButton" Content="自动查找" Click="DetectGame_Click" Margin="10,0,8,0"/>
+          <Button Grid.Column="3" x:Name="SelectGameButton" Content="选择…" Click="SelectGame_Click" Margin="0"/>
+        </Grid>
+        <TextBlock x:Name="GamePathHint" Text="正在查找游戏…" Foreground="{StaticResource MutedBrush}" FontSize="11" TextWrapping="Wrap" Margin="0,6,0,0"/>
+        <WrapPanel Margin="0,10,0,0">
+          <Button x:Name="InstallProxyButton" Content="安装 DLL 自启动" Click="InstallProxy_Click"/>
+          <Button x:Name="RemoveProxyButton" Content="卸载 DLL 自启动" IsEnabled="False" Click="RemoveProxy_Click"/>
+          <TextBlock x:Name="ProxyStateLabel" Text="未安装 · 可使用注入器启动" VerticalAlignment="Center" Foreground="{StaticResource MutedBrush}" TextWrapping="Wrap"/>
+        </WrapPanel>
+      </StackPanel>
+      <TextBlock Grid.Row="3" x:Name="StatusLabel" Text="已准备就绪。新导入模块默认停用。" Foreground="{StaticResource MutedBrush}" TextWrapping="Wrap" Margin="0,0,0,16"/>
+      <Grid Grid.Row="4">
         <TextBlock x:Name="EmptyLabel" Text="模块库还没有内容。&#x0a;导入作者提供的 ZIP 开始使用。" Foreground="{StaticResource MutedBrush}" FontSize="16" TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center"/>
         <ScrollViewer VerticalScrollBarVisibility="Auto"><ItemsControl x:Name="ModuleList"><ItemsControl.ItemTemplate><DataTemplate>
           <Border Background="{StaticResource PanelBrush}" CornerRadius="9" Padding="19" Margin="0,0,0,12">
@@ -43,7 +57,7 @@
           </Border>
         </DataTemplate></ItemsControl.ItemTemplate></ItemsControl></ScrollViewer>
       </Grid>
-      <Border Grid.Row="4" Background="#0D1218" CornerRadius="8" Padding="13" Margin="0,12,0,0"><DockPanel><TextBlock DockPanel.Dock="Top" Text="宿主日志" Foreground="{StaticResource MutedBrush}" Margin="0,0,0,8"/><TextBox x:Name="HostLog" IsReadOnly="True" FontFamily="Consolas" FontSize="11" Background="Transparent" BorderThickness="0" Padding="0" VerticalScrollBarVisibility="Auto" TextWrapping="Wrap"/></DockPanel></Border>
+      <Border Grid.Row="5" Background="#0D1218" CornerRadius="8" Padding="13" Margin="0,12,0,0"><DockPanel><TextBlock DockPanel.Dock="Top" Text="宿主日志" Foreground="{StaticResource MutedBrush}" Margin="0,0,0,8"/><TextBox x:Name="HostLog" IsReadOnly="True" FontFamily="Consolas" FontSize="11" Background="Transparent" BorderThickness="0" Padding="0" VerticalScrollBarVisibility="Auto" TextWrapping="Wrap"/></DockPanel></Border>
     </Grid>
   </Grid>
 </Window>

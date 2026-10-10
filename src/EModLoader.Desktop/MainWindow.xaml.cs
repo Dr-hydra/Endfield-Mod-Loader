@@ -12,15 +12,16 @@ public partial class MainWindow : Window
 {
     private readonly ModuleStore store = new();
     private readonly HostConnection host;
+    private readonly GamePathSettings gameSettings = new();
     private readonly DispatcherTimer poll = new() { Interval = TimeSpan.FromSeconds(1) };
     private readonly Dictionary<string, ModuleWindow> windows = new();
     private JsonNode? runtime;
-    private bool polling, closing, closed;
+    private bool polling, closing, closed, findingGame, launchingGame;
     public MainWindow()
     {
         InitializeComponent(); host = new HostConnection(store);
         host.Log += message => Dispatcher.BeginInvoke(() => AppendLog(message));
-        Loaded += async (_, _) => { await Run(async () => { await store.EnsureAsync(); await RefreshRuntime(); }); poll.Start(); };
+        Loaded += async (_, _) => { await Run(async () => { await store.EnsureAsync(); await RefreshRuntime(); await FindGamePathAsync(false); }); poll.Start(); };
         poll.Tick += async (_, _) => { if (polling || closing) return; polling = true; try { await RefreshRuntime(); } finally { polling = false; } };
     }
     private void AppendLog(string message)
@@ -55,10 +56,97 @@ public partial class MainWindow : Window
     private async void Refresh_Click(object sender, RoutedEventArgs e) => await Run(RefreshRuntime);
     private async void LaunchGame_Click(object sender, RoutedEventArgs e)
     {
-        var picker = new OpenFileDialog { Title = "选择 Endfield.exe", Filter = "游戏客户端|Endfield.exe|可执行程序|*.exe" };
-        if (picker.ShowDialog(this) != true) return;
-        await Run(async () => { await host.StopOfflineAsync(); int pid = await GameLauncher.LaunchAsync(store, picker.FileName); StatusLabel.Text = $"游戏已启动（PID {pid}），等待宿主连接。"; await RefreshRuntime(); });
+        if (launchingGame || findingGame) return;
+        launchingGame = true; LaunchGameButton.IsEnabled = false;
+        DetectGameButton.IsEnabled = SelectGameButton.IsEnabled = InstallProxyButton.IsEnabled = RemoveProxyButton.IsEnabled = false;
+        await Run(async () =>
+        {
+            try
+            {
+                if (GamePathDiscovery.Resolve(GamePathLabel.Text) is null)
+                {
+                    await FindGamePathAsync(true);
+                    if (GamePathDiscovery.Resolve(GamePathLabel.Text) is null && !await SelectGamePathAsync()) return;
+                }
+                await host.StopOfflineAsync();
+                int pid = await GameLauncher.LaunchAsync(store, GamePathLabel.Text, message => { StatusLabel.Text = message; AppendLog(message); });
+                StatusLabel.Text = $"游戏已启动（PID {pid}），等待宿主连接。"; await RefreshRuntime();
+            }
+            finally { launchingGame = false; LaunchGameButton.IsEnabled = DetectGameButton.IsEnabled = SelectGameButton.IsEnabled = InstallProxyButton.IsEnabled = true; RefreshProxyState(); }
+        });
     }
+    private async Task SaveGamePathAsync(string path)
+    {
+        await gameSettings.SaveAsync(path); GamePathLabel.Text = GamePathDiscovery.Resolve(path)!;
+        GamePathHint.Text = "路径已保存，下次启动自动使用。";
+        RefreshProxyState();
+    }
+    private async Task FindGamePathAsync(bool chooseMultiple)
+    {
+        if (findingGame) return;
+        string saved = gameSettings.Load();
+        if (!chooseMultiple && GamePathDiscovery.Resolve(saved) is string cached)
+        { GamePathLabel.Text = cached; GamePathHint.Text = "已读取保存的游戏路径。"; RefreshProxyState(); return; }
+        findingGame = true; DetectGameButton.IsEnabled = SelectGameButton.IsEnabled = false;
+        GamePathHint.Text = "正在查找游戏…";
+        try
+        {
+            var found = await Task.Run(() => GamePathDiscovery.Discover(saved));
+            if (closing) return;
+            if (found.Count == 1) await SaveGamePathAsync(found[0]);
+            else if (found.Count > 1)
+            {
+                GamePathHint.Text = $"找到 {found.Count} 个安装，请选择游戏路径。";
+                if (chooseMultiple)
+                {
+                    var picker = new GamePathSelectionWindow(found) { Owner = this };
+                    if (picker.ShowDialog() == true) await SaveGamePathAsync(picker.SelectedPath!);
+                }
+            }
+            else
+            {
+                GamePathLabel.Text = "";
+                GamePathHint.Text = saved.Length > 0 ? "保存的路径已失效，请重新选择 Endfield.exe。" : "未找到游戏，请点击“选择…”指定 Endfield.exe。";
+                RefreshProxyState();
+            }
+        }
+        finally { findingGame = false; DetectGameButton.IsEnabled = SelectGameButton.IsEnabled = true; }
+    }
+    private async Task<bool> SelectGamePathAsync()
+    {
+        var picker = new OpenFileDialog { Title = "选择 Endfield.exe", Filter = "游戏客户端|Endfield.exe", CheckFileExists = true };
+        string saved = gameSettings.Load();
+        if (Path.GetDirectoryName(saved) is string directory && Directory.Exists(directory)) picker.InitialDirectory = directory;
+        if (picker.ShowDialog(this) != true) return false;
+        await SaveGamePathAsync(picker.FileName); return true;
+    }
+    private async void DetectGame_Click(object sender, RoutedEventArgs e) => await Run(() => FindGamePathAsync(true));
+    private async void SelectGame_Click(object sender, RoutedEventArgs e) => await Run(async () => { await SelectGamePathAsync(); });
+    private void RefreshProxyState()
+    {
+        bool installed = GamePathLabel.Text.Length > 0 && ProxyInstallation.IsOwned(GamePathLabel.Text);
+        bool foreign = GamePathLabel.Text.Length > 0 && !installed && File.Exists(Path.Combine(Path.GetDirectoryName(GamePathLabel.Text)!, "xinput1_4.dll"));
+        ProxyStateLabel.Text = installed ? "已安装 · 官方启动器可加载 EML" : foreign ? "已有其他或被修改的 XInput DLL，请先处理冲突" : "未安装 · 可使用注入器启动";
+        InstallProxyButton.IsEnabled = !foreign;
+        RemoveProxyButton.IsEnabled = installed;
+    }
+    private async Task ChangeProxyAsync(bool install)
+    {
+        if (launchingGame || findingGame) return;
+        await Run(async () =>
+        {
+            if (GamePathDiscovery.Resolve(GamePathLabel.Text) is null && !await SelectGamePathAsync()) return;
+            launchingGame = true; LaunchGameButton.IsEnabled = InstallProxyButton.IsEnabled = RemoveProxyButton.IsEnabled = DetectGameButton.IsEnabled = SelectGameButton.IsEnabled = false;
+            try
+            {
+                await GameLauncher.DeployProxyAsync(store, GamePathLabel.Text, install, message => { StatusLabel.Text = message; AppendLog(message); });
+                StatusLabel.Text = install ? "DLL 自启动已安装，可从官方启动器启动游戏。移动 EML 目录后请重新安装自启动。" : "EML 的 DLL 自启动已卸载。";
+            }
+            finally { launchingGame = false; LaunchGameButton.IsEnabled = InstallProxyButton.IsEnabled = DetectGameButton.IsEnabled = SelectGameButton.IsEnabled = true; RefreshProxyState(); }
+        });
+    }
+    private async void InstallProxy_Click(object sender, RoutedEventArgs e) => await ChangeProxyAsync(true);
+    private async void RemoveProxy_Click(object sender, RoutedEventArgs e) => await ChangeProxyAsync(false);
     private async void Enabled_Click(object sender, RoutedEventArgs e)
     {
         var checkbox = (CheckBox)sender; string id = (string)checkbox.Tag;

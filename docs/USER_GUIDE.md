@@ -2,14 +2,26 @@
 
 ## Windows
 
-1. 从 [Release](https://github.com/Dr-hydra/Endfield-Mod-Loader/releases/tag/v0.1.0-dev) 下载 Windows ZIP，完整解压到独立目录，运行 `EModLoader.exe`。
+1. 从 [Release](https://github.com/Dr-hydra/Endfield-Mod-Loader/releases/latest) 下载 Windows ZIP，完整解压到独立目录，运行 `EModLoader.exe`。
 2. 点击“导入 ZIP”，选择作者提供的完整模块包。新模块默认停用，确认后开启模块开关。
 3. 打开模块页面保存配置；没有网页的模块可使用配置编辑器。
-4. 点击“启动游戏”，选择实际游戏可执行文件，等待界面显示游戏宿主连接。
+4. 确认主界面的游戏路径，点击“启动游戏”，等待界面显示游戏宿主连接。
 
 模块网页需要 Microsoft Edge WebView2 Runtime。软件数据默认保存在 `%LOCALAPPDATA%/EndfieldModLoader/`，可通过“打开数据目录”访问。
 
-游戏需要管理员权限时，以相应权限运行 EML。当前版本不自动提升权限；已有 XInput 代理造成加载方式冲突时会报告错误。启动前关闭已有游戏进程。
+Windows 0.1.1 会保存选择的 `Endfield.exe`，下次启动直接使用。未保存或路径失效时，从卸载注册表和常见安装目录自动查找；多个安装需手动选择，也可以使用“选择…”指定路径。设置位于数据目录的 `launcher.json`。
+
+游戏启动返回 `740` 时，EML 自动请求 Windows UAC 确认，只提升启动组件权限，主界面保留原权限。取消确认会停止此次启动；不会反复弹出请求。启动前关闭已有游戏进程。
+
+### DLL 自启动
+
+1. 关闭游戏，确认游戏路径并点击“安装 DLL 自启动”；写入权限不足时确认 UAC。
+2. 安装后可以从官方启动器或游戏快捷方式启动，无需先打开 EML。
+3. 要移除时关闭游戏，在 EML 点击“卸载 DLL 自启动”。
+
+安装创建游戏目录中的 `xinput1_4.dll` 和 `eml-xinput.json`，代理转发系统 XInput 调用并启动 EML Host。卸载核对归属和 SHA-256，只删除 EML 的安装内容；其他工具或被修改的同名 DLL 不会被覆盖、删除。
+
+自启动记录指向 EML 安装目录和模块库。移动 EML 目录或更换数据目录后重新安装自启动。已安装 EML 代理时，主界面“启动游戏”使用该代理，不重复注入；已有其他工具的 XInput 代理会报告冲突。
 
 ## Android
 

@@ -46,6 +46,7 @@ python scripts/PackageFirstPerson.py --android build/examples/first-person-andro
 | `src/EModLoader.Core/` | 模块包、安装代次、配置、宿主连接与网页桥 |
 | `src/EModLoader.Desktop/` | WPF 管理应用与 WebView2 容器 |
 | `src/native/` | Windows 宿主、启动组件、游戏辅助接口与 Hook 链 |
+| `src/native/proxy/` | XInput DLL 转发、启动及归属校验 |
 | `src/android/` | Android 应用、资源准备、离线宿主与框架入口 |
 | `include/BetterEndfield/` | 原 BE V1 兼容 SDK |
 | `examples/` | Echo 和第一人称示例 |
@@ -61,8 +62,10 @@ dotnet run --project tests/EModLoader.DesktopTests -c Release -- <第一人称ZI
 ctest --test-dir build/native/windows -C Release --output-on-failure
 ctest --test-dir build/examples/first-person-windows -C Release --output-on-failure
 python tests/verify_launch.py --native-bin build/native/windows/Release
+python tests/verify_proxy.py --native-bin build/native/windows/Release
+dotnet run --project tests/EModLoader.LaunchTests -c Release -- build/native/windows/Release
 node tests/verify_bridge.js
 python tests/android/verify_materializer.py --json-jar <org.json.jar>
 ```
 
-开发测试可用 `EML_DATA_ROOT` 指定独立数据目录。桌面测试运行实际 WebView2，启动测试只使用自有受控进程，Android 资源准备使用 JVM 适配器。当前测试不覆盖真实游戏和 Android 设备运行。
+开发测试可用 `EML_DATA_ROOT` 指定独立数据目录。桌面测试运行实际 WebView2、路径保存及 DLL 部署；启动测试只使用自有受控进程，覆盖注入器和 DLL 自启动。提权决策与取消处理使用模拟结果，未执行交互式 UAC。Android 资源准备使用 JVM 适配器；当前测试不覆盖真实游戏和 Android 设备运行。
