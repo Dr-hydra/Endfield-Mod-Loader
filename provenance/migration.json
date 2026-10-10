@@ -1,0 +1,627 @@
+{
+  "source_repository": "https://github.com/Dr-hydra/Better-Endfield",
+  "source_commit": "c2f8eafcfe2fd17fcb6028f660e4f44288e6125d",
+  "captured_working_tree": true,
+  "import_mode": "byte-preserving",
+  "game_bootstrap": "undecided",
+  "files": [
+    {
+      "source": "android/app/src/main/assets/third-party-bridge.js",
+      "destination": "android/app/src/main/assets/third-party-bridge.js",
+      "sha256": "01bff88d1fbf6c0d27cba9b6bb45b39b656f35e9eb22a4bb19f4788e0ba737e1",
+      "role": "module"
+    },
+    {
+      "source": "android/app/src/main/java/dev/betterendfield/next/ThirdPartyModuleActivity.java",
+      "destination": "android/app/src/main/java/dev/betterendfield/next/ThirdPartyModuleActivity.java",
+      "sha256": "3be65abd3c64148de6d2e6fef1eaec3adba0ad5f6c937424eaf21d20077fb5f6",
+      "role": "module"
+    },
+    {
+      "source": "android/app/src/main/java/dev/betterendfield/next/ThirdPartyModulePackage.java",
+      "destination": "android/app/src/main/java/dev/betterendfield/next/ThirdPartyModulePackage.java",
+      "sha256": "d888dac9ed2730e9840082cae20e1dfeabde97b557e34cdb8beb88dc7d63ee4c",
+      "role": "module"
+    },
+    {
+      "source": "android/app/src/main/java/dev/betterendfield/next/ThirdPartyModuleStore.java",
+      "destination": "android/app/src/main/java/dev/betterendfield/next/ThirdPartyModuleStore.java",
+      "sha256": "6803d88c6f6e58d2f0ec6447c14d9595c9c42f9a1398acb7a71cfcbd32753c3d",
+      "role": "module"
+    },
+    {
+      "source": "android/app/src/main/java/dev/betterendfield/next/ThirdPartyModulesActivity.java",
+      "destination": "android/app/src/main/java/dev/betterendfield/next/ThirdPartyModulesActivity.java",
+      "sha256": "d497fcb70e849b7d66c9c7ef27e1b7e79d587c30cecfcec94748a19e42d0a121",
+      "role": "module"
+    },
+    {
+      "source": "android/app/src/main/java/dev/betterendfield/next/ThirdPartyModulesPage.java",
+      "destination": "android/app/src/main/java/dev/betterendfield/next/ThirdPartyModulesPage.java",
+      "sha256": "e8ad3f19a3258250c2b765ce8312241f754119b4e9e8b9f6d8302063dfe219c3",
+      "role": "module"
+    },
+    {
+      "source": "android/app/src/main/java/dev/betterendfield/next/ThirdPartyRuntimeMaterializer.java",
+      "destination": "android/app/src/main/java/dev/betterendfield/next/ThirdPartyRuntimeMaterializer.java",
+      "sha256": "b19076ae8d659922a827071941206ef13710339bb7b2a82f4bcc0b61ab7e856b",
+      "role": "module"
+    },
+    {
+      "source": "android/app/src/main/java/dev/betterendfield/next/ThirdPartyRuntimeUpdater.java",
+      "destination": "android/app/src/main/java/dev/betterendfield/next/ThirdPartyRuntimeUpdater.java",
+      "sha256": "f5334c99d42524ec38d68648c180f098cde3c444d83bb45d04285cf1b53f3213",
+      "role": "module"
+    },
+    {
+      "source": "android/app/src/main/res/xml/module_network_security.xml",
+      "destination": "android/app/src/main/res/xml/module_network_security.xml",
+      "sha256": "70846138bd8381ea3d92ace39ecc7c990d30f14cd95dcd23f5d492fc4636e1d4",
+      "role": "module"
+    },
+    {
+      "source": "docs/host/CREATOR_MODULE_API_DESIGN.md",
+      "destination": "docs/host/CREATOR_MODULE_API_DESIGN.md",
+      "sha256": "e92f6782ed0d423ed039ed0240892dc5c71403eebda6b9392d7c4132bd6b2762",
+      "role": "module"
+    },
+    {
+      "source": "docs/host/THIRD_PARTY_MODULE_CREATOR_GUIDE.md",
+      "destination": "docs/host/THIRD_PARTY_MODULE_CREATOR_GUIDE.md",
+      "sha256": "6e49554b424a04b8fd8ab0f97dccd5cc38932878b8a513903dd6abcd25335cb6",
+      "role": "module"
+    },
+    {
+      "source": "native/shared/include/BetterEndfieldNext/HookChain.h",
+      "destination": "native/shared/include/BetterEndfieldNext/HookChain.h",
+      "sha256": "7f2467b1aeaf01037ac949b0a9065c9edef145c4ae2c66347dd2a8655e427a3d",
+      "role": "module"
+    },
+    {
+      "source": "native/shared/include/BetterEndfieldNext/ModuleApi.h",
+      "destination": "native/shared/include/BetterEndfieldNext/ModuleApi.h",
+      "sha256": "da3bc5a33fb8cf0651198907b869105e399348f0198514f8fd7f1c41f0cd3b67",
+      "role": "module"
+    },
+    {
+      "source": "native/shared/include/BetterEndfieldNext/ThirdPartyModule.h",
+      "destination": "native/shared/include/BetterEndfieldNext/ThirdPartyModule.h",
+      "sha256": "c6e7d693e7c15fb5ddecdff056f0c9528090f7c001236cc0177450056636b07b",
+      "role": "module"
+    },
+    {
+      "source": "native/shared/third_party/nlohmann/json.hpp",
+      "destination": "native/shared/third_party/nlohmann/json.hpp",
+      "sha256": "5f09d1eebe9b3557f21df155869af13bcde79b74a0748f82ca946e8cc088aaa0",
+      "role": "module"
+    },
+    {
+      "source": "native/shared/third_party_modules/third_party_host.cpp",
+      "destination": "native/shared/third_party_modules/third_party_host.cpp",
+      "sha256": "e0507d40213a56b8f14eba38c6c1cd5a9566a99774376a83cd2661e0d759d645",
+      "role": "module"
+    },
+    {
+      "source": "native/shared/third_party_modules/third_party_host.h",
+      "destination": "native/shared/third_party_modules/third_party_host.h",
+      "sha256": "143f98d4a6a972a4712a1b6eb1c66a0acf20ca7a9faba4bef09ea262a878c1d1",
+      "role": "module"
+    },
+    {
+      "source": "native/tests/ThirdPartyMaterializerTest.java",
+      "destination": "native/tests/ThirdPartyMaterializerTest.java",
+      "sha256": "6ebb08756cb26af512f7d43dc43a28b773f72ab4313ce9016eb6522eac17ceaf",
+      "role": "module"
+    },
+    {
+      "source": "native/tests/run_third_party_materializer_test.py",
+      "destination": "native/tests/run_third_party_materializer_test.py",
+      "sha256": "a9455b74c463750a5a2de23a9343479c83e641935c8fdd922335b34179d709e3",
+      "role": "module"
+    },
+    {
+      "source": "native/tests/third_party_host_test.cpp",
+      "destination": "native/tests/third_party_host_test.cpp",
+      "sha256": "03d15c446b538c6a847f5b4d58949234f9c359296475599c08876f4728b63af1",
+      "role": "module"
+    },
+    {
+      "source": "native/tests/third_party_host_test.py",
+      "destination": "native/tests/third_party_host_test.py",
+      "sha256": "1eb6f62155d21e453a01247f182af6fc0c047430daf5383a3588c2a44cd894e9",
+      "role": "module"
+    },
+    {
+      "source": "native/tests/third_party_ui/PlatformStubs.cs",
+      "destination": "native/tests/third_party_ui/PlatformStubs.cs",
+      "sha256": "65371e461a6755f90f99d0d1dd2863c67c02c2c924a362523225c2b9a46e0bbc",
+      "role": "module"
+    },
+    {
+      "source": "native/tests/third_party_ui/Program.cs",
+      "destination": "native/tests/third_party_ui/Program.cs",
+      "sha256": "bbddd0a858f97908bdae879698ecc84ac250c8f1aed0532aaa86729986f76f57",
+      "role": "module"
+    },
+    {
+      "source": "native/tests/third_party_ui/ThirdPartyAndroidTest.java",
+      "destination": "native/tests/third_party_ui/ThirdPartyAndroidTest.java",
+      "sha256": "913758c84bdf6623cf53fdd7998ad7d5888084c11bc87e8edcb6c53dd2f5b3b7",
+      "role": "module"
+    },
+    {
+      "source": "native/tests/third_party_ui/ThirdPartyUiTests.csproj",
+      "destination": "native/tests/third_party_ui/ThirdPartyUiTests.csproj",
+      "sha256": "55030acfd46194ce18dafe0be7adeb392c26639512784b73d2086a479572f712",
+      "role": "module"
+    },
+    {
+      "source": "native/tests/third_party_ui/bridge_test.js",
+      "destination": "native/tests/third_party_ui/bridge_test.js",
+      "sha256": "2bd1ae436342b7edf27faf7bd074d846fc9bcca40a76749ec1aa2138e91680f0",
+      "role": "module"
+    },
+    {
+      "source": "native/tests/third_party_ui/navigation_test.py",
+      "destination": "native/tests/third_party_ui/navigation_test.py",
+      "sha256": "c62023105f136af596e136be6db6330fa86b401a50e3af35211d68aeed91acd5",
+      "role": "module"
+    },
+    {
+      "source": "native/tests/third_party_ui/sdk_test.py",
+      "destination": "native/tests/third_party_ui/sdk_test.py",
+      "sha256": "36f91bcd5e228d4cb924c0242d4760cdc87a869e23b3daa6754f910efc9265a9",
+      "role": "module"
+    },
+    {
+      "source": "tools/ThirdPartyModules/BuildSdk.ps1",
+      "destination": "tools/ThirdPartyModules/BuildSdk.ps1",
+      "sha256": "040e960e7df087c013c0725379814803ca852d393fe8b679db3a72f9b4c925f8",
+      "role": "module"
+    },
+    {
+      "source": "tools/ThirdPartyModules/echo/CMakeLists.txt",
+      "destination": "tools/ThirdPartyModules/echo/CMakeLists.txt",
+      "sha256": "b77158e3987716f8a9868f6b24dab12c164f724bdbd39f2cfaec5c885e3cd90e",
+      "role": "module"
+    },
+    {
+      "source": "tools/ThirdPartyModules/echo/module.json",
+      "destination": "tools/ThirdPartyModules/echo/module.json",
+      "sha256": "a9f511e1039dd5bbef73fb2d5f2161dbdeec726d05cac35f48a454e4c7423263",
+      "role": "module"
+    },
+    {
+      "source": "tools/ThirdPartyModules/echo/native/echo.cpp",
+      "destination": "tools/ThirdPartyModules/echo/native/echo.cpp",
+      "sha256": "811b64b601743113f881b2d0af92a768e31e3a51233b3a8932ee83806b5463cf",
+      "role": "module"
+    },
+    {
+      "source": "tools/ThirdPartyModules/echo/ui/app.js",
+      "destination": "tools/ThirdPartyModules/echo/ui/app.js",
+      "sha256": "d1403f287211e4036f262289340d8e03077cd51bd9711a3feed7de7179cde1ac",
+      "role": "module"
+    },
+    {
+      "source": "tools/ThirdPartyModules/echo/ui/index.html",
+      "destination": "tools/ThirdPartyModules/echo/ui/index.html",
+      "sha256": "03f4935c04f3feee04f9e874e86f2ffb974b2dd528d94ee6a405542acc043e37",
+      "role": "module"
+    },
+    {
+      "source": "tools/ThirdPartyModules/echo/ui/style.css",
+      "destination": "tools/ThirdPartyModules/echo/ui/style.css",
+      "sha256": "2e79680871586086cfe16d401e880c7528f22c3a9f626d81408554abb7a815fc",
+      "role": "module"
+    },
+    {
+      "source": "ui/BetterEndfieldNext.UI/Services/ThirdPartyModuleService.cs",
+      "destination": "ui/BetterEndfieldNext.UI/Services/ThirdPartyModuleService.cs",
+      "sha256": "24a415bc81b5aa9b31d0d89e6ef200ec81a6882f5ae21e6cc548ef2af95d6c05",
+      "role": "module"
+    },
+    {
+      "source": "ui/BetterEndfieldNext.UI/Services/ThirdPartyWebBridge.cs",
+      "destination": "ui/BetterEndfieldNext.UI/Services/ThirdPartyWebBridge.cs",
+      "sha256": "6b169b38bbd683050073c6afadbc0c30d00e23d89332e08865a170e381c23120",
+      "role": "module"
+    },
+    {
+      "source": "ui/BetterEndfieldNext.UI/Views/ThirdPartyModuleWindow.cs",
+      "destination": "ui/BetterEndfieldNext.UI/Views/ThirdPartyModuleWindow.cs",
+      "sha256": "5a23cfb3e73d35e4eb597912ca315002e6ef8b14474049e173a91bbf5cad5ca0",
+      "role": "module"
+    },
+    {
+      "source": "ui/BetterEndfieldNext.UI/Views/ThirdPartyModulesPage.cs",
+      "destination": "ui/BetterEndfieldNext.UI/Views/ThirdPartyModulesPage.cs",
+      "sha256": "3925a27fa78aad23b6940f9749b4b97de685c87067ea0f3d024a7ca22794e666",
+      "role": "module"
+    },
+    {
+      "source": "native/CMakeLists.txt",
+      "destination": "provenance/integration/native/CMakeLists.txt",
+      "sha256": "8216cccc3e3e5e20278a439daabb300948bd2af1ec72bd85cfa273d6e978072c",
+      "role": "integration-reference"
+    },
+    {
+      "source": "native/shared/host/host_runtime.cpp",
+      "destination": "provenance/integration/native/shared/host/host_runtime.cpp",
+      "sha256": "02683e25926d8e5fc11161ac42f87de4a2db20ced368e60251ac4045c624e5e5",
+      "role": "integration-reference"
+    },
+    {
+      "source": "native/shared/host/host_runtime.h",
+      "destination": "provenance/integration/native/shared/host/host_runtime.h",
+      "sha256": "184f33c9c8fa96aaaacd8448156662bff87bc4037621fae762c6c9655e5633c0",
+      "role": "integration-reference"
+    },
+    {
+      "source": "android/app/src/main/cpp/CMakeLists.txt",
+      "destination": "provenance/integration/android/app/src/main/cpp/CMakeLists.txt",
+      "sha256": "db5ac318d59202b0b9c740a0868e7d59bcb1ca71a3130eddc1b0df0fdcb58744",
+      "role": "integration-reference"
+    },
+    {
+      "source": "android/app/src/main/cpp/native_bridge.cpp",
+      "destination": "provenance/integration/android/app/src/main/cpp/native_bridge.cpp",
+      "sha256": "1a6e4bf01af78fc0bf1aa5fac16824a1f2ab6333321d4c82aa2fa67b8441f7e0",
+      "role": "integration-reference"
+    },
+    {
+      "source": "android/app/src/main/java/dev/betterendfield/next/FrameworkSettings.java",
+      "destination": "provenance/integration/android/app/src/main/java/dev/betterendfield/next/FrameworkSettings.java",
+      "sha256": "a55880cd1087c4f428f8d30d8e6dddcb9752496b6b82d988b1c7af1eae12f5bd",
+      "role": "integration-reference"
+    },
+    {
+      "source": "android/app/src/main/java/dev/betterendfield/next/ModuleConfigurations.java",
+      "destination": "provenance/integration/android/app/src/main/java/dev/betterendfield/next/ModuleConfigurations.java",
+      "sha256": "0ff7e80d7b0bce694a21f938037c0c838151c5ac63923bc914d28acaaf36308f",
+      "role": "integration-reference"
+    },
+    {
+      "source": "android/app/src/main/java/dev/betterendfield/next/RuntimeBootstrap.java",
+      "destination": "provenance/integration/android/app/src/main/java/dev/betterendfield/next/RuntimeBootstrap.java",
+      "sha256": "735e9c0220b91ad16385e27b18f435c36e5c08c944b897576918e9a4e7ae99cb",
+      "role": "integration-reference"
+    },
+    {
+      "source": "android/app/src/main/java/dev/betterendfield/next/NativeCommandBridge.java",
+      "destination": "provenance/integration/android/app/src/main/java/dev/betterendfield/next/NativeCommandBridge.java",
+      "sha256": "e743ed3f71a9fece7fd68692bf88864026760b3e9eeb53d6bf14b0a8c76aaf60",
+      "role": "integration-reference"
+    },
+    {
+      "source": "android/app/src/main/java/dev/betterendfield/next/XposedEntry.java",
+      "destination": "provenance/integration/android/app/src/main/java/dev/betterendfield/next/XposedEntry.java",
+      "sha256": "ecbb53c19a197520f555e6dbe0d3aa33dbe33da0dea3b93251f605007cc0131c",
+      "role": "integration-reference"
+    },
+    {
+      "source": "android/app/src/main/AndroidManifest.xml",
+      "destination": "provenance/integration/android/app/src/main/AndroidManifest.xml",
+      "sha256": "fc6a0a7ab03303c17ba1d709562720c190e6740f388f4ccce48e94b0328754c8",
+      "role": "integration-reference"
+    },
+    {
+      "source": "android/app/src/testHost/enhancement_navigation_fixture.py",
+      "destination": "provenance/integration/android/app/src/testHost/enhancement_navigation_fixture.py",
+      "sha256": "58e0155d5b32d7b2b0a6a0162a8f7a97818ce0ba0854ff6f323cca458924ddc7",
+      "role": "integration-reference"
+    },
+    {
+      "source": "ui/BetterEndfieldNext.UI/MainWindow.xaml",
+      "destination": "provenance/integration/ui/BetterEndfieldNext.UI/MainWindow.xaml",
+      "sha256": "d0fd395becb5ab53b2ff449fcc45f56e62665dc63e19938da27a46701fc4d6ab",
+      "role": "integration-reference"
+    },
+    {
+      "source": "ui/BetterEndfieldNext.UI/MainWindow.xaml.cs",
+      "destination": "provenance/integration/ui/BetterEndfieldNext.UI/MainWindow.xaml.cs",
+      "sha256": "511ef51018bd258d8b60ae4b354a5e83faa2674bd63fffb462fddcb22a52c8f4",
+      "role": "integration-reference"
+    },
+    {
+      "source": "ui/BetterEndfieldNext.UI/Services/LocalizationService.cs",
+      "destination": "provenance/integration/ui/BetterEndfieldNext.UI/Services/LocalizationService.cs",
+      "sha256": "16a34a36c77fd9ae35fa2c3fb001c4df6ef8dfaa467ff9b07136f3ab7c504109",
+      "role": "integration-reference"
+    },
+    {
+      "source": "ui/BetterEndfieldNext.UI/Assets/locales/zh-CN.json",
+      "destination": "provenance/integration/ui/BetterEndfieldNext.UI/Assets/locales/zh-CN.json",
+      "sha256": "f23351e8c065fc195441e23d9731d2a4ac3a992f08d2a8aa74d4b9d81794f156",
+      "role": "integration-reference"
+    },
+    {
+      "source": "ui/BetterEndfieldNext.UI/Assets/locales/en-US.json",
+      "destination": "provenance/integration/ui/BetterEndfieldNext.UI/Assets/locales/en-US.json",
+      "sha256": "cf0f654ca2953948e78b12c9e41806c73c543b0c09f4a7372cac4e03b9fd9903",
+      "role": "integration-reference"
+    },
+    {
+      "source": "scripts/BuildBetterEndfieldNext.ps1",
+      "destination": "provenance/integration/scripts/BuildBetterEndfieldNext.ps1",
+      "sha256": "740a649f23097db637f8be3b673acfcaa01b0cfdde143907e8c409bb0ef5904d",
+      "role": "integration-reference"
+    },
+    {
+      "source": "scripts/PublishRelease.py",
+      "destination": "provenance/integration/scripts/PublishRelease.py",
+      "sha256": "1b5f6d379243637ec861b8ef52ee6076151113dc8ed99642127cf46c1ec55703",
+      "role": "integration-reference"
+    },
+    {
+      "source": "config/test-suites.json",
+      "destination": "provenance/integration/config/test-suites.json",
+      "sha256": "4bdb9086655c98d481bc0aed899590428e41d73ee1c992f82e6e7da753a85272",
+      "role": "integration-reference"
+    },
+    {
+      "source": "native/tests/bem_import/run_state_tests.py",
+      "destination": "provenance/integration/native/tests/bem_import/run_state_tests.py",
+      "sha256": "54238d968a1e848ebec2d567679924fc058dfa4884548c619a20a507082f174f",
+      "role": "integration-reference"
+    },
+    {
+      "source": "native/tests/bem_import/check_java.py",
+      "destination": "provenance/integration/native/tests/bem_import/check_java.py",
+      "sha256": "d43b074ae38b263d58b2831ea0d9e926ac8a47d2f3ddfe771188bd70c6fe3d41",
+      "role": "integration-reference"
+    },
+    {
+      "source": "scripts/tests/test_next_identity.py",
+      "destination": "provenance/integration/scripts/tests/test_next_identity.py",
+      "sha256": "92d31c51ebdd20f52e2dc2de586edd65b3767c6dd6082a8d165bdb3afd954cc5",
+      "role": "integration-reference"
+    },
+    {
+      "source": "README.md",
+      "destination": "provenance/integration/README.md",
+      "sha256": "19e5d928580b093cb502704f9d47cc5402d2f3036a6b661f1d1e213da0b72f9c",
+      "role": "integration-reference"
+    },
+    {
+      "source": "README.en.md",
+      "destination": "provenance/integration/README.en.md",
+      "sha256": "f569e819f08fb01c572531e92c4757d9c5960c0573853ae2e65724ab6324f5ad",
+      "role": "integration-reference"
+    },
+    {
+      "source": "android/README.md",
+      "destination": "provenance/integration/android/README.md",
+      "sha256": "1cee47188d99e4633cc9c363a56d2378497b3863c4d18aea01339c1063cda248",
+      "role": "integration-reference"
+    },
+    {
+      "source": "docs/host/INDEX.md",
+      "destination": "provenance/integration/docs/host/INDEX.md",
+      "sha256": "eb2f2959377b064959f006d95ddb9985b789870e6e9cbbbd72c778eaf61cc922",
+      "role": "integration-reference"
+    },
+    {
+      "source": "THIRD_PARTY_NOTICES.md",
+      "destination": "provenance/integration/THIRD_PARTY_NOTICES.md",
+      "sha256": "3446b9ebbf89c264293281469f63a3f016c48c0d94eab5d65a191cc40673b8bf",
+      "role": "integration-reference"
+    },
+    {
+      "source": "legacy/retired-before-next/first-person/files/docs/camera/FIRST_PERSON_PROFILES.md",
+      "destination": "examples/first-person/archive/files/docs/camera/FIRST_PERSON_PROFILES.md",
+      "sha256": "ac72f8dbb6e5451eac982917fc8ed95e7110b6d2301e643a9a4b813694088294",
+      "role": "first-person-archive"
+    },
+    {
+      "source": "legacy/retired-before-next/first-person/files/native/modules/camera/first_person_mesh.h",
+      "destination": "examples/first-person/archive/files/native/modules/camera/first_person_mesh.h",
+      "sha256": "54dd8e73b8dbdbdf52effa436bb2c1a0125762f07416f097501630202fec48f4",
+      "role": "first-person-archive"
+    },
+    {
+      "source": "legacy/retired-before-next/first-person/files/native/modules/camera/first_person_profiles.generated.inc",
+      "destination": "examples/first-person/archive/files/native/modules/camera/first_person_profiles.generated.inc",
+      "sha256": "d0f4dc2c79afd41df0f9707e8f08fabce680340573bffc1bbbf973e0bf91d8f6",
+      "role": "first-person-archive"
+    },
+    {
+      "source": "legacy/retired-before-next/first-person/files/native/modules/camera/first_person_profiles.h",
+      "destination": "examples/first-person/archive/files/native/modules/camera/first_person_profiles.h",
+      "sha256": "3971619e3723ee96a04f79d51b9ad909e1d78353294c145c18ae179b6c579297",
+      "role": "first-person-archive"
+    },
+    {
+      "source": "legacy/retired-before-next/first-person/files/native/modules/camera/first_person_retry.h",
+      "destination": "examples/first-person/archive/files/native/modules/camera/first_person_retry.h",
+      "sha256": "e994e2665aac317b6be5dee5dfd9f060812460c3d63be25923fb1305059dce60",
+      "role": "first-person-archive"
+    },
+    {
+      "source": "legacy/retired-before-next/first-person/files/native/modules/camera/first_person_runtime.inc",
+      "destination": "examples/first-person/archive/files/native/modules/camera/first_person_runtime.inc",
+      "sha256": "8dec343df7d6612e795ec3a577581be2b8632a030ef4a07ccdb692d73c1cad57",
+      "role": "first-person-archive"
+    },
+    {
+      "source": "legacy/retired-before-next/first-person/files/native/tests/camera_playback/first_person_tests.cpp",
+      "destination": "examples/first-person/archive/files/native/tests/camera_playback/first_person_tests.cpp",
+      "sha256": "28227635d7df2266f0a009caf15e4443242b664f73b8e6c7c4cf03e0d22d7cb6",
+      "role": "first-person-archive"
+    },
+    {
+      "source": "legacy/retired-before-next/first-person/files/native/tests/camera_playback/head_hide_tests.cpp",
+      "destination": "examples/first-person/archive/files/native/tests/camera_playback/head_hide_tests.cpp",
+      "sha256": "67dd67e8bea70c008328a912c74e462bb572bc058bc9bed7417a1291737b1057",
+      "role": "first-person-archive"
+    },
+    {
+      "source": "legacy/retired-before-next/first-person/files/native/tests/camera_playback/portable_mesh_tests.cpp",
+      "destination": "examples/first-person/archive/files/native/tests/camera_playback/portable_mesh_tests.cpp",
+      "sha256": "f6846f8547248049242ca34fd64eee4a95dddfdb13b85780fa06e8750c21f9c2",
+      "role": "first-person-archive"
+    },
+    {
+      "source": "legacy/retired-before-next/first-person/files/native/tests/first_person_mesh_tests.cpp",
+      "destination": "examples/first-person/archive/files/native/tests/first_person_mesh_tests.cpp",
+      "sha256": "68c4485c5312f8780ac71cd1d299ff8bd72567434837a9d68384faa814c41b79",
+      "role": "first-person-archive"
+    },
+    {
+      "source": "legacy/retired-before-next/first-person/files/native/tests/first_person_profiles/CMakeLists.txt",
+      "destination": "examples/first-person/archive/files/native/tests/first_person_profiles/CMakeLists.txt",
+      "sha256": "965074ceef356c5e75ed123a4115c5601a1a83255563938de0ce6ee6ed29cd94",
+      "role": "first-person-archive"
+    },
+    {
+      "source": "legacy/retired-before-next/first-person/files/native/tests/first_person_profiles/profiles_tests.cpp",
+      "destination": "examples/first-person/archive/files/native/tests/first_person_profiles/profiles_tests.cpp",
+      "sha256": "c1e84afda33228b0a64d11fda02cff2aaa7bc32e5d0ec0314315ae37264023f2",
+      "role": "first-person-archive"
+    },
+    {
+      "source": "legacy/retired-before-next/first-person/files/native/tests/first_person_profiles/test_generation.py",
+      "destination": "examples/first-person/archive/files/native/tests/first_person_profiles/test_generation.py",
+      "sha256": "db5acd4fadfe2e082a32fdd415daa0eec758c3532c0748e94c76dac8270e6cac",
+      "role": "first-person-archive"
+    },
+    {
+      "source": "legacy/retired-before-next/first-person/files/tools/FirstPersonProfiles/android_fallback_regression.generated.json",
+      "destination": "examples/first-person/archive/files/tools/FirstPersonProfiles/android_fallback_regression.generated.json",
+      "sha256": "b61dcc39567dce30770319965e128c1a77d2c4eb704a9d439a76f53cde818b81",
+      "role": "first-person-archive"
+    },
+    {
+      "source": "legacy/retired-before-next/first-person/files/tools/FirstPersonProfiles/audit_android_fallback.py",
+      "destination": "examples/first-person/archive/files/tools/FirstPersonProfiles/audit_android_fallback.py",
+      "sha256": "17b608855eeea1d697c5896c07a17b47c011adeba4fd276f5907334c982aec61",
+      "role": "first-person-archive"
+    },
+    {
+      "source": "legacy/retired-before-next/first-person/files/tools/FirstPersonProfiles/audit_local_geometry.py",
+      "destination": "examples/first-person/archive/files/tools/FirstPersonProfiles/audit_local_geometry.py",
+      "sha256": "b1691ee3aef80cac3c8f65cdcff63b3ffa738b012ef675348cda6b3d4d2d4e4a",
+      "role": "first-person-archive"
+    },
+    {
+      "source": "legacy/retired-before-next/first-person/files/tools/FirstPersonProfiles/generate_profiles.py",
+      "destination": "examples/first-person/archive/files/tools/FirstPersonProfiles/generate_profiles.py",
+      "sha256": "74283a3e9f0a3092ff79c400db97b3b67ce7b3eb43c4d2d98be0a97097f39886",
+      "role": "first-person-archive"
+    },
+    {
+      "source": "legacy/retired-before-next/first-person/files/tools/FirstPersonProfiles/geometry_regression.generated.json",
+      "destination": "examples/first-person/archive/files/tools/FirstPersonProfiles/geometry_regression.generated.json",
+      "sha256": "899ef7f53104a99f58672283ee1bb52654100d0bbd90a2481432b1034c644af9",
+      "role": "first-person-archive"
+    },
+    {
+      "source": "legacy/retired-before-next/first-person/files/tools/FirstPersonProfiles/profiles.generated.json",
+      "destination": "examples/first-person/archive/files/tools/FirstPersonProfiles/profiles.generated.json",
+      "sha256": "ba8d5a126547a8e04a5a6db427cb0c9855430bfac98b03341e57ae4bb4e55cc2",
+      "role": "first-person-archive"
+    },
+    {
+      "source": "legacy/retired-before-next/first-person/shared-snapshots/android/app/src/main/cpp/native_bridge.cpp",
+      "destination": "examples/first-person/archive/shared-snapshots/android/app/src/main/cpp/native_bridge.cpp",
+      "sha256": "e399f5445111f934ba6d56a7bab9be7b5c02a225c2947514c24e79e47b4fa23e",
+      "role": "first-person-archive"
+    },
+    {
+      "source": "legacy/retired-before-next/first-person/shared-snapshots/android/app/src/main/java/dev/betterendfield/android/EnhancementSettingsActivity.java",
+      "destination": "examples/first-person/archive/shared-snapshots/android/app/src/main/java/dev/betterendfield/android/EnhancementSettingsActivity.java",
+      "sha256": "4defd54fbe747b89f00a956cb6d8c482cd454740eb3e3b3f317dce81d3a623d0",
+      "role": "first-person-archive"
+    },
+    {
+      "source": "legacy/retired-before-next/first-person/shared-snapshots/android/app/src/main/java/dev/betterendfield/android/GameOverlay.java",
+      "destination": "examples/first-person/archive/shared-snapshots/android/app/src/main/java/dev/betterendfield/android/GameOverlay.java",
+      "sha256": "56ae565a3354aaed9d46f145fbf2c5c6b76e17b2ccf113f1cd9102ea1a91357c",
+      "role": "first-person-archive"
+    },
+    {
+      "source": "legacy/retired-before-next/first-person/shared-snapshots/android/app/src/main/java/dev/betterendfield/android/Hotkeys.java",
+      "destination": "examples/first-person/archive/shared-snapshots/android/app/src/main/java/dev/betterendfield/android/Hotkeys.java",
+      "sha256": "5a61101fbc4106a6fb56008e37393d34eeda12adc5a2944ef19fce8a16b51516",
+      "role": "first-person-archive"
+    },
+    {
+      "source": "legacy/retired-before-next/first-person/shared-snapshots/android/app/src/main/java/dev/betterendfield/android/ModuleSettings.java",
+      "destination": "examples/first-person/archive/shared-snapshots/android/app/src/main/java/dev/betterendfield/android/ModuleSettings.java",
+      "sha256": "e328ac9b2a1c3d36c6bdad5e21232131b7d15ccbb300ee03ac0436760a45f75f",
+      "role": "first-person-archive"
+    },
+    {
+      "source": "legacy/retired-before-next/first-person/shared-snapshots/android/app/src/main/java/dev/betterendfield/android/OverlayFeatures.java",
+      "destination": "examples/first-person/archive/shared-snapshots/android/app/src/main/java/dev/betterendfield/android/OverlayFeatures.java",
+      "sha256": "37e57c380ecd20686e62f40dfd04518bc3c8637442922f458ef5b09ae5544eef",
+      "role": "first-person-archive"
+    },
+    {
+      "source": "legacy/retired-before-next/first-person/shared-snapshots/android/app/src/main/java/dev/betterendfield/android/RuntimeSnapshot.java",
+      "destination": "examples/first-person/archive/shared-snapshots/android/app/src/main/java/dev/betterendfield/android/RuntimeSnapshot.java",
+      "sha256": "6eee27ea0213bb530ecb3df3f0aadcc4dd63c9480458151304f57f43ede0290f",
+      "role": "first-person-archive"
+    },
+    {
+      "source": "legacy/retired-before-next/first-person/shared-snapshots/android/app/src/main/res/values/strings.xml",
+      "destination": "examples/first-person/archive/shared-snapshots/android/app/src/main/res/values/strings.xml",
+      "sha256": "3bf2a2893916d98308386f6af60a298ef128f714c1e2ec735fcaec5d13031d9c",
+      "role": "first-person-archive"
+    },
+    {
+      "source": "legacy/retired-before-next/first-person/shared-snapshots/android/app/src/testHost/java/dev/betterendfield/android/ModuleSettingsFovTest.java",
+      "destination": "examples/first-person/archive/shared-snapshots/android/app/src/testHost/java/dev/betterendfield/android/ModuleSettingsFovTest.java",
+      "sha256": "df7b1b71f14da0ead16876db2c861699d736c88558f4332788a1da7f45a969ff",
+      "role": "first-person-archive"
+    },
+    {
+      "source": "legacy/retired-before-next/first-person/shared-snapshots/native/modules/camera/free_camera_runtime.inc",
+      "destination": "examples/first-person/archive/shared-snapshots/native/modules/camera/free_camera_runtime.inc",
+      "sha256": "01f342df398aee7961df11413d200f1c8984a31fd40d7f1eb7fb8e4733fee93f",
+      "role": "first-person-archive"
+    },
+    {
+      "source": "legacy/retired-before-next/first-person/shared-snapshots/native/modules/camera/module.cpp",
+      "destination": "examples/first-person/archive/shared-snapshots/native/modules/camera/module.cpp",
+      "sha256": "de2d05722e80cec23023eacdb1077a7393a8f663f1daac10c500fcd8ed484646",
+      "role": "first-person-archive"
+    },
+    {
+      "source": "legacy/retired-before-next/first-person/shared-snapshots/native/tests/android_rebuild/camera_test.cpp",
+      "destination": "examples/first-person/archive/shared-snapshots/native/tests/android_rebuild/camera_test.cpp",
+      "sha256": "ed8064627af109cd99a6978804c45064c0ec2407ced82f0fdfaedff74860e79e",
+      "role": "first-person-archive"
+    },
+    {
+      "source": "legacy/retired-before-next/first-person/shared-snapshots/ui/BetterEndfield.UI/MainWindow.xaml",
+      "destination": "examples/first-person/archive/shared-snapshots/ui/BetterEndfield.UI/MainWindow.xaml",
+      "sha256": "1cc02e40188b3926bdac11320501d39f629e28426da6d48d91e29d3ad0160af9",
+      "role": "first-person-archive"
+    },
+    {
+      "source": "legacy/retired-before-next/first-person/shared-snapshots/ui/BetterEndfield.UI/MainWindow.xaml.cs",
+      "destination": "examples/first-person/archive/shared-snapshots/ui/BetterEndfield.UI/MainWindow.xaml.cs",
+      "sha256": "f1ae3a0de08f29d8024baaee9daf58b17791602df5f2498c2c369b9fcfe8246d",
+      "role": "first-person-archive"
+    },
+    {
+      "source": "legacy/retired-before-next/first-person/shared-snapshots/ui/BetterEndfield.UI/Models/ModConfiguration.cs",
+      "destination": "examples/first-person/archive/shared-snapshots/ui/BetterEndfield.UI/Models/ModConfiguration.cs",
+      "sha256": "f5b65ebeaafde6cfd65ec477d1ade8edf2670532a1daa99166fd3c3af24af951",
+      "role": "first-person-archive"
+    },
+    {
+      "source": "legacy/retired-before-next/first-person/shared-snapshots/ui/BetterEndfield.UI/Services/ConfigurationService.cs",
+      "destination": "examples/first-person/archive/shared-snapshots/ui/BetterEndfield.UI/Services/ConfigurationService.cs",
+      "sha256": "c2b44b1172745c9f85907f3360072eb0f64ea6243049748a0a67ce6a09b251a3",
+      "role": "first-person-archive"
+    },
+    {
+      "source": "legacy/retired-before-next/manifest.json",
+      "destination": "examples/first-person/be-retirement-manifest.json",
+      "sha256": "70c9ea7f0cdfd359e064672fea965700e31e0f306eadae47dc4df9db07ef9177",
+      "role": "archive-provenance"
+    }
+  ]
+}
