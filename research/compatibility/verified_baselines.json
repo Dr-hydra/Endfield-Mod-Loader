@@ -1,0 +1,85 @@
+{
+  "verified_date": "2026-10-10",
+  "scope": "original_Better_Endfield_V1_only",
+  "production_compatibility_layer": "not_implemented",
+  "published_sdk_headers": [
+    {
+      "artifact_version": "3.5.1",
+      "sdk_zip_sha256": "f3b0030a2a3f36db0b59d926a144e72e31a2b4407cc2c810b3f1f82ccfbdd8f8",
+      "header_sha256": {
+        "ThirdPartyModule.h": "54bc3f8aa2e5af7e2914d25851ca7d2d62fc111670634b63d8aa985ba70bdc88",
+        "ModuleApi.h": "a950991a0f3bcf7663b6e2de0fb4acb8963bfd2696b4b7171479f6acedfaf181",
+        "HookChain.h": "969688e60551b88568376d9f2860a204e769c9665f4448b1d055ac50aab48a0c"
+      },
+      "public_definition_comparison": "equal_after_comment_removal_and_prefix_normalization"
+    },
+    {
+      "artifact_version": "3.5.2",
+      "sdk_zip_sha256": "7c233b5c8cf9ec98af2246770622caae08a686fa59b36536f7a63a76a7a71afc",
+      "header_sha256": {
+        "ThirdPartyModule.h": "c35392dcc474f23d903abc8189313ef19cdc195deabc37461837735ea0096dff",
+        "ModuleApi.h": "a950991a0f3bcf7663b6e2de0fb4acb8963bfd2696b4b7171479f6acedfaf181",
+        "HookChain.h": "969688e60551b88568376d9f2860a204e769c9665f4448b1d055ac50aab48a0c"
+      },
+      "public_definition_comparison": "equal_after_comment_removal_and_prefix_normalization"
+    },
+    {
+      "artifact_version": "3.5.3",
+      "sdk_zip_sha256": "f1a8b9013871a68066fba4c3ccb9fa746d69c9c7fadf67e20f617027d22c449e",
+      "header_sha256": {
+        "ThirdPartyModule.h": "c35392dcc474f23d903abc8189313ef19cdc195deabc37461837735ea0096dff",
+        "ModuleApi.h": "a950991a0f3bcf7663b6e2de0fb4acb8963bfd2696b4b7171479f6acedfaf181",
+        "HookChain.h": "969688e60551b88568376d9f2860a204e769c9665f4448b1d055ac50aab48a0c"
+      },
+      "public_definition_comparison": "equal_after_comment_removal_and_prefix_normalization"
+    },
+    {
+      "artifact_version": "3.5.4",
+      "sdk_zip_sha256": "b0ba06fae620dc4cdbf6030300188d2ae55fedb72cc0aed44eb22c791db336aa",
+      "header_sha256": {
+        "ThirdPartyModule.h": "c35392dcc474f23d903abc8189313ef19cdc195deabc37461837735ea0096dff",
+        "ModuleApi.h": "a950991a0f3bcf7663b6e2de0fb4acb8963bfd2696b4b7171479f6acedfaf181",
+        "HookChain.h": "969688e60551b88568376d9f2860a204e769c9665f4448b1d055ac50aab48a0c"
+      },
+      "public_definition_comparison": "equal_after_comment_removal_and_prefix_normalization"
+    }
+  ],
+  "echo_native_probe": [
+    {
+      "release": "3.5.1",
+      "archive_sha256": "4b3420176c8680c9b7c29f321aaa706ad6f006764557767147b2a824aec7d328",
+      "windows_dll_sha256": "7cb83a51fc1a1de7661ae9b2f1a098b4e1afe2ac1fe5f95984b5a6ec452fda71",
+      "android_so_sha256": "e7115f8e03ce6f8651aa0efd7445b55cc9c0abfcbcc6b28c6020442abf86ac1d",
+      "windows_native_lifecycle_and_messages": "passed",
+      "android_execution": "not_run",
+      "web_execution": "not_run"
+    },
+    {
+      "release": "3.5.2",
+      "archive_sha256": "016edd8f7703bb561ea3b15b6915da723aeaa57dff8ca0e3bda14ba73d1b656f",
+      "windows_dll_sha256": "af211d7513671fd02f47dfe646829147fd242f7fcabd9a10647f56bad0267863",
+      "android_so_sha256": "4d767ecc87306eb004e68f96d4dc7dfc27ead9b708e0c9605d28b4ff66529044",
+      "windows_native_lifecycle_and_messages": "passed",
+      "android_execution": "not_run",
+      "web_execution": "not_run"
+    },
+    {
+      "release": "3.5.3",
+      "archive_sha256": "dfbc36f2cd4635d53cfc9e3e179231ba13b66c81898f676e0bcfe360c5b5ac5d",
+      "windows_dll_sha256": "e877749e0785e4436647aea142a10541907306df9dc37afb2079d6de848e2e29",
+      "android_so_sha256": "10fdf3ec9591a09b2ae57ca73df09088f00e326ad888b4228bfc35126fb5370a",
+      "windows_native_lifecycle_and_messages": "passed",
+      "android_execution": "not_run",
+      "web_execution": "not_run"
+    },
+    {
+      "release": "3.5.4",
+      "archive_sha256": "960425dcac10586079baf96a01ba48cc92affaeb0342aa8c53d361ec421db69e",
+      "windows_dll_sha256": "8c828988d72f6bacca163b2c6f5a4a34e459c9cc2be3467a8483d2b5ab0df775",
+      "android_so_sha256": "8607ae1c771e31660ca131faed83cd6398eb1a03fb92f1a1ca745c9ef231c786",
+      "windows_native_lifecycle_and_messages": "passed",
+      "android_execution": "not_run",
+      "web_execution": "not_run"
+    }
+  ]
+}

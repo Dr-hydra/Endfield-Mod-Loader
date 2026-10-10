@@ -14,6 +14,7 @@
 - [迁移清单](provenance/migration.json)：源提交、原始相对路径、目标路径与 SHA-256。
 - [加载方式讨论](docs/LOADING_DESIGN.md)：待决策边界。
 - [加载机制调研与开发建议](docs/LOADING_RESEARCH.md)：原加载核心已通过独立 Windows/Echo 验证；复用范围、命名/ABI 改造、自身初始化保护和第一人称拆分建议。按最新选择不实现与 BE 的跨产品互斥。
+- [已发行模块包兼容计划](docs/COMPATIBILITY_PLAN.md)：原 BE format 1 / ABI 1 包无需修改或重新编译；Next 不在兼容范围内。当前仍处于原型验证阶段。
 
 本项目采用 AGPL-3.0-only，保留迁入代码来源及依赖许可。原工程中通用 Host、内置模块加载和共享 Hook 链仍由 BE 保留维护。
 
