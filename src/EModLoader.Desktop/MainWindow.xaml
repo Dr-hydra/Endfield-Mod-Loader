@@ -1,0 +1,49 @@
+<Window x:Class="EModLoader.Desktop.MainWindow" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Title="Endfield Mod Loader" Style="{StaticResource {x:Type Window}}" Width="1180" Height="820" MinWidth="900" MinHeight="630" WindowStartupLocation="CenterScreen">
+  <Grid>
+    <Grid.ColumnDefinitions><ColumnDefinition Width="210"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+    <Border Background="#151D27" Padding="22,28">
+      <DockPanel>
+        <StackPanel DockPanel.Dock="Top">
+          <Image Source="Assets/logo.png" Width="92" Height="92" HorizontalAlignment="Left"/>
+          <TextBlock Text="E MOD LOADER" FontSize="18" FontWeight="Bold" Margin="0,17,0,3"/>
+          <TextBlock Text="ENDFIELD" Foreground="{StaticResource MutedBrush}" FontSize="11"/>
+          <Border Background="#29313C" CornerRadius="6" Padding="12" Margin="0,34,0,12"><TextBlock Text="◈   模块库" Foreground="{StaticResource AccentBrush}" FontWeight="SemiBold"/></Border>
+          <Button Content="创意工坊 ↗" Click="Workshop_Click" HorizontalContentAlignment="Left" Margin="0,0,0,10"/>
+          <Button Content="项目仓库 ↗" Click="Repository_Click" Margin="0,0,0,10"/>
+          <Button Content="打开数据目录" Click="DataDirectory_Click" Margin="0,0,0,10"/>
+        </StackPanel>
+        <StackPanel DockPanel.Dock="Bottom" VerticalAlignment="Bottom"><TextBlock Text="开发预览 · 0.1.0" Foreground="{StaticResource MutedBrush}"/><TextBlock Text="原 BE V1 模块包兼容" Foreground="{StaticResource MutedBrush}" FontSize="11" Margin="0,6,0,0"/></StackPanel>
+      </DockPanel>
+    </Border>
+    <Grid Grid.Column="1" Margin="28,26">
+      <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="150"/></Grid.RowDefinitions>
+      <Grid><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+        <StackPanel><TextBlock Text="模块库" FontSize="29" FontWeight="Bold"/><TextBlock Text="导入模块，配置你的终末地体验。" Foreground="{StaticResource MutedBrush}" Margin="0,7,0,0"/></StackPanel>
+        <Border Grid.Column="1" Background="#23312E" CornerRadius="6" Padding="14,10" VerticalAlignment="Center"><TextBlock x:Name="ConnectionLabel" Text="未连接" Foreground="#AAD3B7"/></Border>
+      </Grid>
+      <WrapPanel Grid.Row="1" Margin="0,24,0,15">
+        <Button Content="＋ 导入 ZIP" Style="{StaticResource PrimaryButton}" Click="Import_Click"/>
+        <Button x:Name="OfflineButton" Content="启动离线宿主" Click="Offline_Click"/>
+        <Button Content="启动游戏" Click="LaunchGame_Click"/>
+        <Button Content="刷新" Click="Refresh_Click"/>
+      </WrapPanel>
+      <TextBlock Grid.Row="2" x:Name="StatusLabel" Text="已准备就绪。新导入模块默认停用。" Foreground="{StaticResource MutedBrush}" TextWrapping="Wrap" Margin="0,0,0,16"/>
+      <Grid Grid.Row="3">
+        <TextBlock x:Name="EmptyLabel" Text="模块库还没有内容。&#x0a;导入作者提供的 ZIP 开始使用。" Foreground="{StaticResource MutedBrush}" FontSize="16" TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+        <ScrollViewer VerticalScrollBarVisibility="Auto"><ItemsControl x:Name="ModuleList"><ItemsControl.ItemTemplate><DataTemplate>
+          <Border Background="{StaticResource PanelBrush}" CornerRadius="9" Padding="19" Margin="0,0,0,12">
+            <StackPanel>
+              <Grid><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                <StackPanel><TextBlock Text="{Binding Name}" FontSize="18" FontWeight="SemiBold"/><TextBlock Text="{Binding Subtitle}" Foreground="{StaticResource MutedBrush}" Margin="0,5,0,0"/></StackPanel>
+                <CheckBox Grid.Column="1" Content="启用" IsChecked="{Binding Enabled, Mode=OneWay}" IsEnabled="{Binding Supported}" Tag="{Binding Id}" Click="Enabled_Click" Margin="20,0,0,0"/>
+              </Grid>
+              <TextBlock Text="{Binding RuntimeStatus}" Foreground="{StaticResource AccentBrush}" Margin="0,13,0,12" TextWrapping="Wrap"/>
+              <WrapPanel><Button Content="打开界面" IsEnabled="{Binding HasUi}" Tag="{Binding Id}" Click="Web_Click"/><Button Content="配置" Tag="{Binding Id}" Click="Configuration_Click"/><Button Content="日志" Tag="{Binding Id}" Click="Logs_Click"/><Button Content="↑" Tag="{Binding Id}" Click="MoveUp_Click"/><Button Content="↓" Tag="{Binding Id}" Click="MoveDown_Click"/><Button Content="移除" Tag="{Binding Id}" Click="Remove_Click"/></WrapPanel>
+            </StackPanel>
+          </Border>
+        </DataTemplate></ItemsControl.ItemTemplate></ItemsControl></ScrollViewer>
+      </Grid>
+      <Border Grid.Row="4" Background="#0D1218" CornerRadius="8" Padding="13" Margin="0,12,0,0"><DockPanel><TextBlock DockPanel.Dock="Top" Text="宿主日志" Foreground="{StaticResource MutedBrush}" Margin="0,0,0,8"/><TextBox x:Name="HostLog" IsReadOnly="True" FontFamily="Consolas" FontSize="11" Background="Transparent" BorderThickness="0" Padding="0" VerticalScrollBarVisibility="Auto" TextWrapping="Wrap"/></DockPanel></Border>
+    </Grid>
+  </Grid>
+</Window>

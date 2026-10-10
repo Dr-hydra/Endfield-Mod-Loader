@@ -1,0 +1,59 @@
+{
+  "files": [
+    {
+      "path": "resources/logo.png",
+      "source": "user-provided logo",
+      "sha256_at_initialization": "318655e8262755e7ce383e94667be8b2fb0e22ecfc1f8b0eef4c6358d043afeb"
+    },
+    {
+      "path": "resources/logo.ico",
+      "source": "user-provided logo, PNG container in ICO",
+      "sha256_at_initialization": "d352e52b6b9408fe27cb4e6c06e63283a813236d34c6bcb3ac6848dc123adccc"
+    },
+    {
+      "path": "include/BetterEndfield/ModuleApi.h",
+      "source": "original BE SDK 1.0.0",
+      "sha256_at_initialization": "a950991a0f3bcf7663b6e2de0fb4acb8963bfd2696b4b7171479f6acedfaf181"
+    },
+    {
+      "path": "include/BetterEndfield/HookChain.h",
+      "source": "original BE SDK 1.0.0",
+      "sha256_at_initialization": "969688e60551b88568376d9f2860a204e769c9665f4448b1d055ac50aab48a0c"
+    },
+    {
+      "path": "include/BetterEndfield/ThirdPartyModule.h",
+      "source": "original BE SDK 1.0.0",
+      "sha256_at_initialization": "c35392dcc474f23d903abc8189313ef19cdc195deabc37461837735ea0096dff"
+    },
+    {
+      "path": "src/native/runtime/module_runtime.cpp",
+      "source": "derived from imported third_party_host.cpp; AGPL-3.0-only",
+      "sha256_at_initialization": "60aaa8ec4c3c6c61f17415f4029a7c1d0ab81e4dec64210b01718045742dcfaa"
+    },
+    {
+      "path": "src/native/runtime/module_runtime.h",
+      "source": "derived from imported third_party_host.h; AGPL-3.0-only",
+      "sha256_at_initialization": "ba30f3ea1e9e20d4f28d49b9d39c4e452d51ff3082cc0287c72078f04b6a0b91"
+    },
+    {
+      "path": "src/native/hooks/hook_chain.h",
+      "source": "derived from BE native/shared/hooks/hook_chain.h; AGPL-3.0-only",
+      "sha256_at_initialization": "f028d7634c5cf9de77f1aea7663ff2edd560c69346d8af1d580c50c11da3351b"
+    },
+    {
+      "path": "src/native/runtime/type_name_contract.h",
+      "source": "derived from BE native/shared/host/type_name_contract.h; AGPL-3.0-only",
+      "sha256_at_initialization": "2547c14146b5869e48ebe026a61e411ea718d0671edd1243d15a02c39270c828"
+    },
+    {
+      "path": "src/native/runtime/engine_resolver.h",
+      "source": "derived from BE native/shared/host/dynamic_resolver.h; AGPL-3.0-only",
+      "sha256_at_initialization": "239a576b1e4e4f3d61f8f75be6dbfc0c3eca38cadf0aef4bb5bd30f94e311884"
+    },
+    {
+      "path": "src/native/runtime/engine_resolver.cpp",
+      "source": "derived from BE native/shared/host/dynamic_resolver.cpp; AGPL-3.0-only",
+      "sha256_at_initialization": "bfe7647c2b0e6674a3bf8099d510934dc0a27350929db695480dc820d1fe8647"
+    }
+  ]
+}

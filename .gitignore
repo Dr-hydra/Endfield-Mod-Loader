@@ -7,6 +7,8 @@
 **/obj/
 **/.gradle/
 **/.cxx/
+**/build/
+**/local.properties
 **/__pycache__/
 *.local.json
 *.user
@@ -15,4 +17,3 @@
 *.keystore
 .env
 .vs/
-

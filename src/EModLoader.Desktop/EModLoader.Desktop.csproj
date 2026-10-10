@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType><TargetFramework>net9.0-windows</TargetFramework><UseWPF>true</UseWPF>
+    <AssemblyName>EModLoader</AssemblyName><RootNamespace>EModLoader.Desktop</RootNamespace>
+    <ApplicationIcon>../../resources/logo.ico</ApplicationIcon><RuntimeIdentifier>win-x64</RuntimeIdentifier>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../EModLoader.Core/EModLoader.Core.csproj" />
+    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.3179.45" />
+    <Resource Include="../../resources/logo.png" Link="Assets/logo.png" />
+    <Resource Include="../../resources/logo.ico" Link="Assets/logo.ico" />
+  </ItemGroup>
+</Project>

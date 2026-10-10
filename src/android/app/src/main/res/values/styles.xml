@@ -1,0 +1,6 @@
+<resources>
+  <style name="LoaderTheme" parent="android:style/Theme.Material.NoActionBar">
+    <item name="android:fontFamily">sans</item><item name="android:colorAccent">#F4AB72</item>
+    <item name="android:windowBackground">#11161D</item><item name="android:statusBarColor">#11161D</item><item name="android:navigationBarColor">#11161D</item>
+  </style>
+</resources>

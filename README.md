@@ -2,7 +2,23 @@
 
 简称 **E Mod Loader**。独立的终末地第三方模块项目。
 
-当前阶段按原样保存从 Better Endfield Next 迁入的第三方模块实现与第一人称归档，尚未选择游戏加载方式，尚不是可安装运行的独立产品。源码中的旧命名、ABI、配置键与网页协议暂时保留，不代表新产品已经完成身份或代码独立化。
+当前为 **0.1.0 开发预览**。独立 Windows 管理应用、模块 Host、原 BE V1 包兼容、网页容器和离线闭环已实现，Logo 使用用户提供的原图。Windows 显式游戏启动路径已用自有测试进程验证；Android 提供独立管理应用、离线宿主进程和 libxposed 接入。没有游戏或手机实机验证条件，相关效果标记未验证。第一人称仍保留归档，尚未模块化。
+
+## 使用与构建
+
+Windows 开发包位于 `build/package/windows/`，解压完整分发包后运行 `EModLoader.exe`。选择“导入 ZIP”，启用模块，启动离线宿主，再打开模块界面。旧发行模块的 ZIP、DLL 和网页无需修改；离线宿主与游戏连接在界面分别显示。
+
+Windows 数据目录为 `%LOCALAPPDATA%/EndfieldModLoader/`，与 BE 分开。桌面包自包含 .NET，模块网页需要系统 WebView2 Runtime。Android 包名为 `dev.endfield.modloader`；开发 APK 构建见 [开发说明](docs/DEVELOPMENT.md)。不实现与 BE 的跨产品互斥，也不承诺同时使用兼容。
+
+```powershell
+./scripts/Build.ps1
+```
+
+编译工具、Android 构建与离线回归命令见 [开发说明](docs/DEVELOPMENT.md)。模块作者继续使用 [兼容 SDK](docs/SDK.md)。
+
+## 维护目录与来源
+
+当前产品代码在 `src/`，公开兼容头文件在 `include/BetterEndfield/`。以下迁入目录保留原始文件和 SHA-256，用于来源追溯，不参与当前产品构建：
 
 - `native/shared/third_party_modules/`：原生模块 Host、生命周期、配置、消息与日志。
 - `ui/BetterEndfieldNext.UI/`：Windows 模块管理与网页容器原始实现。
@@ -19,4 +35,4 @@
 
 本项目采用 AGPL-3.0-only，保留迁入代码来源及依赖许可。原工程中通用 Host、内置模块加载和共享 Hook 链仍由 BE 保留维护。
 
-可用 `python scripts/verify_import.py` 校验原样迁入文件。原打包脚本和平台测试仍依赖 BE 的构建环境与集成文件，现阶段不作为独立构建入口。
+可用 `python scripts/verify_import.py` 校验原样迁入文件。原迁入打包脚本和平台测试仍作为来源参考；正式构建使用 `scripts/Build.ps1` 和 `scripts/BuildAndroid.ps1`，实际验证结果见 [0.1.0 实施记录](docs/IMPLEMENTATION_0_1.md)。
