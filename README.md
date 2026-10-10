@@ -2,7 +2,7 @@
 
 简称 **E Mod Loader**。独立的终末地第三方模块项目。
 
-当前为 **0.1.0 开发预览**。独立 Windows 管理应用、模块 Host、原 BE V1 包兼容、网页容器和离线闭环已实现，Logo 使用用户提供的原图。Windows 显式游戏启动路径已用自有测试进程验证；Android 提供独立管理应用、离线宿主进程和 libxposed 接入。没有游戏或手机实机验证条件，相关效果标记未验证。第一人称仍保留归档，尚未模块化。
+当前为 **0.1.0 开发预览**。独立 Windows 管理应用、模块 Host、原 BE V1 包兼容、网页容器和离线闭环已实现，Logo 使用用户提供的原图。Windows 显式游戏启动路径已用自有测试进程验证；Android 提供独立管理应用、离线宿主进程和 libxposed 接入。第一人称已拆成 [独立示例模块](examples/first-person/README.md)，支持双端构建和包内配置网页。没有游戏或手机实机验证条件，相关效果标记未验证。
 
 ## 使用与构建
 
@@ -25,7 +25,7 @@ Windows 数据目录为 `%LOCALAPPDATA%/EndfieldModLoader/`，与 BE 分开。�
 - `android/app/src/main/`：Android 模块包、管理页、网页桥和运行时资源准备。
 - `tools/ThirdPartyModules/`：原 SDK 打包脚本与 Echo 示例。
 - `native/tests/`：原第三方模块回归测试。
-- `examples/first-person/archive/`：第一人称专用源码、工具、测试及原相机集成快照。它还不是独立可加载的示例模块。
+- `examples/first-person/`：独立第一人称示例模块、配置页面、构建与回归；`archive/` 保留原专用源码、工具、测试及相机集成快照。
 - `provenance/integration/`：从 BE 原样保存的接入文件，用于后续拆分；不参与产品构建。
 - [迁移清单](provenance/migration.json)：源提交、原始相对路径、目标路径与 SHA-256。
 - [加载方式讨论](docs/LOADING_DESIGN.md)：待决策边界。

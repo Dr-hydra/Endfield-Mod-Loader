@@ -51,4 +51,4 @@ python tests/android/verify_materializer.py --json-jar <org.json.jar>
 
 桌面测试使用实际 WebView2 打开发行包原页面，旧 `window.betterEndfield` 完成配置、状态、发送、回复和事件。启动测试只使用自有受控进程，不启动游戏。Android materializer 使用 JVM 存储适配器，不能称为 APK 实机执行。
 
-第一人称仍位于 `examples/first-person/archive/`，未成为可加载插件。它需要下一步从原相机上下文提取和单独验证。
+第一人称示例的维护代码位于 `examples/first-person/native/`，原归档仍保持不变。使用 `scripts/BuildFirstPerson.ps1` 构建并运行 6 组 native 回归；添加 `-AndroidSdk` 可构建 arm64 SO。使用 `scripts/PackageFirstPerson.py` 生成可导入 ZIP；实际网页测试在上述 DesktopTests 命令末尾添加 `first-person`。功能与线程/收尾限制见 [模块说明](../examples/first-person/README.md)。

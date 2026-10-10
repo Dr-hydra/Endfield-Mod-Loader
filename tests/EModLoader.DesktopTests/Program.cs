@@ -11,7 +11,8 @@ internal static class Program
     [STAThread]
     public static int Main(string[] args)
     {
-        if (args.Length != 3) throw new ArgumentException("Supply original ZIP, OfflineHost.exe and output directory.");
+        if (args.Length is not (3 or 4)) throw new ArgumentException("Supply ZIP, OfflineHost.exe, output directory and optional first-person mode.");
+        bool firstPerson = args.Length == 4 && args[3] == "first-person";
         string output = Path.GetFullPath(args[2]); Directory.CreateDirectory(output);
         string data = Path.Combine(output, "data"); Environment.SetEnvironmentVariable("EML_DATA_ROOT", data);
         var store = new ModuleStore(); store.EnsureAsync().GetAwaiter().GetResult();
@@ -23,15 +24,86 @@ internal static class Program
             try
             {
                 var item = await store.ImportAsync(args[0]); await store.SetEnabledAsync(item.Id, true); await host.StartOfflineAsync(args[1]);
-                var window = new ModuleWindow(store, host, store.Find(item.Id)) { Owner = app.MainWindow }; window.Show();
+                var window = new ModuleWindow(store, host, store.Find(item.Id)) { Owner = app.MainWindow };
+                if (firstPerson) { window.Width = 1050; window.Height = 1000; }
+                window.Show();
                 for (int i = 0; i < 100 && (window.Browser is null || !window.Browser.Source.StartsWith("https://m-")); i++) await Task.Delay(100);
                 if (window.Browser is null) throw new Exception("WebView2 was not initialized.");
                 for (int i = 0; i < 100; i++)
                 {
-                    string ready = await window.Browser.ExecuteScriptAsync("Boolean(window.betterEndfield && document.getElementById('send'))");
+                    string ready = await window.Browser.ExecuteScriptAsync(firstPerson
+                        ? "Boolean(window.betterEndfield && document.getElementById('toggle') && document.getElementById('fov').value)"
+                        : "Boolean(window.betterEndfield && document.getElementById('send'))");
                     if (ready == "true") break;
                     if (i == 99) throw new Exception("Published module page or legacy bridge did not load.");
                     await Task.Delay(100);
+                }
+                if (firstPerson)
+                {
+                    await window.Browser.ExecuteScriptAsync("""
+                    window.__emlProof = {};
+                    window.betterEndfield.onmessage(message => {
+                      if (message.kind === 'reply' && message.body?.phase) window.__emlProof.reply = message;
+                    });
+                    (async () => {
+                      const config = await window.betterEndfield.readConfig();
+                      window.__emlProof.defaults = config;
+                      document.getElementById('fov').value = '88';
+                      document.getElementById('settings').requestSubmit();
+                      window.__emlProof.status = await window.betterEndfield.status();
+                    })().catch(error => window.__emlProof.error = error.message);
+                    """);
+                    JsonNode? firstPersonProof = null;
+                    for (int i = 0; i < 100; i++)
+                    {
+                        firstPersonProof = JsonNode.Parse(await window.Browser.ExecuteScriptAsync("window.__emlProof"));
+                        if (firstPersonProof?["error"] is not null) throw new Exception(firstPersonProof["error"]!.GetValue<string>());
+                        if (firstPersonProof?["reply"]?["body"]?["phase"]?.GetValue<string>() == "waiting_runtime" &&
+                            store.Find(item.Id).State["configuration"]?["fov"]?.GetValue<int>() == 88) break;
+                        if (i == 99) throw new Exception("First-person UI configuration or native offline reply did not complete.");
+                        await Task.Delay(100);
+                    }
+                    if (firstPersonProof?["defaults"]?["active"]?.GetValue<bool>() != false ||
+                        firstPersonProof?["status"]?["mode"]?.GetValue<string>() != "offline") throw new Exception("First-person defaults/offline status differed.");
+                    if (await window.Browser.ExecuteScriptAsync("document.getElementById('toggle').disabled") != "true") throw new Exception("Offline page incorrectly allows game controls.");
+                    await window.Browser.ExecuteScriptAsync("""
+                    (async () => {
+                      const config = await window.betterEndfield.readConfig();
+                      window.__emlProof.saved = config;
+                      await window.betterEndfield.send({action:'toggle'});
+                    })().catch(error => window.__emlProof.error = error.message);
+                    """);
+                    for (int i = 0; i < 100; i++)
+                    {
+                        firstPersonProof = JsonNode.Parse(await window.Browser.ExecuteScriptAsync("window.__emlProof"));
+                        if (firstPersonProof?["reply"]?["result"]?.GetValue<int>() == 2) break;
+                        if (i == 99) throw new Exception("Native module did not reject offline toggle.");
+                        await Task.Delay(100);
+                    }
+                    if (firstPersonProof?["saved"]?["fov"]?.GetValue<int>() != 88) throw new Exception("First-person form did not persist configuration.");
+                    File.WriteAllText(Path.Combine(output, "web-proof.json"), firstPersonProof!.ToJsonString());
+                    using (var stream = File.Create(Path.Combine(output, "module-page.png"))) await window.Browser.CapturePreviewAsync(Microsoft.Web.WebView2.Core.CoreWebView2CapturePreviewImageFormat.Png, stream);
+                    window.Close();
+                    // Verify the real resident DLL can be disabled and initialized again.
+                    await store.SetEnabledAsync(item.Id, false);
+                    for (int i = 0; i < 50; i++)
+                    {
+                        var status = await host.RequestAsync("status", item.Id);
+                        if (status["module"]?["status"]?.GetValue<string>() == "disabled") break;
+                        if (i == 49) throw new Exception("First-person DLL did not disable.");
+                        await Task.Delay(100);
+                    }
+                    await store.SetEnabledAsync(item.Id, true);
+                    for (int i = 0; i < 50; i++)
+                    {
+                        var status = await host.RequestAsync("status", item.Id);
+                        if (status["module"]?["status"]?.GetValue<string>() == "ready") break;
+                        if (i == 49) throw new Exception("First-person DLL did not reinitialize.");
+                        await Task.Delay(100);
+                    }
+                    Console.WriteLine("PASS: actual first-person ZIP/DLL/page imported; form persisted config; native status/offline rejection and disable/re-enable passed. No game was used.");
+                    result = 0;
+                    return;
                 }
                 await window.Browser.ExecuteScriptAsync("""
                 window.__emlProof = {};

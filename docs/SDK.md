@@ -20,3 +20,5 @@ cmake --build build/examples/echo --config Release
 ```
 
 输出 package 目录可直接压缩为 ZIP。双端包合并对应 `native/windows-x64` 和 `native/android-arm64` 内容并保留两平台 manifest。兼容验证范围见 [兼容计划](COMPATIBILITY_PLAN.md)，游戏效果未验证。
+
+[第一人称示例](../examples/first-person/README.md) 展示延后等待运行时、在真实游戏线程消费请求、修改后恢复 Cinemachine 缓存状态，以及驻留 frame 驱动完成停用收尾。它无需修改 V1 SDK 或加载器的兼容入口；其游戏业务需另外验证。

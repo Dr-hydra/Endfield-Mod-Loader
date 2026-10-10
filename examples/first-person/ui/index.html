@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="zh-CN">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>第一人称</title><link rel="stylesheet" href="style.css"></head>
+<body>
+  <main>
+    <div class="eyebrow">E MOD LOADER · EXAMPLE MODULE</div>
+    <h1>第一人称</h1>
+    <p class="intro">视点跟随当前角色头部，保留游戏原有的视角输入。</p>
+    <div class="notice">开发预览 · 尚未进行游戏或 Android 实机验证。离线宿主可验证配置与通信，无法展示游戏效果。</div>
+    <section class="state"><span id="connection">正在连接…</span><strong id="phase">等待状态</strong><p id="detail"></p></section>
+    <div class="actions"><button id="toggle">切换第一人称</button><button id="exit" class="secondary">退出第一人称</button><button id="refresh" class="secondary">刷新状态</button></div>
+    <form id="settings">
+      <label class="check"><input id="enabled" type="checkbox">允许第一人称功能</label>
+      <label class="check"><input id="active" type="checkbox">默认进入第一人称（可用热键切换）</label>
+      <label class="check"><input id="hide_head" type="checkbox">隐藏遮挡视线的头部</label>
+      <label class="check"><input id="fill_neck" type="checkbox">可读取模型几何时尝试填补颈部开口</label>
+      <div class="grid">
+        <label>视野 FOV <input id="fov" type="number" min="30" max="120" step="1" required></label>
+        <label>颈部填补范围 <input id="neck_range" type="number" min="0.2" max="3" step="0.1" required></label>
+        <label>侧看角度上限（度）<input id="look_limit" type="number" min="0" max="180" step="1" required></label>
+        <label>静止时转身速度（度/秒）<input id="turn_speed" type="number" min="1" max="1440" step="1" required></label>
+        <label>Windows 切换热键 <select id="toggle_key"><option value="189">减号 -</option><option value="70">F</option><option value="86">V</option><option value="118">F7</option><option value="119">F8</option><option value="0">关闭热键</option></select></label>
+      </div>
+      <p class="hint">Windows 默认按减号切换。Android 可保存“默认进入第一人称”；当前没有游戏内触控按钮。只有确认角色处于静止状态时才调整朝向。</p>
+      <label class="check"><input id="diagnostics" type="checkbox">记录详细诊断日志</label>
+      <button type="submit">保存并应用</button><span id="feedback" role="status"></span>
+    </form>
+    <details><summary>模块运行状态</summary><pre id="runtime">尚未收到模块回复。</pre></details>
+    <footer>源自 Better Endfield 已归档的第一人称功能 · AGPL-3.0-only</footer>
+  </main>
+  <script src="app.js"></script>
+</body>
+</html>
