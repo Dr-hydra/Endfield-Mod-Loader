@@ -94,7 +94,8 @@ def main():
         if relative.startswith("android/app/src/main/java/dev/betterendfield/next/ThirdParty"):
             selected.add(relative)
     for relative in sorted(selected):
-        copy(relative)
+        destination = "provenance/reference-docs/" + Path(relative).name if relative.startswith("docs/host/") else None
+        copy(relative, destination, "documentation-reference" if destination else "module")
     for relative in INTEGRATION:
         copy(relative, "provenance/integration/" + relative, "integration-reference")
     archive = "legacy/retired-before-next/first-person/"
@@ -105,7 +106,7 @@ def main():
     commit = subprocess.check_output(["git", "-C", str(source), "rev-parse", "HEAD"], text=True).strip()
     manifest = {"source_repository": "https://github.com/Dr-hydra/Better-Endfield", "source_commit": commit,
                 "captured_working_tree": True, "import_mode": "byte-preserving",
-                "game_bootstrap": "undecided", "files": records}
+                "files": records}
     output = target / "provenance/migration.json"
     output.write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(f"Copied and SHA-256 verified {len(records)} source files.")

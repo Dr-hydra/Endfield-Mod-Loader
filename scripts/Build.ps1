@@ -17,8 +17,16 @@ foreach ($taskFileName in @('EModLoader.OfflineHost.exe','EModLoader.Launcher.ex
 }
 Copy-Item -LiteralPath (Join-Path $taskRepoRoot 'LICENSE') -Destination $taskPackage -Force
 Copy-Item -LiteralPath (Join-Path $taskRepoRoot 'THIRD_PARTY_NOTICES.md') -Destination $taskPackage -Force
+Copy-Item -LiteralPath (Join-Path $taskRepoRoot 'README.md') -Destination $taskPackage -Force
 New-Item -ItemType Directory -Path (Join-Path $taskPackage 'docs') -Force | Out-Null
-foreach($taskDocument in @('DEVELOPMENT.md','IMPLEMENTATION_0_1.md','SDK.md','COMPATIBILITY_PLAN.md')) {
+foreach($taskObsolete in @('IMPLEMENTATION_0_1.md','COMPATIBILITY_PLAN.md','FIRST_PERSON_MODULE.md','LOADING_DESIGN.md','LOADING_RESEARCH.md','OFFLINE_VALIDATION.md')) {
+    $taskOldDocument=Join-Path $taskPackage "docs/$taskObsolete"
+    if(Test-Path -LiteralPath $taskOldDocument -PathType Leaf){Remove-Item -LiteralPath $taskOldDocument}
+}
+foreach($taskDocument in @('USER_GUIDE.md','DEVELOPMENT.md','SDK.md','COMPATIBILITY.md')) {
     Copy-Item -LiteralPath (Join-Path $taskRepoRoot "docs/$taskDocument") -Destination (Join-Path $taskPackage 'docs') -Force
 }
+$taskExampleDocs=Join-Path $taskPackage 'examples/first-person'
+New-Item -ItemType Directory -Path $taskExampleDocs -Force | Out-Null
+Copy-Item -LiteralPath (Join-Path $taskRepoRoot 'examples/first-person/README.md') -Destination $taskExampleDocs -Force
 Write-Output "Built standalone package: $taskPackage"

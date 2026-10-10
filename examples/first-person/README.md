@@ -1,59 +1,61 @@
-# 第一人称示例模块
+# 第一人称模块
 
-模块 ID：`example.first-person`；版本：`0.1.0-dev`。使用 E Mod Loader 的原 BE format 1 / ABI 1 接口，提供 Windows x64 DLL、Android arm64 SO 和包内配置网页。**没有真实游戏或 Android 设备验证，当前是开发预览。**
+E Mod Loader 的独立第一人称示例，模块 ID 为 `example.first-person`，版本为 `0.1.0-dev`。包含 Windows x64 DLL、Android ARM64 SO 和配置网页。
 
-## 使用
+[下载模块](https://github.com/Dr-hydra/Endfield-Mod-Loader/releases/tag/v0.1.0-dev) · [加载器使用指南](../../docs/USER_GUIDE.md) · [模块 SDK](../../docs/SDK.md)
 
-将构建产出的 ZIP 导入 E Mod Loader 并启用模块。模块默认允许第一人称功能，但不自动切换视角。
+当前为开发预览，真实游戏和 Android 设备运行尚未验证。
 
-- Windows：游戏窗口获得焦点后按减号 `-` 切换；可在模块网页选择其他热键或关闭热键。
-- 双端：网页可保存“默认进入第一人称”以及 FOV、头部隐藏、颈部填补范围、侧看角度与静止转身速度。
-- 网页“切换/退出”按钮需要实际游戏宿主连接且游戏接口已就绪；离线模式显示“等待游戏运行时”，只能验证配置与通信。
-- Android 暂无游戏内触控按钮；可在配置中设置默认开启，再进入游戏。独立管理应用对游戏中配置更新的设备行为未验证。
+## 安装与控制
 
-这里的“启用模块”是运行模块生命周期；“允许第一人称功能”是功能开关；“默认进入第一人称”是初始视角选择。热键与临时切换请求不会改写保存的初始视角设置。
+1. 安装对应平台的 EML 加载器。
+2. 在 EML 中直接导入 `example.first-person-0.1.0-dev.zip`，启用模块。
+3. 打开模块页面设置参数，再启动游戏。
 
-## 保留与拆分
+默认不切换视角。Windows 在游戏窗口获得焦点后按减号 `-` 切换，热键可修改或关闭；Android 可保存“默认进入第一人称”，当前没有游戏内触控按钮。页面的切换 / 退出按钮需要游戏宿主连接且游戏接口就绪。
 
-- 保留原 Cinemachine `PushStateToUnityCamera` 定位时机、头骨眼点偏移、游戏视角方向与 Dutch、FOV 和近裁剪调整。每次 push 后恢复传入的缓存状态。
-- 保留当前角色 → ModelCom → ModelGo 的绑定、角色/模型/骨骼变化检查、静止状态下朝向调整及所有权检查。
-- 保留独立头部的隐藏与阴影、混合网格的私有索引裁剪、颈口填补、角色骨骼资料，以及不可读几何时经过验证的骨骼回退；不确定的混合衣物保留。
-- 移除自由相机、MMD、音乐、世界暂停、BE 覆盖层和 BE CustomModel 几何桥依赖。可读网格改用 Unity `Mesh.vertices/boneWeights/GetIndices`；不可读网格保留 GPU 读取路径。CPU 数组布局必须通过元数据验证。
-- 历史来源版本为 BE 3.5.4 / 游戏 1.5.3；运行时按方法、字段和类型布局解析。其他游戏构建缺失必要接口时显示接口不匹配，不能由编译通过推断游戏兼容。
+启用模块与进入第一人称是两个开关。热键和临时切换请求不会改写保存的默认视角设置。
 
-## 生命周期与线程
+## 功能与参数
 
-初始化在 Host worker 上启动等待器，延后查询可选运行时；解析元数据的线程显式附加/分离 IL2CPP。配置和消息只发布请求，Unity 状态操作在实际相机线程执行。
+视点跟随当前角色头部，保留游戏视角输入。支持头部隐藏、阴影保留、颈口填补及静止时朝向调整；角色、模型或骨骼变化时重新建立绑定。
 
-模块效果 hook 属于 `example.first-person`，由 Host 在停用时退休。一个标识为 `example.first-person.frame` 的进程常驻 frame/heartbeat 驱动负责收尾；即使游戏暂停或停用回调已返回，也能在下次游戏帧恢复模块仍拥有的状态。没有收尾工作时仅透传，不修改相机/模型、不调用网页桥，也不会在停用时清空共享链的稳定转发入口。
+| 配置 | 默认值 | 说明 |
+| --- | --- | --- |
+| `enabled` | `true` | 允许第一人称功能 |
+| `active` | `false` | 默认进入第一人称，仍可临时切换 |
+| `hide_head` | `true` | 隐藏已确认会遮挡视线的头部 |
+| `fill_neck` | `true` | 几何可读时尝试填补颈部开口 |
+| `fov` | `75` | 视野，范围 30–120 度 |
+| `neck_range` | `1` | 颈口填补范围，0.2–3 |
+| `look_limit` | `90` | 侧看角度上限，0–180 度 |
+| `turn_speed` | `360` | 静止转身速度，1–1440 度/秒 |
+| `toggle_key` | `189` | Windows 虚拟键码；0 关闭热键 |
+| `diagnostics` | `false` | 详细诊断日志 |
 
-该驱动依赖 EML 提供的进程驻留模块库与游戏辅助接口。停用后若游戏不再执行任何相机帧/heartbeat，收尾会等待游戏恢复；遇到已经被游戏或其他模块接管的模型/朝向，不覆盖其状态。进程退出释放驻留代码，不进行热卸载。
+## 运行限制
 
-## 构建与打包
+- 必要的游戏方法或字段布局不匹配时，模块报告接口不匹配或加载失败。
+- 离线宿主用于配置和通信测试，不提供第一人称游戏效果。
+- 头部隐藏及颈口填补依赖角色骨骼、网格与可用的读取接口；不能确认的混合衣物保留。
+- 只有确认角色处于静止状态时才调整朝向，游戏接管的朝向和模型状态不会被覆盖。
+- 停用在游戏线程恢复状态；游戏暂停且相机帧/heartbeat 不执行时，收尾等待游戏恢复。
+- 不依赖 BE 的自由相机、MMD、音乐、覆盖层或模型几何桥；不保证与其他相机模块同时使用的效果。
+
+## 构建与验证
 
 ```powershell
 ./scripts/BuildFirstPerson.ps1 -CMake <cmake.exe>
-# 同时构建 Android：添加 -AndroidSdk <Android SDK 路径>
+# 添加 -AndroidSdk <SDK路径> 构建 Android SO
 python scripts/PackageFirstPerson.py --android build/examples/first-person-android/package
 ```
 
-默认输出：`releases/first-person/0.1.0-dev/example.first-person-0.1.0-dev.zip`。不传 `--android` 时生成仅 Windows 的包；ZIP 根目录直接包含 `module.json`。
+不传 `--android` 时生成仅 Windows 的 ZIP。默认输出位于 `releases/first-person/0.1.0-dev/`。
 
-实际 WebView2/ZIP/DLL 离线测试：
+维护源码在 `native/`，网页在 `ui/`，测试在 `tests/`。构建脚本执行 6 组 native 回归，覆盖相机、角色切换、几何、阴影、配置和收尾。实际 ZIP / DLL / WebView2 的离线测试命令见 [构建说明](../../docs/DEVELOPMENT.md)。这些测试不代表游戏实机通过。
 
-```powershell
-dotnet run --project tests/EModLoader.DesktopTests -c Release -- <模块ZIP> <OfflineHost.exe> <输出目录> first-person
-```
+V1 入口与配置回调运行在 Host worker，游戏状态操作由实际相机线程处理。模块库与用于收尾的 frame 驱动保持进程驻留，停止效果后驱动仅处理仍拥有的恢复工作，完成后透传。
 
-独立回归包括相机场景、头部/阴影所有权、可读 Unity 几何与 managed Mesh、CPU 裁剪、33 份角色资料，以及 V1 配置/消息/停用/再启用。测试是模拟场景与自有宿主的证据，游戏内效果和 Android 设备运行另行验证。
+## 许可与来源
 
-## 来源
-
-来源：[Better Endfield](https://github.com/Dr-hydra/Better-Endfield) 的 `legacy/retired-before-next/first-person/`。
-
-- 原归档来源提交：`ad33357bb1bb453d5925022e2be7bf507245d6ea`，产品版本 3.5.4，游戏版本 1.5.3。
-- `archive/files/` 保留专用源码、角色骨骼资料、生成工具与测试。
-- `archive/shared-snapshots/` 保留含第一人称的原相机及平台集成文件。
-- `be-retirement-manifest.json` 为原归档清单；新迁入文件的逐项 SHA-256 见根目录 `provenance/migration.json`。
-
-维护源码位于 `native/`，UI 位于 `ui/`，独立测试位于 `tests/`。几何与骨骼资料的原有命名空间和版权来源保留；拆分并修改的代码不声称与 BE 无关联。`archive/` 始终保留原始文件，不参与模块构建。项目采用 AGPL-3.0-only，JSON 依赖采用 MIT。
+采用 AGPL-3.0-only。相机、网格算法与角色资料源自 Better Endfield 第一人称归档，源提交为 `ad33357bb1bb453d5925022e2be7bf507245d6ea`。`archive/` 保存原始来源，不参与模块构建。依赖许可见 [第三方声明](../../THIRD_PARTY_NOTICES.md)。

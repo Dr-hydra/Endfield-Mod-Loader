@@ -3,7 +3,6 @@
   "source_commit": "c2f8eafcfe2fd17fcb6028f660e4f44288e6125d",
   "captured_working_tree": true,
   "import_mode": "byte-preserving",
-  "game_bootstrap": "undecided",
   "files": [
     {
       "source": "android/app/src/main/assets/third-party-bridge.js",
@@ -61,15 +60,15 @@
     },
     {
       "source": "docs/host/CREATOR_MODULE_API_DESIGN.md",
-      "destination": "docs/host/CREATOR_MODULE_API_DESIGN.md",
+      "destination": "provenance/reference-docs/CREATOR_MODULE_API_DESIGN.md",
       "sha256": "e92f6782ed0d423ed039ed0240892dc5c71403eebda6b9392d7c4132bd6b2762",
-      "role": "module"
+      "role": "documentation-reference"
     },
     {
       "source": "docs/host/THIRD_PARTY_MODULE_CREATOR_GUIDE.md",
-      "destination": "docs/host/THIRD_PARTY_MODULE_CREATOR_GUIDE.md",
+      "destination": "provenance/reference-docs/THIRD_PARTY_MODULE_CREATOR_GUIDE.md",
       "sha256": "6e49554b424a04b8fd8ab0f97dccd5cc38932878b8a513903dd6abcd25335cb6",
-      "role": "module"
+      "role": "documentation-reference"
     },
     {
       "source": "native/shared/include/BetterEndfieldNext/HookChain.h",

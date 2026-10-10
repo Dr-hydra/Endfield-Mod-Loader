@@ -1,54 +1,68 @@
-# E Mod Loader 开发与构建
-
-当前维护代码在 `src/`。原样迁入的 `native/`、`ui/`、`android/` 及 `provenance/` 用于核对来源，不是当前产品构建入口。
+# 构建与开发
 
 ## Windows
 
-需要 Visual Studio 2022 C++ Build Tools、CMake 3.25+、.NET SDK 9.0.300 或同系列更新补丁，以及用于模块网页的 WebView2 Runtime。
+需要 Visual Studio 2022 C++ Build Tools、CMake 3.25+ 和 .NET SDK 9.0.300 或更新的 9.0 补丁。运行模块网页需要 WebView2 Runtime。
 
 ```powershell
 ./scripts/Build.ps1
 ```
 
-可以用 `-CMake <cmake.exe>` 和 `-Dotnet <dotnet.exe>` 指定工具。独立、自包含的桌面包生成于 `build/package/windows/`，运行 `EModLoader.exe`。它不需要 BE 安装目录或 BE 用户配置；开发工具可以存放在任意位置。
-
-维护结构：
-
-- `src/EModLoader.Core/`：旧包校验、不可变安装代次、原始配置、宿主连接和旧网页桥协议。
-- `src/EModLoader.Desktop/`：WPF 管理界面和 WebView2 模块容器。
-- `src/native/runtime/`：原模块装载流程和可选 IL2CPP 辅助接口。
-- `src/native/hooks/`：共享 Hook 链与双端 backend。
-- `include/BetterEndfield/`：保持原 BE SDK V1 的 C ABI。
-
-数据默认保存于 `%LOCALAPPDATA%/EndfieldModLoader/`。开发测试可通过 `EML_DATA_ROOT` 指定独立目录。原 ZIP 导入后在 EML 新目录创建 UUID 代次，DLL/SO、网页和作者业务字段不修改。卸载/升级时当前可能仍使用的文件保留。
-
-`启动离线宿主` 在独立 EML 测试进程执行模块；`启动游戏` 使用显式启动与标准系统加载路径。两种模式会在界面显示不同连接状态。游戏如果要求管理员权限，需要以足够权限运行加载器；当前开发预览没有自动提升权限。遇到已有 XInput 代理则报告加载方式冲突；不实现 BE/EML 跨产品互斥。
+可使用 `-CMake <cmake.exe>`、`-Dotnet <dotnet.exe>` 指定工具。自包含桌面分发目录为 `build/package/windows/`，入口为 `EModLoader.exe`。
 
 ## Android
 
-需要 JDK 17+、Android SDK API 37、NDK 27.2.12479018、SDK CMake 3.22.1 和支持 `DobbyPrepare/DobbyCommit` 的 Dobby 源码。AGP 9.1.1 本机构建使用 JDK 21+。
+需要 JDK 21+、Android SDK API 37、NDK 27.2.12479018、SDK CMake 3.22.1，以及支持 `DobbyPrepare/DobbyCommit` 的 Dobby 源码。
 
 ```powershell
 ./scripts/BuildAndroid.ps1 -Sdk <SDK路径> -Dobby <Dobby源码路径> -JavaHome <JDK路径>
 ```
 
-独立包名为 `dev.endfield.modloader`。Debug APK 输出于 `build/android/app/outputs/apk/debug/`。这是开发签名构建，不作为正式签名身份发布。
+Debug APK 输出于 `build/android/app/outputs/apk/debug/`。应用 ID 为 `dev.endfield.modloader`，最低 Android 版本为 10，游戏接入使用 libxposed API 102。Debug APK 使用开发签名。
 
-管理应用支持本地导入、配置、排序和模块网页。离线宿主运行于自己的 `:offline` 进程。游戏接入沿用 libxposed API 102 的目标进程范围、远程文件发布、游戏私有不可变代次和 Unity 首帧触发的 native 加载。仅在框架授权的游戏进程使用原 namespace 接入；如果平台拒绝相关入口，则报告错误并保持未加载。
+## 示例模块
 
-原生 Host 提供原 BE V1 生命周期、消息、日志与 Hook 链。游戏辅助接口等待 IL2CPP 就绪后可查询；不提供模块的业务正确性或 Unity 主线程安全保证。没有手机或游戏验证，Android 框架接入、实际 linker namespace 和渲染时序标记未验证。
-
-## 离线回归
+Echo 展示不依赖游戏的配置、消息与事件：
 
 ```powershell
-dotnet run --project tests/EModLoader.CoreTests -c Release -- <原EchoZIP> <产品OfflineHost.exe>
-dotnet run --project tests/EModLoader.DesktopTests -c Release -- <原EchoZIP> <产品OfflineHost.exe> <输出目录>
+cmake -S examples/echo -B build/examples/echo -A x64
+cmake --build build/examples/echo --config Release
+```
+
+第一人称包含双端库、配置页面和独立回归：
+
+```powershell
+./scripts/BuildFirstPerson.ps1 -CMake <cmake.exe>
+# 需要 Android SO 时添加 -AndroidSdk <SDK路径>
+python scripts/PackageFirstPerson.py --android build/examples/first-person-android/package
+```
+
+模块包输出于 `releases/first-person/0.1.0-dev/`。仅构建 Windows 时不传 `--android`。模块说明见 [第一人称](../examples/first-person/README.md)，接口见 [SDK](SDK.md)。
+
+## 代码目录
+
+| 目录 | 内容 |
+| --- | --- |
+| `src/EModLoader.Core/` | 模块包、安装代次、配置、宿主连接与网页桥 |
+| `src/EModLoader.Desktop/` | WPF 管理应用与 WebView2 容器 |
+| `src/native/` | Windows 宿主、启动组件、游戏辅助接口与 Hook 链 |
+| `src/android/` | Android 应用、资源准备、离线宿主与框架入口 |
+| `include/BetterEndfield/` | 原 BE V1 兼容 SDK |
+| `examples/` | Echo 和第一人称示例 |
+
+仓库中的原始来源快照用于许可和来源核对，不是产品构建入口。`scripts/verify_import.py` 检查来源文件的 SHA-256；参考资料不定义当前 EML 接口。
+
+## 验证
+
+```powershell
+dotnet run --project tests/EModLoader.CoreTests -c Release -- <EchoZIP> <OfflineHost.exe>
+dotnet run --project tests/EModLoader.DesktopTests -c Release -- <EchoZIP> <OfflineHost.exe> <输出目录>
+dotnet run --project tests/EModLoader.DesktopTests -c Release -- <第一人称ZIP> <OfflineHost.exe> <输出目录> first-person
 ctest --test-dir build/native/windows -C Release --output-on-failure
+ctest --test-dir build/examples/first-person-windows -C Release --output-on-failure
 python tests/verify_launch.py --native-bin build/native/windows/Release
 node tests/verify_bridge.js
 python tests/android/verify_materializer.py --json-jar <org.json.jar>
 ```
 
-桌面测试使用实际 WebView2 打开发行包原页面，旧 `window.betterEndfield` 完成配置、状态、发送、回复和事件。启动测试只使用自有受控进程，不启动游戏。Android materializer 使用 JVM 存储适配器，不能称为 APK 实机执行。
-
-第一人称示例的维护代码位于 `examples/first-person/native/`，原归档仍保持不变。使用 `scripts/BuildFirstPerson.ps1` 构建并运行 6 组 native 回归；添加 `-AndroidSdk` 可构建 arm64 SO。使用 `scripts/PackageFirstPerson.py` 生成可导入 ZIP；实际网页测试在上述 DesktopTests 命令末尾添加 `first-person`。功能与线程/收尾限制见 [模块说明](../examples/first-person/README.md)。
+开发测试可用 `EML_DATA_ROOT` 指定独立数据目录。桌面测试运行实际 WebView2，启动测试只使用自有受控进程，Android 资源准备使用 JVM 适配器。当前测试不覆盖真实游戏和 Android 设备运行。

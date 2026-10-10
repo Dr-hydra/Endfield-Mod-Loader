@@ -3,6 +3,7 @@ from pathlib import Path
 import argparse
 import hashlib
 import json
+import re
 import zipfile
 
 root=Path(__file__).resolve().parents[1]
@@ -35,7 +36,12 @@ with zipfile.ZipFile(args.output,'w',zipfile.ZIP_DEFLATED,compresslevel=6) as pa
     for path in sorted((example/'ui').rglob('*')):
         if path.is_file():
             package.write(path,path.relative_to(example).as_posix())
-    package.write(example/'README.md','README.md')
+    guide=(example/'README.md').read_text(encoding='utf-8')
+    # This guide sits at ZIP root, so source-relative documentation links must
+    # resolve to the published source tree instead of escaping the package.
+    guide=re.sub(r'\]\(\.\./\.\./([^\)]+)\)',
+        r'](https://github.com/Dr-hydra/Endfield-Mod-Loader/blob/v0.1.0-dev/\1)',guide)
+    package.writestr('README.md',guide)
     package.write(root/'LICENSE','LICENSE')
 record={'file':args.output.name,'bytes':args.output.stat().st_size,'sha256':hashlib.sha256(args.output.read_bytes()).hexdigest(),
         'platforms':list(libraries),'game_validation':'not_run','android_device_validation':'not_run'}
