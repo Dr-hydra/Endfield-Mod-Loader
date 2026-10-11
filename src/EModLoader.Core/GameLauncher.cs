@@ -16,11 +16,11 @@ internal sealed record LaunchReport(
 
 public static class GameLauncher
 {
-    public static Task<int> LaunchAsync(ModuleStore store, string game, Action<string>? progress = null) =>
-        LaunchAsync(store, game, Path.Combine(AppContext.BaseDirectory, "runtime"), progress);
+    public static Task<int> LaunchAsync(ModuleStore store, string game, Action<string>? progress = null, bool allowXInputConflict = false) =>
+        LaunchAsync(store, game, ProductPaths.RuntimeDirectory, progress, allowXInputConflict: allowXInputConflict);
 
     internal static async Task<int> LaunchAsync(ModuleStore store, string game, string runtimeDirectory,
-        Action<string>? progress = null, Func<bool, Task<LaunchReport>>? run = null)
+        Action<string>? progress = null, Func<bool, Task<LaunchReport>>? run = null, bool allowXInputConflict = false)
     {
         await store.EnsureAsync();
         string launcher = Path.GetFullPath(Path.Combine(runtimeDirectory, "EModLoader.Launcher.exe"));
@@ -28,9 +28,14 @@ public static class GameLauncher
         game = Path.GetFullPath(game);
         if (!File.Exists(game)) throw new FileNotFoundException("游戏路径已失效，请重新选择 Endfield.exe。", game);
         if (!File.Exists(launcher) || !File.Exists(library)) throw new FileNotFoundException("未找到游戏启动组件。");
-        if (File.Exists(Path.Combine(Path.GetDirectoryName(game)!, "xinput1_4.dll")) && !ProxyInstallation.IsOwned(game))
+        if (allowXInputConflict && !BuildFlavor.IsCompatibilityTest)
+            throw new InvalidOperationException("允许 XInput 冲突仅在兼容性测试版中可用。");
+        bool foreignXInput = File.Exists(Path.Combine(Path.GetDirectoryName(game)!, "xinput1_4.dll")) && !ProxyInstallation.IsOwned(game);
+        if (foreignXInput && !allowXInputConflict)
             throw new InvalidOperationException("游戏目录已有 XInput 加载器，请先处理启动方式冲突。");
-        return await LaunchWithElevationAsync(run ?? (elevated => RunAsync(launcher, game, store.IndexPath, library, elevated)), progress);
+        if (foreignXInput) progress?.Invoke("兼容性测试：保留现有 XInput DLL，并显式注入 EML Host。");
+        return await LaunchWithElevationAsync(run ?? (elevated => RunAsync(launcher, game, store.IndexPath, library, elevated,
+            allowXInputConflict: allowXInputConflict)), progress);
     }
 
     internal static async Task<int> LaunchWithElevationAsync(Func<bool, Task<LaunchReport>> run, Action<string>? progress)
@@ -43,7 +48,7 @@ public static class GameLauncher
     public static async Task DeployProxyAsync(ModuleStore store, string game, bool install, Action<string>? progress = null)
     {
         await store.EnsureAsync();
-        string directory = Path.Combine(AppContext.BaseDirectory, "runtime");
+        string directory = ProductPaths.RuntimeDirectory;
         string launcher = Path.Combine(directory, "EModLoader.Launcher.exe"), host = Path.Combine(directory, "EModLoader.Host.dll"),
             proxy = Path.Combine(directory, "EModLoader.XInputProxy.dll");
         if (!File.Exists(launcher) || !File.Exists(host) || !File.Exists(proxy)) throw new FileNotFoundException("未找到 DLL 自启动组件。");
@@ -78,7 +83,7 @@ public static class GameLauncher
     }
 
     private static async Task<LaunchReport> RunAsync(string launcher, string game, string index, string library, bool elevated,
-        string? operation = null, string? proxy = null)
+        string? operation = null, string? proxy = null, bool allowXInputConflict = false)
     {
         if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException("游戏启动仅支持 Windows。");
         string pipeName = "EML.Launch." + Guid.NewGuid().ToString("N");
@@ -95,6 +100,7 @@ public static class GameLauncher
             if (elevated) info.Verb = "runas";
             foreach (string argument in new[] { "--game", game, "--index", index, "--host", library, "--result-pipe", pipeName })
                 info.ArgumentList.Add(argument);
+            if (allowXInputConflict) { info.ArgumentList.Add("--allow-xinput-conflict"); info.ArgumentList.Add("true"); }
             if (operation is not null) { info.ArgumentList.Add("--operation"); info.ArgumentList.Add(operation); info.ArgumentList.Add("--proxy"); info.ArgumentList.Add(proxy!); }
             using var process = Process.Start(info) ?? throw new InvalidOperationException("无法启动游戏加载器。");
             Task exited = process.WaitForExitAsync(timeout.Token);

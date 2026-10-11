@@ -20,6 +20,12 @@ public partial class MainWindow : Window
     public MainWindow()
     {
         InitializeComponent(); host = new HostConnection(store);
+        if (BuildFlavor.IsCompatibilityTest)
+        {
+            Title += " · XInput 兼容性测试";
+            BuildLabel.Text = "兼容性测试 · 0.1.1";
+            AllowXInputConflict.Visibility = Visibility.Visible; AllowXInputConflict.IsChecked = true;
+        }
         host.Log += message => Dispatcher.BeginInvoke(() => AppendLog(message));
         Loaded += async (_, _) => { await Run(async () => { await store.EnsureAsync(); await RefreshRuntime(); await FindGamePathAsync(false); }); poll.Start(); };
         poll.Tick += async (_, _) => { if (polling || closing) return; polling = true; try { await RefreshRuntime(); } finally { polling = false; } };
@@ -69,7 +75,8 @@ public partial class MainWindow : Window
                     if (GamePathDiscovery.Resolve(GamePathLabel.Text) is null && !await SelectGamePathAsync()) return;
                 }
                 await host.StopOfflineAsync();
-                int pid = await GameLauncher.LaunchAsync(store, GamePathLabel.Text, message => { StatusLabel.Text = message; AppendLog(message); });
+                int pid = await GameLauncher.LaunchAsync(store, GamePathLabel.Text, message => { StatusLabel.Text = message; AppendLog(message); },
+                    allowXInputConflict: BuildFlavor.IsCompatibilityTest && AllowXInputConflict.IsChecked == true);
                 StatusLabel.Text = $"游戏已启动（PID {pid}），等待宿主连接。"; await RefreshRuntime();
             }
             finally { launchingGame = false; LaunchGameButton.IsEnabled = DetectGameButton.IsEnabled = SelectGameButton.IsEnabled = InstallProxyButton.IsEnabled = true; RefreshProxyState(); }
@@ -126,10 +133,13 @@ public partial class MainWindow : Window
     {
         bool installed = GamePathLabel.Text.Length > 0 && ProxyInstallation.IsOwned(GamePathLabel.Text);
         bool foreign = GamePathLabel.Text.Length > 0 && !installed && File.Exists(Path.Combine(Path.GetDirectoryName(GamePathLabel.Text)!, "xinput1_4.dll"));
-        ProxyStateLabel.Text = installed ? "已安装 · 官方启动器可加载 EML" : foreign ? "已有其他或被修改的 XInput DLL，请先处理冲突" : "未安装 · 可使用注入器启动";
+        bool coexist = BuildFlavor.IsCompatibilityTest && AllowXInputConflict.IsChecked == true;
+        ProxyStateLabel.Text = installed ? "已安装 · 官方启动器可加载 EML" : foreign ?
+            coexist ? "保留现有 XInput · 启动游戏时额外加载 EML" : "已有其他或被修改的 XInput DLL，请先处理冲突" : "未安装 · 可使用注入器启动";
         InstallProxyButton.IsEnabled = !foreign;
         RemoveProxyButton.IsEnabled = installed;
     }
+    private void Compatibility_Click(object sender, RoutedEventArgs e) => RefreshProxyState();
     private async Task ChangeProxyAsync(bool install)
     {
         if (launchingGame || findingGame) return;

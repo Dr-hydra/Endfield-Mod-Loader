@@ -4,6 +4,14 @@
     <AssemblyName>EModLoader</AssemblyName><RootNamespace>EModLoader.Desktop</RootNamespace>
     <ApplicationIcon>../../resources/logo.ico</ApplicationIcon><RuntimeIdentifier>win-x64</RuntimeIdentifier>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(EMLCompatibilityTest)' == 'true'">
+    <SelfContained>true</SelfContained><PublishSingleFile>true</PublishSingleFile>
+    <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+    <EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
+    <DebugType>embedded</DebugType><DebugSymbols>false</DebugSymbols>
+    <AllowedReferenceRelatedFileExtensions>.pdb</AllowedReferenceRelatedFileExtensions>
+    <Product>Endfield Mod Loader - XInput Compatibility Test</Product>
+  </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="../EModLoader.Core/EModLoader.Core.csproj" />
     <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.3179.45" />

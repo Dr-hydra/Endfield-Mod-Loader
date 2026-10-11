@@ -73,6 +73,22 @@ try
     await Reject<InvalidOperationException>(() => GameLauncher.LaunchAsync(store, fakeGame, native, null,
         _ => { runs++; return Task.FromResult(Success()); }), "Proxy conflict guard was bypassed.");
     Check(runs == 0, "Conflict was checked after launch.");
+    if (BuildFlavor.IsCompatibilityTest)
+    {
+        int compatiblePid = await GameLauncher.LaunchAsync(store, fakeGame, native, null,
+            _ => { runs++; return Task.FromResult(Success()); }, allowXInputConflict: true);
+        Check(compatiblePid == 123 && runs == 1, "Explicit compatibility opt-in did not reach launch.");
+    }
+    else
+    {
+        await Reject<InvalidOperationException>(() => GameLauncher.LaunchAsync(store, fakeGame, native, null,
+            _ => { runs++; return Task.FromResult(Success()); }, allowXInputConflict: true), "Normal build accepted compatibility opt-in.");
+        Check(runs == 0, "Normal build ran an opted-in conflicting launch.");
+    }
+    ProductPaths.UseRuntimeDirectory(native);
+    await Reject<InvalidOperationException>(() => GameLauncher.DeployProxyAsync(store, fakeGame, true), "Foreign XInput install protection was lost.");
+    await Reject<InvalidOperationException>(() => GameLauncher.DeployProxyAsync(store, fakeGame, false), "Foreign XInput uninstall protection was lost.");
+    Check(File.ReadAllBytes(Path.Combine(Path.GetDirectoryName(fakeGame)!, "xinput1_4.dll")).SequenceEqual(new byte[] { 0 }), "Foreign DLL changed during deployment rejection.");
     File.Delete(Path.Combine(Path.GetDirectoryName(fakeGame)!, "xinput1_4.dll"));
     await Reject<InvalidOperationException>(() => GameLauncher.LaunchAsync(store, fakeGame, native), "Real launcher accepted a bad executable.");
 
@@ -96,9 +112,41 @@ try
         }
         Check(connected, "Controlled target Host did not authenticate after named-pipe launch.");
         stop.Set(); await process.WaitForExitAsync().WaitAsync(TimeSpan.FromSeconds(10));
+        if (BuildFlavor.IsCompatibilityTest)
+        {
+            stop.Reset();
+            File.Copy(Path.Combine(native, "EMLControlledTarget.exe"), fakeGame, true);
+            string foreignPath = Path.Combine(Path.GetDirectoryName(fakeGame)!, "xinput1_4.dll");
+            File.Copy(Path.Combine(native, "EMLForeignXInput.dll"), foreignPath);
+            byte[] originalDll = File.ReadAllBytes(foreignPath);
+            Environment.SetEnvironmentVariable("EML_TEST_LOAD_FOREIGN_XINPUT", "1");
+            try
+            {
+                await Reject<InvalidOperationException>(() => GameLauncher.LaunchAsync(store, fakeGame, native), "Compatibility build was permissive without opt-in.");
+                pid = await GameLauncher.LaunchAsync(store, fakeGame, native, allowXInputConflict: true);
+                using var compatibleProcess = Process.GetProcessById(pid);
+                connected = false;
+                for (int i = 0; i < 50; i++)
+                {
+                    try
+                    {
+                        var status = await host.RequestAsync("status");
+                        connected = status["mode"]?.GetValue<string>() == "game" &&
+                            compatibleProcess.Modules.Cast<ProcessModule>().Any(module => module.ModuleName.Equals("xinput1_4.dll", StringComparison.OrdinalIgnoreCase));
+                    }
+                    catch (HttpRequestException) { }
+                    if (connected) break; await Task.Delay(100);
+                }
+                Check(connected, "Foreign XInput and EML Host did not coexist in the controlled target.");
+                Check(File.ReadAllBytes(foreignPath).SequenceEqual(originalDll), "Compatibility launch changed the foreign DLL.");
+                stop.Set(); await compatibleProcess.WaitForExitAsync().WaitAsync(TimeSpan.FromSeconds(10));
+                Check(compatibleProcess.ExitCode == 0, "Foreign XInput fixture did not load correctly.");
+            }
+            finally { Environment.SetEnvironmentVariable("EML_TEST_LOAD_FOREIGN_XINPUT", null); }
+        }
     }
     finally { stop.Set(); Environment.SetEnvironmentVariable("EML_TEST_STOP", previous); }
-    Console.WriteLine($"PASS: {checks} game-path, elevation-policy, native result and controlled Host checks. Interactive UAC and actual games were not tested.");
+    Console.WriteLine($"PASS: {checks} game-path, elevation-policy, XInput protection, native result and controlled Host checks. Compatibility build: {BuildFlavor.IsCompatibilityTest}. Interactive UAC and actual games were not tested.");
 }
 finally
 {

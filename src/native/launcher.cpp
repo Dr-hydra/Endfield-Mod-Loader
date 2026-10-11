@@ -59,10 +59,18 @@ std::vector<wchar_t> Environment(const std::filesystem::path& index) {
 int wmain(int argc,wchar_t** argv) {
     std::filesystem::path game,index,host,proxy;
     std::wstring pipe,operation;
+    bool allowXInputConflict=false;
     if((argc-1)%2)return Finish(2,ERROR_INVALID_PARAMETER,0,"Invalid launcher arguments");
-    for(int i=1;i+1<argc;i+=2){std::wstring_view option(argv[i]);if(option==L"--game")game=argv[i+1];else if(option==L"--index")index=argv[i+1];else if(option==L"--host")host=argv[i+1];else if(option==L"--result-pipe")pipe=argv[i+1];else if(option==L"--operation")operation=argv[i+1];else if(option==L"--proxy")proxy=argv[i+1];else return Finish(2,ERROR_INVALID_PARAMETER,0,"Unknown launcher option");}
+    for(int i=1;i+1<argc;i+=2){std::wstring_view option(argv[i]);if(option==L"--game")game=argv[i+1];else if(option==L"--index")index=argv[i+1];else if(option==L"--host")host=argv[i+1];else if(option==L"--result-pipe")pipe=argv[i+1];else if(option==L"--operation")operation=argv[i+1];else if(option==L"--proxy")proxy=argv[i+1];else if(option==L"--allow-xinput-conflict") {
+        const std::wstring_view value(argv[i+1]);
+        if(value!=L"true"&&value!=L"false")return Finish(2,ERROR_INVALID_PARAMETER,0,"Invalid XInput compatibility setting");
+        allowXInputConflict=value==L"true";
+    }else return Finish(2,ERROR_INVALID_PARAMETER,0,"Unknown launcher option");}
     // Establish the app-owned response channel before starting any process.
     if(!pipe.empty()&&!OpenResultPipe(pipe))return Finish(9,GetLastError(),0,"Launch result channel unavailable");
+#ifndef EML_COMPATIBILITY_TEST
+    if(allowXInputConflict)return Finish(3,0,0,"XInput coexistence is only available in the compatibility test build");
+#endif
     if(!operation.empty()) {
         if(operation!=L"install-proxy"&&operation!=L"remove-proxy")return Finish(2,ERROR_INVALID_PARAMETER,0,"Unknown deployment operation");
         try {EML::Proxy::Deploy(operation==L"install-proxy",game,host,index,proxy);return Finish(0);}
@@ -72,8 +80,9 @@ int wmain(int argc,wchar_t** argv) {
     }
     if(!std::filesystem::is_regular_file(game)||!std::filesystem::is_regular_file(index)||!std::filesystem::is_regular_file(host))return Finish(2,ERROR_FILE_NOT_FOUND,0,"Game, index or Host file missing");
     game=std::filesystem::absolute(game);index=std::filesystem::absolute(index);host=std::filesystem::absolute(host);
-    const bool proxyStartup=std::filesystem::exists(game.parent_path()/L"xinput1_4.dll");
-    if(proxyStartup&&!EML::Proxy::Owned(game.parent_path()))return Finish(3,0,0,"Existing XInput loader conflicts with explicit launch");
+    const bool hasXInput=std::filesystem::exists(game.parent_path()/L"xinput1_4.dll");
+    const bool ownedProxy=hasXInput&&EML::Proxy::Owned(game.parent_path());
+    if(hasXInput&&!ownedProxy&&!allowXInputConflict)return Finish(3,0,0,"Existing XInput loader conflicts with explicit launch");
     auto environment=Environment(index);std::wstring command=L"\""+game.wstring()+L"\"";
     STARTUPINFOW startup{};startup.cb=sizeof(startup);PROCESS_INFORMATION process{};
     if(!CreateProcessW(game.c_str(),command.data(),nullptr,nullptr,FALSE,CREATE_SUSPENDED|CREATE_UNICODE_ENVIRONMENT,environment.data(),game.parent_path().c_str(),&startup,&process)) {
@@ -81,7 +90,7 @@ int wmain(int argc,wchar_t** argv) {
     }
     if(ResumeThread(process.hThread)==DWORD(-1)){const auto error=GetLastError();CloseHandle(process.hThread);CloseHandle(process.hProcess);return Finish(5,error,0,"Could not resume game process");}CloseHandle(process.hThread);
     // An installed EML proxy owns startup; do not inject a second Host.
-    if(proxyStartup){CloseHandle(process.hProcess);return Finish(0,0,process.dwProcessId);}
+    if(ownedProxy){CloseHandle(process.hProcess);return Finish(0,0,process.dwProcessId);}
     void* load=nullptr;for(int i=0;i<50&&!load;++i){load=TargetLoadLibrary(process.dwProcessId);if(!load)Sleep(100);}
     if(!load){CloseHandle(process.hProcess);return Finish(5,0,0,"Target loader unavailable");}
     const auto library=host.wstring();const SIZE_T bytes=(library.size()+1)*sizeof(wchar_t);
