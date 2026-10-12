@@ -22,7 +22,7 @@ EML 0.1.0 支持原 Better Endfield **format 1 / ABI 1** 模块包。旧 ZIP、W
 
 Windows 使用 x64 DLL；Android 使用 ARM64 SO。Android 动态依赖须能在目标游戏进程的 linker namespace 中解析，页面资源须包含在模块包中。
 
-EML 采用独立安装与数据目录。不提供与 BE 或其他加载器同时作用于同一游戏进程的兼容保证。
+EML 采用独立安装与数据目录。Windows 0.1.2 可通过 [XInput 共存开关](XINPUT_COEXISTENCE.md) 保留其他工具的 `xinput1_4.dll` 并加载 EML。同一游戏逻辑被多个模块修改时，效果仍取决于模块自身的兼容性。
 
 ## 验证范围
 

@@ -28,12 +28,10 @@ public static class GameLauncher
         game = Path.GetFullPath(game);
         if (!File.Exists(game)) throw new FileNotFoundException("游戏路径已失效，请重新选择 Endfield.exe。", game);
         if (!File.Exists(launcher) || !File.Exists(library)) throw new FileNotFoundException("未找到游戏启动组件。");
-        if (allowXInputConflict && !BuildFlavor.IsCompatibilityTest)
-            throw new InvalidOperationException("允许 XInput 冲突仅在兼容性测试版中可用。");
         bool foreignXInput = File.Exists(Path.Combine(Path.GetDirectoryName(game)!, "xinput1_4.dll")) && !ProxyInstallation.IsOwned(game);
         if (foreignXInput && !allowXInputConflict)
-            throw new InvalidOperationException("游戏目录已有 XInput 加载器，请先处理启动方式冲突。");
-        if (foreignXInput) progress?.Invoke("兼容性测试：保留现有 XInput DLL，并显式注入 EML Host。");
+            throw new InvalidOperationException("游戏目录已有其他 XInput DLL，可勾选“保留其他 XInput DLL 并加载 EML”后启动。");
+        if (foreignXInput) progress?.Invoke("保留现有 XInput DLL，并显式注入 EML Host。");
         return await LaunchWithElevationAsync(run ?? (elevated => RunAsync(launcher, game, store.IndexPath, library, elevated,
             allowXInputConflict: allowXInputConflict)), progress);
     }

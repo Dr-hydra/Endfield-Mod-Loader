@@ -13,7 +13,7 @@ public partial class App : Application
             ShutdownMode = ShutdownMode.OnExplicitShutdown;
             Shutdown(await PackageSelfCheck.RunAsync(e.Args[1])); return;
         }
-        singleton = new Mutex(true, BuildFlavor.IsCompatibilityTest ? @"Local\EModLoader.Desktop.CompatibilityTest" : @"Local\EModLoader.Desktop", out bool created);
+        singleton = new Mutex(true, @"Local\EModLoader.Desktop", out bool created);
         if (!created) { MessageBox.Show("E Mod Loader 已在运行。", "Endfield Mod Loader"); Shutdown(); return; }
         DispatcherUnhandledException += (_, args) => { MessageBox.Show(args.Exception.Message, "E Mod Loader"); args.Handled = true; };
         try { MainWindow = new MainWindow(); MainWindow.Show(); }

@@ -20,10 +20,8 @@ internal static class PackageSelfCheck
             // Construct WPF controls without opening a window or driving a game.
             var window = new MainWindow();
             var option = (CheckBox)window.FindName("AllowXInputConflict");
-            bool uiValid = BuildFlavor.IsCompatibilityTest
-                ? option.Visibility == Visibility.Visible && option.IsChecked == true && window.Title.Contains("XInput")
-                : option.Visibility == Visibility.Collapsed;
-            if (!uiValid) throw new InvalidDataException("兼容性选项与构建类型不匹配。");
+            if (option.Visibility != Visibility.Visible || option.IsChecked != new GamePathSettings().LoadAllowXInputConflict())
+                throw new InvalidDataException("XInput 开关未正确读取保存的设置。");
             string browserVersion = CoreWebView2Environment.GetAvailableBrowserVersionString();
             if (string.IsNullOrWhiteSpace(browserVersion)) throw new InvalidDataException("WebView2 运行时不可用。");
             var store = new ModuleStore(Path.Combine(Path.GetDirectoryName(path)!, "self-check-library"));
@@ -33,7 +31,7 @@ internal static class PackageSelfCheck
             if (status["mode"]?.GetValue<string>() != "offline") throw new InvalidDataException("离线宿主握手失败。");
             await host.StopOfflineAsync();
             await File.WriteAllTextAsync(path, JsonSerializer.Serialize(new {
-                success = true, compatibility_test = BuildFlavor.IsCompatibilityTest,
+                success = true, version = "0.1.2", xinput_option_visible = true, xinput_option_enabled = option.IsChecked == true, xinput_option_matches_settings = true,
                 package_file_count = Directory.EnumerateFiles(AppContext.BaseDirectory, "*", SearchOption.AllDirectories).Count(),
                 runtime_directory = runtime, runtime_files = Files,
                 wpf_controls = true, webview2_loader = true, offline_host_handshake = true, owned_host_stopped = true

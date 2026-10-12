@@ -12,7 +12,7 @@
           <Button Content="项目仓库 ↗" Click="Repository_Click" Margin="0,0,0,10"/>
           <Button Content="打开数据目录" Click="DataDirectory_Click" Margin="0,0,0,10"/>
         </StackPanel>
-        <StackPanel DockPanel.Dock="Bottom" VerticalAlignment="Bottom"><TextBlock x:Name="BuildLabel" Text="开发预览 · 0.1.1" Foreground="{StaticResource MutedBrush}"/><TextBlock Text="原 BE V1 模块包兼容" Foreground="{StaticResource MutedBrush}" FontSize="11" Margin="0,6,0,0"/></StackPanel>
+        <StackPanel DockPanel.Dock="Bottom" VerticalAlignment="Bottom"><TextBlock x:Name="BuildLabel" Text="开发预览 · 0.1.2" Foreground="{StaticResource MutedBrush}"/><TextBlock Text="原 BE V1 模块包兼容" Foreground="{StaticResource MutedBrush}" FontSize="11" Margin="0,6,0,0"/></StackPanel>
       </DockPanel>
     </Border>
     <Grid Grid.Column="1" Margin="28,26">
@@ -35,7 +35,7 @@
           <Button Grid.Column="3" x:Name="SelectGameButton" Content="选择…" Click="SelectGame_Click" Margin="0"/>
         </Grid>
         <TextBlock x:Name="GamePathHint" Text="正在查找游戏…" Foreground="{StaticResource MutedBrush}" FontSize="11" TextWrapping="Wrap" Margin="0,6,0,0"/>
-        <CheckBox x:Name="AllowXInputConflict" Content="允许现有 XInput DLL（兼容性测试）" Visibility="Collapsed" Margin="0,10,0,0" Click="Compatibility_Click"/>
+        <CheckBox x:Name="AllowXInputConflict" Content="保留其他 XInput DLL 并加载 EML" ToolTip="保留游戏目录的 xinput1_4.dll，并额外加载 EML；此选择会保存，下次启动继续使用。" Margin="0,10,0,0" Click="Compatibility_Click"/>
         <WrapPanel Margin="0,10,0,0">
           <Button x:Name="InstallProxyButton" Content="安装 DLL 自启动" Click="InstallProxy_Click"/>
           <Button x:Name="RemoveProxyButton" Content="卸载 DLL 自启动" IsEnabled="False" Click="RemoveProxy_Click"/>

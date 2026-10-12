@@ -68,9 +68,6 @@ int wmain(int argc,wchar_t** argv) {
     }else return Finish(2,ERROR_INVALID_PARAMETER,0,"Unknown launcher option");}
     // Establish the app-owned response channel before starting any process.
     if(!pipe.empty()&&!OpenResultPipe(pipe))return Finish(9,GetLastError(),0,"Launch result channel unavailable");
-#ifndef EML_COMPATIBILITY_TEST
-    if(allowXInputConflict)return Finish(3,0,0,"XInput coexistence is only available in the compatibility test build");
-#endif
     if(!operation.empty()) {
         if(operation!=L"install-proxy"&&operation!=L"remove-proxy")return Finish(2,ERROR_INVALID_PARAMETER,0,"Unknown deployment operation");
         try {EML::Proxy::Deploy(operation==L"install-proxy",game,host,index,proxy);return Finish(0);}

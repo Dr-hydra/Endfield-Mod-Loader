@@ -29,14 +29,29 @@ try
     Check(paths.SequenceEqual(new[] { a, b }), "Preferred/registry/common directory discovery lost ordering or deduplication.");
     Check(!paths.Contains(deep), "Bounded discovery crawled unrelated folders.");
     var settings = new GamePathSettings(Path.Combine(root, "settings"));
+    Check(!settings.LoadAllowXInputConflict(), "Missing settings enabled coexistence by default.");
     await settings.SaveAsync(a);
     Check(new GamePathSettings(Path.Combine(root, "settings")).Load() == a, "Selected path did not persist across instances.");
+    Check(!settings.LoadAllowXInputConflict(), "Legacy path-only settings enabled coexistence.");
+    await settings.SaveAllowXInputConflictAsync(true);
+    Check(new GamePathSettings(Path.Combine(root, "settings")).LoadAllowXInputConflict() && settings.Load() == a, "Saving coexistence lost the selected game path or opt-in.");
+    await settings.SaveAsync(b);
+    Check(settings.Load() == b && settings.LoadAllowXInputConflict(), "Changing game path lost the opt-in.");
+    await settings.SaveAllowXInputConflictAsync(false);
+    Check(!new GamePathSettings(Path.Combine(root, "settings")).LoadAllowXInputConflict() && settings.Load() == b, "Disabling coexistence did not persist.");
+    await settings.SaveAsync(a);
     await Reject<InvalidDataException>(() => settings.SaveAsync(fakeLauncher), "Invalid selection was saved.");
     Check(settings.Load() == a, "Rejected selection damaged saved settings.");
     File.Delete(a);
     Check(GamePathDiscovery.Discover(settings.Load(), [b], [root]).SequenceEqual(new[] { b }), "Stale saved path blocked rediscovery.");
     File.WriteAllText(settings.FilePath, "[]"); Check(settings.Load() == "", "Array settings were not handled.");
     File.WriteAllText(settings.FilePath, "{broken"); Check(settings.Load() == "", "Corrupt settings were not handled.");
+    Check(!settings.LoadAllowXInputConflict(), "Corrupt settings enabled coexistence.");
+    File.WriteAllText(settings.FilePath, "{\"allow_xinput_conflict\":\"true\",\"extension\":42}");
+    Check(!settings.LoadAllowXInputConflict(), "A string setting was mistaken for an enabled boolean.");
+    await Task.WhenAll(settings.SaveAsync(b), settings.SaveAllowXInputConflictAsync(true));
+    Check(settings.Load() == b && settings.LoadAllowXInputConflict(), "Concurrent path/option updates lost data.");
+    Check(System.Text.Json.Nodes.JsonNode.Parse(File.ReadAllText(settings.FilePath))!["extension"]!.GetValue<int>() == 42, "Saving launcher preferences lost unrelated fields.");
     Check(!Directory.EnumerateFiles(Path.GetDirectoryName(settings.FilePath)!, "*.pending").Any(), "Settings left a temporary file.");
 
     var attempts = new List<bool>(); string progress = "";
@@ -73,18 +88,9 @@ try
     await Reject<InvalidOperationException>(() => GameLauncher.LaunchAsync(store, fakeGame, native, null,
         _ => { runs++; return Task.FromResult(Success()); }), "Proxy conflict guard was bypassed.");
     Check(runs == 0, "Conflict was checked after launch.");
-    if (BuildFlavor.IsCompatibilityTest)
-    {
-        int compatiblePid = await GameLauncher.LaunchAsync(store, fakeGame, native, null,
-            _ => { runs++; return Task.FromResult(Success()); }, allowXInputConflict: true);
-        Check(compatiblePid == 123 && runs == 1, "Explicit compatibility opt-in did not reach launch.");
-    }
-    else
-    {
-        await Reject<InvalidOperationException>(() => GameLauncher.LaunchAsync(store, fakeGame, native, null,
-            _ => { runs++; return Task.FromResult(Success()); }, allowXInputConflict: true), "Normal build accepted compatibility opt-in.");
-        Check(runs == 0, "Normal build ran an opted-in conflicting launch.");
-    }
+    int compatiblePid = await GameLauncher.LaunchAsync(store, fakeGame, native, null,
+        _ => { runs++; return Task.FromResult(Success()); }, allowXInputConflict: true);
+    Check(compatiblePid == 123 && runs == 1, "Explicit coexistence opt-in did not reach launch.");
     ProductPaths.UseRuntimeDirectory(native);
     await Reject<InvalidOperationException>(() => GameLauncher.DeployProxyAsync(store, fakeGame, true), "Foreign XInput install protection was lost.");
     await Reject<InvalidOperationException>(() => GameLauncher.DeployProxyAsync(store, fakeGame, false), "Foreign XInput uninstall protection was lost.");
@@ -112,7 +118,6 @@ try
         }
         Check(connected, "Controlled target Host did not authenticate after named-pipe launch.");
         stop.Set(); await process.WaitForExitAsync().WaitAsync(TimeSpan.FromSeconds(10));
-        if (BuildFlavor.IsCompatibilityTest)
         {
             stop.Reset();
             File.Copy(Path.Combine(native, "EMLControlledTarget.exe"), fakeGame, true);
@@ -122,7 +127,7 @@ try
             Environment.SetEnvironmentVariable("EML_TEST_LOAD_FOREIGN_XINPUT", "1");
             try
             {
-                await Reject<InvalidOperationException>(() => GameLauncher.LaunchAsync(store, fakeGame, native), "Compatibility build was permissive without opt-in.");
+                await Reject<InvalidOperationException>(() => GameLauncher.LaunchAsync(store, fakeGame, native), "Launcher was permissive without opt-in.");
                 pid = await GameLauncher.LaunchAsync(store, fakeGame, native, allowXInputConflict: true);
                 using var compatibleProcess = Process.GetProcessById(pid);
                 connected = false;
@@ -146,7 +151,7 @@ try
         }
     }
     finally { stop.Set(); Environment.SetEnvironmentVariable("EML_TEST_STOP", previous); }
-    Console.WriteLine($"PASS: {checks} game-path, elevation-policy, XInput protection, native result and controlled Host checks. Compatibility build: {BuildFlavor.IsCompatibilityTest}. Interactive UAC and actual games were not tested.");
+    Console.WriteLine($"PASS: {checks} saved-preference, game-path, elevation-policy, XInput protection, native result and controlled Host checks. Interactive UAC and actual games were not tested.");
 }
 finally
 {

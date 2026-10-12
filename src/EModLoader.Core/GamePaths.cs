@@ -1,36 +1,48 @@
 using Microsoft.Win32;
 using System.Security;
 using System.Text.Json;
+using System.Text.Json.Nodes;
 
 namespace EModLoader.Core;
 
 public sealed class GamePathSettings(string? dataRoot = null)
 {
     private readonly string directory = Path.GetFullPath(dataRoot ?? ProductPaths.DataRoot);
+    private readonly SemaphoreSlim gate = new(1, 1);
     public string FilePath => Path.Combine(directory, "launcher.json");
-    public string Load()
+    private JsonObject ReadSettings()
     {
         try
         {
-            if (!File.Exists(FilePath) || new FileInfo(FilePath).Length > 16384) return "";
-            using var json = JsonDocument.Parse(File.ReadAllText(FilePath));
-            if (json.RootElement.ValueKind != JsonValueKind.Object) return "";
-            return json.RootElement.TryGetProperty("game_executable_path", out var value) && value.ValueKind == JsonValueKind.String
-                ? value.GetString() ?? "" : "";
+            if (!File.Exists(FilePath) || new FileInfo(FilePath).Length > 16384) return new();
+            return JsonNode.Parse(File.ReadAllText(FilePath)) as JsonObject ?? new();
         }
-        catch (Exception error) when (error is IOException or UnauthorizedAccessException or JsonException) { return ""; }
+        catch (Exception error) when (error is IOException or UnauthorizedAccessException or JsonException) { return new(); }
     }
-    public async Task SaveAsync(string path)
+    public string Load() => ReadSettings()["game_executable_path"] is JsonValue value && value.TryGetValue<string>(out var path) ? path : "";
+    public bool LoadAllowXInputConflict() => ReadSettings()["allow_xinput_conflict"] is JsonValue value && value.TryGetValue<bool>(out var enabled) && enabled;
+    public Task SaveAsync(string path)
     {
         string executable = GamePathDiscovery.Resolve(path) ?? throw new InvalidDataException("请选择有效的 Endfield.exe。");
-        Directory.CreateDirectory(directory);
-        string pending = Path.Combine(directory, Guid.NewGuid() + ".pending");
+        return UpdateAsync(settings => settings["game_executable_path"] = executable);
+    }
+    public Task SaveAllowXInputConflictAsync(bool enabled) => UpdateAsync(settings => settings["allow_xinput_conflict"] = enabled);
+    private async Task UpdateAsync(Action<JsonObject> update)
+    {
+        await gate.WaitAsync();
         try
         {
-            await File.WriteAllTextAsync(pending, JsonSerializer.Serialize(new { schema = 1, game_executable_path = executable }));
-            File.Move(pending, FilePath, true);
+            var settings = ReadSettings(); settings["schema"] = 1; update(settings);
+            Directory.CreateDirectory(directory);
+            string pending = Path.Combine(directory, Guid.NewGuid() + ".pending");
+            try
+            {
+                await File.WriteAllTextAsync(pending, settings.ToJsonString());
+                File.Move(pending, FilePath, true);
+            }
+            finally { if (File.Exists(pending)) File.Delete(pending); }
         }
-        finally { if (File.Exists(pending)) File.Delete(pending); }
+        finally { gate.Release(); }
     }
 }
 

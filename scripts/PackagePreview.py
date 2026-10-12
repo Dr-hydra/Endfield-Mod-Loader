@@ -9,11 +9,13 @@ import zipfile
 
 root=Path(__file__).resolve().parents[1]
 parser=argparse.ArgumentParser()
-parser.add_argument('--version',default='0.1.1-dev')
+parser.add_argument('--version',default='0.1.2-dev')
+parser.add_argument('--package',type=Path,default=root/'build/package/windows-0.1.2')
+parser.add_argument('--hash-assets',action='store_true',help='Explicitly generate SHA-256 records; disabled by default.')
 args=parser.parse_args()
 if not re.fullmatch(r'\d+\.\d+\.\d+(?:-[A-Za-z0-9_.-]+)?',args.version):raise ValueError('Invalid release version')
 output=root/'releases'/args.version;output.mkdir(parents=True,exist_ok=True)
-package=root/'build/package/windows'
+package=args.package.resolve()
 for name in ('EModLoader.exe','runtime/EModLoader.Host.dll','runtime/EModLoader.Launcher.exe','runtime/EModLoader.OfflineHost.exe','runtime/EModLoader.XInputProxy.dll'):
     assert (package/name).is_file(),name
 archive=output/f'EModLoader-{args.version}-win-x64.zip'
@@ -36,9 +38,12 @@ files=[archive,android,sdk]
 first_person=root/'releases/first-person/0.1.0-dev/example.first-person-0.1.0-dev.zip'
 if first_person.is_file():
     module=output/first_person.name;shutil.copyfile(first_person,module);files.append(module)
-records=[{'file':file.name,'bytes':file.stat().st_size,'sha256':hashlib.sha256(file.read_bytes()).hexdigest()} for file in files]
+records=[{'file':file.name,'bytes':file.stat().st_size} for file in files]
+if args.hash_assets:
+    for i,file in enumerate(files):records[i]['sha256']=hashlib.sha256(file.read_bytes()).hexdigest()
 commit=subprocess.check_output(['git','rev-parse','HEAD'],cwd=root,text=True).strip()
 (output/'ASSETS.json').write_text(json.dumps({'version':args.version,'source_commit':commit,'game_validation':'not_run','android_device_validation':'not_run','interactive_uac_validation':'not_run',
     'first_person_module':'included' if first_person.is_file() else 'source_only','assets':records},indent=2)+'\n',encoding='utf-8')
-(output/'SHA256SUMS.txt').write_text(''.join(f"{item['sha256']}  {item['file']}\n" for item in records),encoding='ascii')
+if args.hash_assets:
+    (output/'SHA256SUMS.txt').write_text(''.join(f"{item['sha256']}  {item['file']}\n" for item in records),encoding='ascii')
 print(json.dumps(records,indent=2))

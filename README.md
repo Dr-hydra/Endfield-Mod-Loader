@@ -4,13 +4,13 @@
 
 [下载开发预览](https://github.com/Dr-hydra/Endfield-Mod-Loader/releases/latest) · [使用指南](docs/USER_GUIDE.md) · [第一人称模块](examples/first-person/README.md) · [模块作者 SDK](docs/SDK.md) · [构建说明](docs/DEVELOPMENT.md)
 
-Windows 当前版本为 **0.1.1-dev**，新增按需 UAC 提权、游戏路径记忆与自动查找、可安装和卸载的 DLL 自启动。Android 及第一人称模块保持 **0.1.0-dev**。构建和离线验证已通过；真实游戏、交互式 UAC 及 Android 设备运行尚未验证。
+Windows 当前版本为 **0.1.2-dev**，新增可保存的“保留其他 XInput DLL 并加载 EML”开关，普通版即可与现有 XInput 加载器一起启动；发布包采用自包含精简目录。按需 UAC、游戏路径记忆与 DLL 自启动继续可用。Android 及第一人称模块保持 **0.1.0-dev**。
 
 ## 下载与安装
 
 | 附件 | 用途 |
 | --- | --- |
-| `EModLoader-0.1.1-dev-win-x64.zip` | Windows 加载器；完整解压后运行 `EModLoader.exe` |
+| `EModLoader-0.1.2-dev-win-x64.zip` | Windows 加载器；完整解压后运行 `EModLoader.exe` |
 | `EModLoader-0.1.0-dev-android-arm64.apk` | Android 管理应用及 libxposed 接入；当前使用开发签名 |
 | `example.first-person-0.1.0-dev.zip` | 第一人称模块，包含双端原生库与配置页面；在 EML 中直接导入 ZIP |
 | `EModLoader-SDK-0.1.0.zip` | 兼容头文件、Echo / 第一人称示例源码及构建脚本 |
@@ -25,6 +25,8 @@ Windows 需要 Windows 10/11 x64 和 WebView2 Runtime。Android 需要 Android 1
 4. Windows 使用 EML 的“启动游戏”，或安装“DLL 自启动”后从官方启动器启动；Android 启用框架作用域后彻底停止并重新启动游戏。
 
 Windows 优先读取已保存的游戏路径，并从注册表、常见安装目录查找 `Endfield.exe`。找到多个安装时需要选择；手动选择后自动保存。需要管理员权限时，启动或部署组件会请求 Windows UAC 确认。DLL 自启动的安装和卸载要求游戏关闭，不覆盖其他工具的同名 DLL。
+
+游戏目录已有其他工具的 `xinput1_4.dll` 时，可勾选“保留其他 XInput DLL 并加载 EML”，再点击“启动游戏”。开关默认关闭，选择会自动保存；开启后保留原 DLL，并额外注入 EML Host。详见 [XInput 共存设置](docs/XINPUT_COEXISTENCE.md)。
 
 新导入的模块默认停用。离线宿主可以检查配置与消息通信，游戏效果需要实际游戏宿主。更新已加载的原生模块后需要重启宿主或游戏。
 

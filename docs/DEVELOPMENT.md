@@ -8,7 +8,7 @@
 ./scripts/Build.ps1
 ```
 
-可使用 `-CMake <cmake.exe>`、`-Dotnet <dotnet.exe>` 指定工具。自包含桌面分发目录为 `build/package/windows/`，入口为 `EModLoader.exe`。
+可使用 `-CMake <cmake.exe>`、`-Dotnet <dotnet.exe>` 指定工具。当前自包含桌面分发目录为 `build/package/windows-0.1.2/`，原生构建目录为 `build/native/windows-0.1.2/`，入口为 `EModLoader.exe`。主程序合并 .NET 程序集，EML 启动组件集中放在 `runtime/`；不分发 PDB 与 WebView2 XML 文档。`scripts/BuildCompatibilityTest.ps1` 保留为普通构建的旧入口。
 
 ## Android
 
@@ -59,11 +59,12 @@ python scripts/PackageFirstPerson.py --android build/examples/first-person-andro
 dotnet run --project tests/EModLoader.CoreTests -c Release -- <EchoZIP> <OfflineHost.exe>
 dotnet run --project tests/EModLoader.DesktopTests -c Release -- <EchoZIP> <OfflineHost.exe> <输出目录>
 dotnet run --project tests/EModLoader.DesktopTests -c Release -- <第一人称ZIP> <OfflineHost.exe> <输出目录> first-person
-ctest --test-dir build/native/windows -C Release --output-on-failure
+ctest --test-dir build/native/windows-0.1.2 -C Release --output-on-failure
 ctest --test-dir build/examples/first-person-windows -C Release --output-on-failure
-python tests/verify_launch.py --native-bin build/native/windows/Release
-python tests/verify_proxy.py --native-bin build/native/windows/Release
-dotnet run --project tests/EModLoader.LaunchTests -c Release -- build/native/windows/Release
+python tests/verify_launch.py --native-bin build/native/windows-0.1.2/Release
+python tests/verify_proxy.py --native-bin build/native/windows-0.1.2/Release
+python tests/verify_xinput_compatibility.py --native-bin build/native/windows-0.1.2/Release
+dotnet run --project tests/EModLoader.LaunchTests -c Release -- build/native/windows-0.1.2/Release
 node tests/verify_bridge.js
 python tests/android/verify_materializer.py --json-jar <org.json.jar>
 ```
