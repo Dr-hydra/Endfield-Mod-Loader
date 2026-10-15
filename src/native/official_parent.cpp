@@ -73,13 +73,13 @@ void AddRoot(std::vector<std::filesystem::path>& roots, const std::filesystem::p
 std::vector<std::filesystem::path> InstalledRoots() {
     std::vector<std::filesystem::path> roots;
     for (const auto& protocol : Subkeys(HKEY_CLASSES_ROOT, L"")) {
-        if (!StartsWith(protocol, L"hypergryphlauncher")) continue;
+        if (!StartsWith(protocol, L"hypergryphlauncher") && !StartsWith(protocol, L"gryphlinklauncher")) continue;
         const auto command = ReadRegistry(HKEY_CLASSES_ROOT, (protocol + L"\\shell\\open\\command").c_str(), nullptr);
         if (command.empty()) continue;
         int count = 0;
         wchar_t** arguments = CommandLineToArgvW(command.c_str(), &count);
         if (arguments) {
-            if (count > 0 && Equal(std::filesystem::path(arguments[0]).filename().wstring(), L"Launcher.exe"))
+            if (count > 0)
                 AddRoot(roots, arguments[0]);
             LocalFree(arguments);
         }
@@ -90,7 +90,8 @@ std::vector<std::filesystem::path> InstalledRoots() {
             for (const auto& child : Subkeys(hive, uninstall, view)) {
                 const auto key = std::wstring(uninstall) + L"\\" + child;
                 const auto name = ReadRegistry(hive, key.c_str(), L"DisplayName", view);
-                if (!Equal(name, L"鹰角启动器") && !Equal(name, L"Hypergryph Launcher")) continue;
+                if (!Equal(name, L"鹰角启动器") && !Equal(name, L"Hypergryph Launcher") &&
+                    !Equal(name, L"GRYPHLINK") && !Equal(name, L"Gryphlink") && !Equal(name, L"Gryphline Launcher")) continue;
                 AddRoot(roots, ReadRegistry(hive, key.c_str(), L"InstallLocation", view));
             }
         }
@@ -98,7 +99,10 @@ std::vector<std::filesystem::path> InstalledRoots() {
     for (const wchar_t* variable : {L"ProgramFiles", L"ProgramFiles(x86)", L"LOCALAPPDATA"}) {
         wchar_t value[32768]{};
         const DWORD length = GetEnvironmentVariableW(variable, value, static_cast<DWORD>(std::size(value)));
-        if (length && length < std::size(value)) AddRoot(roots, std::filesystem::path(value) / L"Hypergryph Launcher");
+        if (length && length < std::size(value)) {
+            AddRoot(roots, std::filesystem::path(value) / L"Hypergryph Launcher");
+            AddRoot(roots, std::filesystem::path(value) / L"GRYPHLINK");
+        }
     }
     return roots;
 }
@@ -165,7 +169,45 @@ std::wstring WindowsError(const wchar_t* operation, DWORD code) {
     return result;
 }
 
-bool IsOfficialPublisher(const std::wstring& organization) { return Equal(organization, kPublisher); }
+bool IsOfficialPublisher(const std::wstring& organization) {
+    return Equal(organization, kPublisher) ||
+           Equal(organization, L"GRYPH FRONTIER PTE. LTD.") ||
+           Equal(organization, L"GRYPHLINE PTE. LTD.") ||
+           Equal(organization, L"Gryphline") ||
+           Equal(organization, L"Hypergryph");
+}
+
+bool ResolveToGamesCore(const std::filesystem::path& input, std::filesystem::path& resolved) {
+    std::filesystem::path folder = input;
+    std::error_code ec;
+    if (std::filesystem::is_regular_file(input, ec)) {
+        if (Equal(input.filename().wstring(), L"Games.exe")) {
+            resolved = input;
+            return true;
+        }
+        folder = input.parent_path();
+    }
+    std::vector<std::filesystem::path> candidates;
+    if (std::filesystem::is_directory(folder, ec)) {
+        if (std::filesystem::is_regular_file(folder / L"Games.exe", ec)) candidates.push_back(folder / L"Games.exe");
+        for (std::filesystem::directory_iterator cur(folder, ec), end; !ec && cur != end; cur.increment(ec)) {
+            const auto gp = cur->path() / L"Games.exe";
+            if (!Version(gp).empty() && std::filesystem::is_regular_file(gp, ec)) candidates.push_back(gp);
+        }
+    }
+    if (!candidates.empty()) {
+        std::stable_sort(candidates.begin(), candidates.end(), [](const auto& a, const auto& b) {
+            return Version(a) > Version(b);
+        });
+        resolved = candidates.front();
+        return true;
+    }
+    if (std::filesystem::is_regular_file(input, ec)) {
+        resolved = input;
+        return true;
+    }
+    return false;
+}
 
 bool VerifyOfficialLauncher(const std::filesystem::path& input, VerifiedLauncher& result,
     std::wstring& error) {
@@ -221,24 +263,37 @@ bool VerifyOfficialLauncher(const std::filesystem::path& input, VerifiedLauncher
 
 bool FindOfficialLauncher(const std::filesystem::path& requested, VerifiedLauncher& result,
     std::wstring& error) {
-    if (!requested.empty()) return VerifyOfficialLauncher(requested, result, error);
+    if (!requested.empty()) {
+        std::filesystem::path resolved;
+        if (ResolveToGamesCore(requested, resolved)) {
+            return VerifyOfficialLauncher(resolved, result, error);
+        }
+        return VerifyOfficialLauncher(requested, result, error);
+    }
     std::vector<std::filesystem::path> candidates;
     for (const auto& root : InstalledRoots()) {
         std::error_code filesystem_error;
         if (std::filesystem::is_regular_file(root / L"Games.exe", filesystem_error)) candidates.push_back(root / L"Games.exe");
+        if (std::filesystem::is_regular_file(root / L"Launcher.exe", filesystem_error)) candidates.push_back(root / L"Launcher.exe");
         for (std::filesystem::directory_iterator current(root, filesystem_error), end;
                 !filesystem_error && current != end; current.increment(filesystem_error)) {
-            const auto path = current->path() / L"Games.exe";
-            if (!Version(path).empty() && std::filesystem::is_regular_file(path, filesystem_error)) candidates.push_back(path);
+            const auto games_path = current->path() / L"Games.exe";
+            if (!Version(games_path).empty() && std::filesystem::is_regular_file(games_path, filesystem_error)) candidates.push_back(games_path);
+            const auto launcher_path = current->path() / L"Launcher.exe";
+            if (!Version(launcher_path).empty() && std::filesystem::is_regular_file(launcher_path, filesystem_error)) candidates.push_back(launcher_path);
             filesystem_error.clear();
         }
     }
     std::stable_sort(candidates.begin(), candidates.end(), [](const auto& left, const auto& right) {
         return Version(left) > Version(right);
     });
-    for (const auto& path : candidates) if (VerifyOfficialLauncher(path, result, error)) return true;
-    error = L"未找到签名有效的国服鹰角启动器 Games.exe。请安装或修复官方启动器后重试。\n"
-        L"No valid signed CN Hypergryph launcher Games.exe was found. Install or repair the official launcher and retry.";
+    for (const auto& path : candidates) {
+        std::filesystem::path resolved;
+        const auto target = ResolveToGamesCore(path, resolved) ? resolved : path;
+        if (VerifyOfficialLauncher(target, result, error)) return true;
+    }
+    error = L"未找到签名有效的官方启动器 Games.exe（国服/国际服）。请安装或修复官方启动器，或在设置中指定启动器路径，或启用免官方启动器直启模式后重试。\n"
+        L"No valid signed official launcher Games.exe was found. Install or repair the official launcher, specify its path, or enable bypass launcher mode.";
     return false;
 }
 

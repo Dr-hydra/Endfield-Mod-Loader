@@ -62,6 +62,29 @@ try
     Check(System.Text.Json.Nodes.JsonNode.Parse(File.ReadAllText(settings.FilePath))!["extension"]!.GetValue<int>() == 42, "Saving launcher preferences lost unrelated fields.");
     Check(!Directory.EnumerateFiles(Path.GetDirectoryName(settings.FilePath)!, "*.pending").Any(), "Settings left a temporary file.");
 
+    Check(!settings.LoadBypassOfficialLauncher(), "Bypass launcher was enabled by default.");
+    await settings.SaveBypassOfficialLauncherAsync(true);
+    Check(new GamePathSettings(Path.Combine(root, "settings")).LoadBypassOfficialLauncher(), "Bypass launcher setting did not persist.");
+    await settings.SaveBypassOfficialLauncherAsync(false);
+    Check(!new GamePathSettings(Path.Combine(root, "settings")).LoadBypassOfficialLauncher(), "Disabling bypass launcher did not persist.");
+    Check(settings.LoadOfficialParent() == "", "Official parent was set by default.");
+    await settings.SaveOfficialParentAsync(b);
+    Check(new GamePathSettings(Path.Combine(root, "settings")).LoadOfficialParent() == b, "Official parent setting did not persist.");
+    await settings.SaveOfficialParentAsync(null);
+    Check(new GamePathSettings(Path.Combine(root, "settings")).LoadOfficialParent() == "", "Clearing official parent did not persist.");
+    Check(settings.LoadOfficialLauncherHistory().Count == 0, "Launcher history was not empty by default.");
+    await settings.SaveOfficialLauncherHistoryAsync([a, b, a]);
+    Check(new GamePathSettings(Path.Combine(root, "settings")).LoadOfficialLauncherHistory().SequenceEqual([a, b]), "Launcher history deduplication or persistence failed.");
+
+    Check(OfficialLauncherDiscovery.FormatDisplayName(@"C:\Program Files\Hypergryph Launcher\1.6.0\Games.exe").StartsWith("[国服]"), "FormatDisplayName CN tag incorrect.");
+    Check(OfficialLauncherDiscovery.FormatDisplayName(@"C:\Program Files\GRYPHLINK\1.6.0\Games.exe").StartsWith("[国际服]"), "FormatDisplayName Global tag incorrect.");
+    Check(OfficialLauncherDiscovery.FormatDisplayName(@"D:\Custom\Games.exe").StartsWith("[自定义]"), "FormatDisplayName Custom tag incorrect.");
+    string dummyGamesDir = Path.Combine(root, "dummy launcher", "1.2.0");
+    Directory.CreateDirectory(dummyGamesDir);
+    string dummyGamesExe = Path.Combine(dummyGamesDir, "Games.exe");
+    File.WriteAllBytes(dummyGamesExe, [0]);
+    Check(OfficialLauncherDiscovery.Resolve(Path.Combine(root, "dummy launcher")) == dummyGamesExe, "OfficialLauncherDiscovery did not resolve directory to Games.exe.");
+
     var attempts = new List<bool>(); string progress = "";
     int pid = await GameLauncher.LaunchWithElevationAsync(elevated => { attempts.Add(elevated); return Task.FromResult(elevated ? Success() : Failure(740)); }, text => progress = text);
     Check(pid == 123 && attempts.SequenceEqual(new[] { false, true }) && progress.Length > 0, "740 did not cause exactly one elevated retry.");
@@ -184,6 +207,15 @@ try
         await bridgedGame.WaitForExitAsync().WaitAsync(TimeSpan.FromSeconds(10));
         await ownedParent.WaitForExitAsync().WaitAsync(TimeSpan.FromSeconds(10));
         Check(ownedParent.HasExited, "Owned suspended parent leaked after game exit.");
+
+        // Direct launch with bypassOfficialLauncher: true does not require or create any official parent.
+        stop.Reset();
+        pid = await GameLauncher.LaunchAsync(store, Path.Combine(native, "EMLControlledTarget.exe"), native, bypassOfficialLauncher: true);
+        using var directGame = Process.GetProcessById(pid);
+        Check(!directGame.HasExited, "Direct launch reported an exited game.");
+        stop.Set();
+        await directGame.WaitForExitAsync().WaitAsync(TimeSpan.FromSeconds(10));
+        Check(directGame.HasExited, "Direct launch game process failed to exit.");
 
         // A bad Host forces failure after both child processes were created.
         // Neither the unfinished game nor its suspended parent may survive.

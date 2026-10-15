@@ -21,8 +21,9 @@ public partial class MainWindow : Window
     {
         InitializeComponent(); host = new HostConnection(store);
         AllowXInputConflict.IsChecked = gameSettings.LoadAllowXInputConflict();
+        BypassOfficialLauncherCheckBox.IsChecked = gameSettings.LoadBypassOfficialLauncher();
         host.Log += message => Dispatcher.BeginInvoke(() => AppendLog(message));
-        Loaded += async (_, _) => { await Run(async () => { await store.EnsureAsync(); await RefreshRuntime(); await FindGamePathAsync(false); }); poll.Start(); };
+        Loaded += async (_, _) => { await Run(async () => { await store.EnsureAsync(); await RefreshRuntime(); await FindGamePathAsync(false); await InitializeOfficialLaunchersAsync(); }); poll.Start(); };
         poll.Tick += async (_, _) => { if (polling || closing) return; polling = true; try { await RefreshRuntime(); } finally { polling = false; } };
     }
     private void AppendLog(string message)
@@ -60,6 +61,10 @@ public partial class MainWindow : Window
         if (launchingGame || findingGame) return;
         launchingGame = true; LaunchGameButton.IsEnabled = false;
         AllowXInputConflict.IsEnabled = false;
+        BypassOfficialLauncherCheckBox.IsEnabled = false;
+        OfficialLauncherComboBox.IsEnabled = false;
+        SelectOfficialLauncherButton.IsEnabled = false;
+        RemoveOfficialLauncherButton.IsEnabled = false;
         DetectGameButton.IsEnabled = SelectGameButton.IsEnabled = InstallProxyButton.IsEnabled = RemoveProxyButton.IsEnabled = false;
         await Run(async () =>
         {
@@ -72,10 +77,20 @@ public partial class MainWindow : Window
                 }
                 await host.StopOfflineAsync();
                 int pid = await GameLauncher.LaunchAsync(store, GamePathLabel.Text, message => { StatusLabel.Text = message; AppendLog(message); },
-                    allowXInputConflict: AllowXInputConflict.IsChecked == true);
+                    allowXInputConflict: AllowXInputConflict.IsChecked == true,
+                    officialParent: GetSelectedOfficialLauncherPath(),
+                    bypassOfficialLauncher: BypassOfficialLauncherCheckBox.IsChecked == true);
                 StatusLabel.Text = $"游戏已启动（PID {pid}），等待宿主连接。"; await RefreshRuntime();
             }
-            finally { launchingGame = false; AllowXInputConflict.IsEnabled = true; LaunchGameButton.IsEnabled = DetectGameButton.IsEnabled = SelectGameButton.IsEnabled = InstallProxyButton.IsEnabled = true; RefreshProxyState(); }
+            finally
+            {
+                launchingGame = false;
+                AllowXInputConflict.IsEnabled = true;
+                BypassOfficialLauncherCheckBox.IsEnabled = true;
+                LaunchGameButton.IsEnabled = DetectGameButton.IsEnabled = SelectGameButton.IsEnabled = InstallProxyButton.IsEnabled = true;
+                RefreshProxyState();
+                UpdateOfficialLauncherUiState();
+            }
         });
     }
     private async Task SaveGamePathAsync(string path)
@@ -147,6 +162,205 @@ public partial class MainWindow : Window
         catch (Exception error) { AllowXInputConflict.IsChecked = gameSettings.LoadAllowXInputConflict(); StatusLabel.Text = "启动设置保存失败：" + error.Message; }
         finally { AllowXInputConflict.IsEnabled = true; RefreshProxyState(); }
     }
+    private sealed record OfficialLauncherItem
+    {
+        public required string Path { get; init; }
+        public required string DisplayText { get; init; }
+    }
+    private string GetSelectedOfficialLauncherPath() =>
+        (OfficialLauncherComboBox.SelectedItem as OfficialLauncherItem)?.Path ?? string.Empty;
+    private List<string> GetOfficialLauncherHistory()
+    {
+        var list = new List<string>();
+        foreach (var obj in OfficialLauncherComboBox.Items)
+        {
+            if (obj is OfficialLauncherItem item && !string.IsNullOrWhiteSpace(item.Path))
+                list.Add(item.Path);
+        }
+        return list;
+    }
+    private void PopulateOfficialLaunchers(IEnumerable<string>? history, IEnumerable<string>? discovered, string preferredPath)
+    {
+        OfficialLauncherComboBox.Items.Clear();
+        var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        if (discovered != null)
+        {
+            foreach (var p in discovered)
+            {
+                if (!string.IsNullOrWhiteSpace(p) && seen.Add(Path.GetFullPath(p)))
+                {
+                    OfficialLauncherComboBox.Items.Add(new OfficialLauncherItem
+                    {
+                        Path = Path.GetFullPath(p),
+                        DisplayText = OfficialLauncherDiscovery.FormatDisplayName(p)
+                    });
+                }
+            }
+        }
+        if (history != null)
+        {
+            foreach (var p in history)
+            {
+                if (!string.IsNullOrWhiteSpace(p) && File.Exists(p) && seen.Add(Path.GetFullPath(p)))
+                {
+                    OfficialLauncherComboBox.Items.Add(new OfficialLauncherItem
+                    {
+                        Path = Path.GetFullPath(p),
+                        DisplayText = OfficialLauncherDiscovery.FormatDisplayName(p)
+                    });
+                }
+            }
+        }
+        OfficialLauncherItem? toSelect = null;
+        if (!string.IsNullOrWhiteSpace(preferredPath))
+        {
+            string prefNorm = Path.GetFullPath(preferredPath);
+            foreach (var obj in OfficialLauncherComboBox.Items)
+            {
+                if (obj is OfficialLauncherItem item && item.Path.Equals(prefNorm, StringComparison.OrdinalIgnoreCase))
+                {
+                    toSelect = item;
+                    break;
+                }
+            }
+            if (toSelect == null && File.Exists(prefNorm))
+            {
+                toSelect = new OfficialLauncherItem
+                {
+                    Path = prefNorm,
+                    DisplayText = OfficialLauncherDiscovery.FormatDisplayName(prefNorm)
+                };
+                OfficialLauncherComboBox.Items.Add(toSelect);
+            }
+        }
+        if (toSelect != null)
+        {
+            OfficialLauncherComboBox.SelectedItem = toSelect;
+        }
+        else if (OfficialLauncherComboBox.Items.Count > 0)
+        {
+            OfficialLauncherComboBox.SelectedIndex = 0;
+        }
+        UpdateOfficialLauncherUiState();
+    }
+    private void AddOrSelectOfficialLauncher(string path, bool select = true)
+    {
+        if (string.IsNullOrWhiteSpace(path)) return;
+        string resolved = OfficialLauncherDiscovery.Resolve(path);
+        if (string.IsNullOrWhiteSpace(resolved)) return;
+        resolved = Path.GetFullPath(resolved);
+        foreach (var obj in OfficialLauncherComboBox.Items)
+        {
+            if (obj is OfficialLauncherItem existing && existing.Path.Equals(resolved, StringComparison.OrdinalIgnoreCase))
+            {
+                if (select) OfficialLauncherComboBox.SelectedItem = existing;
+                return;
+            }
+        }
+        var newItem = new OfficialLauncherItem
+        {
+            Path = resolved,
+            DisplayText = OfficialLauncherDiscovery.FormatDisplayName(resolved)
+        };
+        OfficialLauncherComboBox.Items.Add(newItem);
+        if (select)
+        {
+            OfficialLauncherComboBox.SelectedItem = newItem;
+        }
+        UpdateOfficialLauncherUiState();
+    }
+    private void UpdateOfficialLauncherUiState()
+    {
+        bool bypass = BypassOfficialLauncherCheckBox.IsChecked == true;
+        OfficialLauncherComboBox.IsEnabled = !bypass;
+        SelectOfficialLauncherButton.IsEnabled = !bypass;
+        RemoveOfficialLauncherButton.IsEnabled = !bypass && OfficialLauncherComboBox.SelectedItem != null;
+        if (bypass)
+        {
+            OfficialLauncherHint.Text = "已启用免官方启动器直启模式，启动时将直接拉起游戏。";
+        }
+        else
+        {
+            string selected = GetSelectedOfficialLauncherPath();
+            if (string.IsNullOrWhiteSpace(selected))
+            {
+                OfficialLauncherHint.Text = "未指定官方启动器路径。点击“选择…”可指定 Games.exe / Launcher.exe。";
+            }
+            else
+            {
+                OfficialLauncherHint.Text = $"已选择官方启动器：{selected}";
+            }
+        }
+    }
+    private async Task InitializeOfficialLaunchersAsync()
+    {
+        string saved = gameSettings.LoadOfficialParent();
+        var history = gameSettings.LoadOfficialLauncherHistory();
+        var discovered = await Task.Run(() => OfficialLauncherDiscovery.DiscoverAll());
+        string preferred = !string.IsNullOrWhiteSpace(saved) ? saved : (discovered.Count > 0 ? discovered[0] : "");
+        PopulateOfficialLaunchers(history, discovered, preferred);
+        await PersistOfficialLauncherSettingsAsync();
+    }
+    private async Task PersistOfficialLauncherSettingsAsync()
+    {
+        await gameSettings.SaveOfficialParentAsync(GetSelectedOfficialLauncherPath());
+        await gameSettings.SaveOfficialLauncherHistoryAsync(GetOfficialLauncherHistory());
+    }
+    private async void OfficialLauncher_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        UpdateOfficialLauncherUiState();
+        await PersistOfficialLauncherSettingsAsync();
+    }
+    private async void SelectOfficialLauncher_Click(object sender, RoutedEventArgs e)
+    {
+        var picker = new OpenFileDialog
+        {
+            Title = "选择官方启动器 (Games.exe / Launcher.exe)",
+            Filter = "官方启动器程序|Games.exe;Launcher.exe;*.exe|所有文件|*.*",
+            CheckFileExists = true
+        };
+        string current = GetSelectedOfficialLauncherPath();
+        if (!string.IsNullOrWhiteSpace(current) && Path.GetDirectoryName(current) is string dir && Directory.Exists(dir))
+            picker.InitialDirectory = dir;
+        if (picker.ShowDialog(this) == true)
+        {
+            AddOrSelectOfficialLauncher(picker.FileName, select: true);
+            await PersistOfficialLauncherSettingsAsync();
+        }
+    }
+    private async void RemoveOfficialLauncher_Click(object sender, RoutedEventArgs e)
+    {
+        if (OfficialLauncherComboBox.SelectedItem is OfficialLauncherItem item)
+        {
+            int index = OfficialLauncherComboBox.SelectedIndex;
+            OfficialLauncherComboBox.Items.Remove(item);
+            if (OfficialLauncherComboBox.Items.Count > 0)
+            {
+                OfficialLauncherComboBox.SelectedIndex = Math.Clamp(index, 0, OfficialLauncherComboBox.Items.Count - 1);
+            }
+            else
+            {
+                OfficialLauncherComboBox.SelectedItem = null;
+            }
+            UpdateOfficialLauncherUiState();
+            await PersistOfficialLauncherSettingsAsync();
+        }
+    }
+    private async void BypassOfficialLauncher_Click(object sender, RoutedEventArgs e)
+    {
+        bool bypass = BypassOfficialLauncherCheckBox.IsChecked == true;
+        UpdateOfficialLauncherUiState();
+        try
+        {
+            await gameSettings.SaveBypassOfficialLauncherAsync(bypass);
+            StatusLabel.Text = bypass ? "已保存：已启用免官方启动器直启模式。" : "已保存：通过官方启动器加载 EML。";
+        }
+        catch (Exception error)
+        {
+            BypassOfficialLauncherCheckBox.IsChecked = gameSettings.LoadBypassOfficialLauncher();
+            StatusLabel.Text = "启动设置保存失败：" + error.Message;
+        }
+    }
     private async Task ChangeProxyAsync(bool install)
     {
         if (launchingGame || findingGame) return;
@@ -209,7 +423,7 @@ public partial class MainWindow : Window
         if (closed) { base.OnClosing(e); return; }
         e.Cancel = true; if (closing) return; closing = true; poll.Stop();
         foreach (var window in windows.Values.ToArray()) window.Close();
-        try { await host.DisposeAsync(); } finally { closed = true; Close(); }
+        try { await host.DisposeAsync(); } finally { closed = true; _ = Dispatcher.BeginInvoke(new Action(Close)); }
     }
     private sealed record ModuleCard
     {

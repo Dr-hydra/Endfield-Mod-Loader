@@ -29,6 +29,7 @@ struct VerifiedLauncher {
 bool IsOfficialPublisher(const std::wstring& organization);
 bool VerifyOfficialLauncher(const std::filesystem::path& path, VerifiedLauncher& result, std::wstring& error);
 bool FindOfficialLauncher(const std::filesystem::path& requested, VerifiedLauncher& result, std::wstring& error);
+bool ResolveToGamesCore(const std::filesystem::path& input, std::filesystem::path& resolved);
 class OfficialParent {
 public:
     OfficialParent() = default;

@@ -1,6 +1,6 @@
 # 模块兼容性
 
-Windows 0.1.3-dev已接入 BE 的正式官方父进程桥：自动发现官方 `Games.exe`，验证签名和发行组织后创建自己的暂停父进程，并保持到游戏退出。`launcher.json` 的 `official_parent` 可选指定路径，指定文件仍须通过验证。启动结果通过现有管道立即返回，保留按需 UAC 与 XInput 共存开关；启动失败清理本次创建的进程。该桥不改变模块 ABI，也不更新第三方模块自身的游戏地址或数据。
+Windows 0.1.4-dev 在 0.1.3 官方父进程桥基础上，接入了完整的多官方启动器（鹰角国服、Bilibili服、全球服 Gryphline、Epic 渠道等）自动发现、界面启动器选择与无启动器模式（Bypass Launcher）直接启动。支持自动验证签名和发行组织后创建暂停父进程，并在游戏退出后自动清理。该桥不改变模块 ABI，也不更新第三方模块自身的游戏地址或数据。
 
 EML 0.1.0 支持原 Better Endfield **format 1 / ABI 1** 模块包。旧 ZIP、Windows DLL、Android SO 和网页脚本无需为加载器重新生成。Next 的原生导出与网页接口不在支持范围内。
 

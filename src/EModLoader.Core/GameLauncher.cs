@@ -17,11 +17,14 @@ internal sealed record LaunchReport(
 
 public static class GameLauncher
 {
-    public static Task<int> LaunchAsync(ModuleStore store, string game, Action<string>? progress = null, bool allowXInputConflict = false) =>
-        LaunchAsync(store, game, ProductPaths.RuntimeDirectory, progress, allowXInputConflict: allowXInputConflict);
+    public static Task<int> LaunchAsync(ModuleStore store, string game, Action<string>? progress = null, bool allowXInputConflict = false,
+        string? officialParent = null, bool bypassOfficialLauncher = false) =>
+        LaunchAsync(store, game, ProductPaths.RuntimeDirectory, progress, allowXInputConflict: allowXInputConflict,
+            officialParent: officialParent, bypassOfficialLauncher: bypassOfficialLauncher);
 
     internal static async Task<int> LaunchAsync(ModuleStore store, string game, string runtimeDirectory,
-        Action<string>? progress = null, Func<bool, Task<LaunchReport>>? run = null, bool allowXInputConflict = false, string? officialParent = null)
+        Action<string>? progress = null, Func<bool, Task<LaunchReport>>? run = null, bool allowXInputConflict = false, string? officialParent = null,
+        bool bypassOfficialLauncher = false)
     {
         await store.EnsureAsync();
         string launcher = Path.GetFullPath(Path.Combine(runtimeDirectory, "EModLoader.Launcher.exe"));
@@ -33,13 +36,18 @@ public static class GameLauncher
         if (foreignXInput && !allowXInputConflict)
             throw new InvalidOperationException("游戏目录已有其他 XInput DLL，可勾选“保留其他 XInput DLL 并加载 EML”后启动。");
         if (foreignXInput) progress?.Invoke("保留现有 XInput DLL，并显式注入 EML Host。");
-        // Discovery and signature verification live in the native helper, including
-        // direct CLI launches. An existing path setting remains an optional override.
-        officialParent ??= new GamePathSettings().LoadOfficialParent();
-        if (string.IsNullOrWhiteSpace(officialParent)) officialParent = null;
-        progress?.Invoke("正在查找官方启动器，并通过启动桥加载 EML。");
+        if (bypassOfficialLauncher)
+        {
+            progress?.Invoke("正在以免官方启动器模式直启游戏并加载 EML。");
+        }
+        else
+        {
+            officialParent ??= new GamePathSettings().LoadOfficialParent();
+            if (string.IsNullOrWhiteSpace(officialParent)) officialParent = null;
+            progress?.Invoke("正在查找官方启动器，并通过启动桥加载 EML。");
+        }
         return await LaunchWithElevationAsync(run ?? (elevated => RunAsync(launcher, game, store.IndexPath, library, elevated,
-            allowXInputConflict: allowXInputConflict, officialParent: officialParent)), progress);
+            allowXInputConflict: allowXInputConflict, officialParent: officialParent, bypassOfficialLauncher: bypassOfficialLauncher)), progress);
     }
 
     internal static async Task<int> LaunchWithElevationAsync(Func<bool, Task<LaunchReport>> run, Action<string>? progress)
@@ -87,7 +95,8 @@ public static class GameLauncher
     }
 
     private static async Task<LaunchReport> RunAsync(string launcher, string game, string index, string library, bool elevated,
-        string? operation = null, string? proxy = null, bool allowXInputConflict = false, string? officialParent = null)
+        string? operation = null, string? proxy = null, bool allowXInputConflict = false, string? officialParent = null,
+        bool bypassOfficialLauncher = false)
     {
         if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException("游戏启动仅支持 Windows。");
         string pipeName = "EML.Launch." + Guid.NewGuid().ToString("N");
@@ -105,7 +114,8 @@ public static class GameLauncher
             foreach (string argument in new[] { "--game", game, "--index", index, "--host", library, "--result-pipe", pipeName })
                 info.ArgumentList.Add(argument);
             if (allowXInputConflict) { info.ArgumentList.Add("--allow-xinput-conflict"); info.ArgumentList.Add("true"); }
-            if (officialParent is not null) { info.ArgumentList.Add("--official-parent"); info.ArgumentList.Add(officialParent); }
+            if (bypassOfficialLauncher) { info.ArgumentList.Add("--no-parent"); info.ArgumentList.Add("true"); }
+            else if (officialParent is not null) { info.ArgumentList.Add("--official-parent"); info.ArgumentList.Add(officialParent); }
             if (operation is not null) { info.ArgumentList.Add("--operation"); info.ArgumentList.Add(operation); info.ArgumentList.Add("--proxy"); info.ArgumentList.Add(proxy!); }
             using var process = Process.Start(info) ?? throw new InvalidOperationException("无法启动游戏加载器。");
             Task exited = process.WaitForExitAsync(timeout.Token);

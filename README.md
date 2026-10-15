@@ -4,13 +4,13 @@
 
 [下载开发预览](https://github.com/Dr-hydra/Endfield-Mod-Loader/releases/latest) · [使用指南](docs/USER_GUIDE.md) · [第一人称模块](examples/first-person/README.md) · [模块作者 SDK](docs/SDK.md) · [构建说明](docs/DEVELOPMENT.md)
 
-Windows 当前版本为 **0.1.3-dev**，适配新版客户端的官方父进程启动检查：自动发现并验证官方启动器，保留按需 UAC、XInput 共存、游戏路径记忆与 DLL 自启动。已在 Windows 1.6.3 验证真实游戏启动、Host 通信和第一人称初始化；场景效果与 Android 设备运行仍待实测，详见 [验证记录](docs/VALIDATION_1_6_3.md)。Android 及第一人称模块保持 **0.1.0-dev**。
+Windows 当前版本为 **0.1.4-dev**，支持多官方启动器选择（鹰角国服、Bilibili服、全球服 Gryphline、Epic 渠道等）与无启动器（Bypass Launcher）直接启动模式，并修复窗口关闭异常。Android 及第一人称模块保持 **0.1.0-dev**。
 
 ## 下载与安装
 
 | 附件 | 用途 |
 | --- | --- |
-| `EModLoader-0.1.3-dev-win-x64.zip` | Windows 加载器；完整解压后运行 `EModLoader.exe` |
+| `EModLoader-0.1.4-dev-win-x64.zip` | Windows 加载器；完整解压后运行 `EModLoader.exe` |
 | `EModLoader-0.1.0-dev-android-arm64.apk` | Android 管理应用及 libxposed 接入；当前使用开发签名 |
 | `example.first-person-0.1.0-dev.zip` | 第一人称模块，包含双端原生库与配置页面；在 EML 中直接导入 ZIP |
 | `EModLoader-SDK-0.1.0.zip` | 兼容头文件、Echo / 第一人称示例源码及构建脚本 |

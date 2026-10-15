@@ -8,7 +8,7 @@
 ./scripts/Build.ps1
 ```
 
-可使用 `-CMake <cmake.exe>`、`-Dotnet <dotnet.exe>` 指定工具。当前自包含桌面分发目录为 `build/package/windows-0.1.3/`，原生构建目录为 `build/native/windows-0.1.3/`，入口为 `EModLoader.exe`。主程序合并 .NET 程序集，EML 启动组件集中放在 `runtime/`；不分发 PDB 与 WebView2 XML 文档。`scripts/BuildCompatibilityTest.ps1` 保留为普通构建的旧入口。
+可使用 `-CMake <cmake.exe>`、`-Dotnet <dotnet.exe>` 指定工具。当前自包含桌面分发目录为 `build/package/windows-0.1.4/`，原生构建目录为 `build/native/windows-0.1.4/`，入口为 `EModLoader.exe`。主程序合并 .NET 程序集，EML 启动组件集中放在 `runtime/`；不分发 PDB 与 WebView2 XML 文档。`scripts/BuildCompatibilityTest.ps1` 保留为普通构建的旧入口。
 
 ## Android
 
@@ -58,17 +58,17 @@ python scripts/PackageFirstPerson.py --android build/examples/first-person-andro
 先运行 Windows 构建，再显式编译受控启动和官方父进程验证目标。这两个目标设置为 `EXCLUDE_FROM_ALL`，不会随普通构建生成，也不会进入产品安装包：
 
 ```powershell
-cmake --build build/native/windows-0.1.3 --config Release --target EMLControlledLauncher EMLOfficialParentTests
-build/native/windows-0.1.3/Release/EMLOfficialParentTests.exe <空的测试目录>
+cmake --build build/native/windows-0.1.4 --config Release --target EMLControlledLauncher EMLOfficialParentTests
+build/native/windows-0.1.4/Release/EMLOfficialParentTests.exe <空的测试目录>
 dotnet run --project tests/EModLoader.CoreTests -c Release -- <EchoZIP> <OfflineHost.exe>
 dotnet run --project tests/EModLoader.DesktopTests -c Release -- <EchoZIP> <OfflineHost.exe> <输出目录>
 dotnet run --project tests/EModLoader.DesktopTests -c Release -- <第一人称ZIP> <OfflineHost.exe> <输出目录> first-person
-ctest --test-dir build/native/windows-0.1.3 -C Release --output-on-failure
+ctest --test-dir build/native/windows-0.1.4 -C Release --output-on-failure
 ctest --test-dir build/examples/first-person-windows -C Release --output-on-failure
-python tests/verify_launch.py --native-bin build/native/windows-0.1.3/Release
-python tests/verify_proxy.py --native-bin build/native/windows-0.1.3/Release
-python tests/verify_xinput_compatibility.py --native-bin build/native/windows-0.1.3/Release
-dotnet run --project tests/EModLoader.LaunchTests -c Release -- build/native/windows-0.1.3/Release
+python tests/verify_launch.py --native-bin build/native/windows-0.1.4/Release
+python tests/verify_proxy.py --native-bin build/native/windows-0.1.4/Release
+python tests/verify_xinput_compatibility.py --native-bin build/native/windows-0.1.4/Release
+dotnet run --project tests/EModLoader.LaunchTests -c Release -- build/native/windows-0.1.4/Release
 node tests/verify_bridge.js
 python tests/android/verify_materializer.py --json-jar <org.json.jar>
 ```

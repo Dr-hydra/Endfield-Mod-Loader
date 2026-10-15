@@ -86,11 +86,16 @@ int RunLauncher(int argc,wchar_t** argv) {
     std::filesystem::path game,index,host,proxy,officialParentPath;
     std::wstring pipe,operation;
     bool allowXInputConflict=false;
+    bool noParent=false;
     if((argc-1)%2)return Finish(2,ERROR_INVALID_PARAMETER,0,"Invalid launcher arguments");
     for(int i=1;i+1<argc;i+=2){std::wstring_view option(argv[i]);if(option==L"--game")game=argv[i+1];else if(option==L"--index")index=argv[i+1];else if(option==L"--host")host=argv[i+1];else if(option==L"--result-pipe")pipe=argv[i+1];else if(option==L"--operation")operation=argv[i+1];else if(option==L"--proxy")proxy=argv[i+1];else if(option==L"--allow-xinput-conflict") {
         const std::wstring_view value(argv[i+1]);
         if(value!=L"true"&&value!=L"false")return Finish(2,ERROR_INVALID_PARAMETER,0,"Invalid XInput compatibility setting");
         allowXInputConflict=value==L"true";
+    }else if(option==L"--no-parent"||option==L"--direct-launch") {
+        const std::wstring_view value(argv[i+1]);
+        if(value!=L"true"&&value!=L"false")return Finish(2,ERROR_INVALID_PARAMETER,0,"Invalid parent bypass setting");
+        noParent=value==L"true";
     }else if(option==L"--official-parent")officialParentPath=argv[i+1];else return Finish(2,ERROR_INVALID_PARAMETER,0,"Unknown launcher option");}
     // Establish the app-owned response channel before starting any process.
     if(!pipe.empty()&&!OpenResultPipe(pipe))return Finish(9,GetLastError(),0,"Launch result channel unavailable");
@@ -110,19 +115,21 @@ int RunLauncher(int argc,wchar_t** argv) {
     EML::Launch::OfficialParent parent;
     EML::Launch::VerifiedLauncher launcher;
     std::wstring launchError;DWORD error=0;
-    bool useParent=true;
+    bool useParent=!noParent;
 #ifdef EML_LAUNCH_TESTS
-    // Only the separately named, non-installed fixture binary can use unsigned
-    // controlled parents or omit the bridge. The product has no bypass switch.
-    useParent=!officialParentPath.empty();
     if(useParent){
-        launcher.executable=std::filesystem::absolute(officialParentPath);
-        launcher.file.reset(CreateFileW(launcher.executable.c_str(),GENERIC_READ,FILE_SHARE_READ,nullptr,OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL,nullptr));
-        if(launcher.file.get()==INVALID_HANDLE_VALUE)return Finish(4,GetLastError(),0,"Controlled parent missing");
+        useParent=!officialParentPath.empty();
+        if(useParent){
+            launcher.executable=std::filesystem::absolute(officialParentPath);
+            launcher.file.reset(CreateFileW(launcher.executable.c_str(),GENERIC_READ,FILE_SHARE_READ,nullptr,OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL,nullptr));
+            if(launcher.file.get()==INVALID_HANDLE_VALUE)return Finish(4,GetLastError(),0,"Controlled parent missing");
+        }
     }
 #else
-    if(!EML::Launch::FindOfficialLauncher(officialParentPath,launcher,launchError))
-        return Finish(4,0,0,Utf8(launchError));
+    if(useParent){
+        if(!EML::Launch::FindOfficialLauncher(officialParentPath,launcher,launchError))
+            return Finish(4,0,0,Utf8(launchError));
+    }
 #endif
     PROCESS_INFORMATION process{};
     if(useParent){

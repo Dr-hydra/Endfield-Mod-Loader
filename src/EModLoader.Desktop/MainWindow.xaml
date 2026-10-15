@@ -12,7 +12,7 @@
           <Button Content="项目仓库 ↗" Click="Repository_Click" Margin="0,0,0,10"/>
           <Button Content="打开数据目录" Click="DataDirectory_Click" Margin="0,0,0,10"/>
         </StackPanel>
-        <StackPanel DockPanel.Dock="Bottom" VerticalAlignment="Bottom"><TextBlock x:Name="BuildLabel" Text="开发预览 · 0.1.3" Foreground="{StaticResource MutedBrush}"/><TextBlock Text="原 BE V1 模块包兼容" Foreground="{StaticResource MutedBrush}" FontSize="11" Margin="0,6,0,0"/></StackPanel>
+        <StackPanel DockPanel.Dock="Bottom" VerticalAlignment="Bottom"><TextBlock x:Name="BuildLabel" Text="开发预览 · 0.1.4-dev" Foreground="{StaticResource MutedBrush}"/><TextBlock Text="原 BE V1 模块包兼容" Foreground="{StaticResource MutedBrush}" FontSize="11" Margin="0,6,0,0"/></StackPanel>
       </DockPanel>
     </Border>
     <Grid Grid.Column="1" Margin="28,26">
@@ -35,6 +35,15 @@
           <Button Grid.Column="3" x:Name="SelectGameButton" Content="选择…" Click="SelectGame_Click" Margin="0"/>
         </Grid>
         <TextBlock x:Name="GamePathHint" Text="正在查找游戏…" Foreground="{StaticResource MutedBrush}" FontSize="11" TextWrapping="Wrap" Margin="0,6,0,0"/>
+        <Grid Margin="0,10,0,0">
+          <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+          <TextBlock Text="官方启动器" VerticalAlignment="Center" Margin="0,0,12,0"/>
+          <ComboBox Grid.Column="1" x:Name="OfficialLauncherComboBox" DisplayMemberPath="DisplayText" SelectionChanged="OfficialLauncher_SelectionChanged" Padding="6" VerticalContentAlignment="Center"/>
+          <Button Grid.Column="2" x:Name="SelectOfficialLauncherButton" Content="选择…" Click="SelectOfficialLauncher_Click" Margin="10,0,8,0"/>
+          <Button Grid.Column="3" x:Name="RemoveOfficialLauncherButton" Content="移除" Click="RemoveOfficialLauncher_Click" Margin="0"/>
+        </Grid>
+        <TextBlock x:Name="OfficialLauncherHint" Text="正在检测官方启动器…" Foreground="{StaticResource MutedBrush}" FontSize="11" TextWrapping="Wrap" Margin="0,6,0,0"/>
+        <CheckBox x:Name="BypassOfficialLauncherCheckBox" Content="跳过官方启动器（免启动器直启模式）" ToolTip="直接启动游戏进程，不通过官方启动器父进程唤起；如遇启动报错或需要直启可勾选。" Margin="0,10,0,0" Click="BypassOfficialLauncher_Click"/>
         <CheckBox x:Name="AllowXInputConflict" Content="保留其他 XInput DLL 并加载 EML" ToolTip="保留游戏目录的 xinput1_4.dll，并额外加载 EML；此选择会保存，下次启动继续使用。" Margin="0,10,0,0" Click="Compatibility_Click"/>
         <WrapPanel Margin="0,10,0,0">
           <Button x:Name="InstallProxyButton" Content="安装 DLL 自启动" Click="InstallProxy_Click"/>
