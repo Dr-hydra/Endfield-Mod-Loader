@@ -21,6 +21,7 @@ public sealed class GamePathSettings(string? dataRoot = null)
     }
     public string Load() => ReadSettings()["game_executable_path"] is JsonValue value && value.TryGetValue<string>(out var path) ? path : "";
     public bool LoadAllowXInputConflict() => ReadSettings()["allow_xinput_conflict"] is JsonValue value && value.TryGetValue<bool>(out var enabled) && enabled;
+    public string LoadOfficialParent() => ReadSettings()["official_parent"] is JsonValue value && value.TryGetValue<string>(out var path) ? path : "";
     public Task SaveAsync(string path)
     {
         string executable = GamePathDiscovery.Resolve(path) ?? throw new InvalidDataException("请选择有效的 Endfield.exe。");

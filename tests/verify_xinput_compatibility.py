@@ -10,6 +10,9 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--native-bin', type=Path, required=True)
 args = parser.parse_args()
 binary = args.native_bin.resolve()
+# All cases stop at conflict/argument validation or deployment, before official
+# parent discovery. Keep testing these guards with the real product launcher.
+launcher = binary / 'EModLoader.Launcher.exe'
 checks = 0
 with tempfile.TemporaryDirectory(prefix='eml-native-xinput-') as temporary:
     root = Path(temporary)
@@ -21,7 +24,7 @@ with tempfile.TemporaryDirectory(prefix='eml-native-xinput-') as temporary:
     index = root / 'index.json'
     index.write_text(json.dumps({'schema': 1, 'port': 55379, 'token': 'a' * 64, 'modules': []}))
     for setting in ([], ['--allow-xinput-conflict', 'false']):
-        command = [str(binary / 'EModLoader.Launcher.exe'), '--game', str(game),
+        command = [str(launcher), '--game', str(game),
                    '--index', str(index), '--host', str(binary / 'EModLoader.Host.dll')]
         result = subprocess.run(command + setting, capture_output=True, timeout=10)
         assert result.returncode == 3, 'Native default conflict protection failed'

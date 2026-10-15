@@ -1,0 +1,1832 @@
+{
+  "game": "G:\\Arknights Endfield",
+  "input_files": {
+    "GameAssembly.dll": {
+      "bytes": 320407528,
+      "mtime_ns": 1791431241313924200
+    },
+    "Endfield_Data/il2cpp_data/Metadata/global-metadata.dat": {
+      "bytes": 74424564,
+      "mtime_ns": 1791431240983925000
+    }
+  },
+  "scope": "Static descriptor and field audit only; no game launch, icall lookup or full dump",
+  "selected_classes": 37,
+  "selected_methods": 3839,
+  "summary": {
+    "method:matched": 80,
+    "method:optional-missing-with-indices-fallback": 2,
+    "field:matched": 14
+  },
+  "descriptors": [
+    {
+      "kind": "method",
+      "source": "examples/first-person/native/camera_runtime.inc",
+      "line": 140,
+      "key": "camera.process_dither",
+      "asm": "Gameplay.Beyond.dll",
+      "cls": "Beyond.Gameplay.View.CameraMono",
+      "name": "_ProcessDitherByPitch",
+      "expected": [
+        "nullptr",
+        "\"System.Void\"",
+        "0"
+      ],
+      "status": "matched",
+      "rvas": [
+        "0x56159d0"
+      ]
+    },
+    {
+      "kind": "method",
+      "source": "examples/first-person/native/camera_runtime.inc",
+      "line": 143,
+      "key": "camera_manager.tail_late_tick",
+      "asm": "Gameplay.Beyond.dll",
+      "cls": "Beyond.Gameplay.View.CameraManager",
+      "name": "TailLateTick",
+      "expected": [
+        "nullptr",
+        "\"System.Void\"",
+        "1"
+      ],
+      "status": "matched",
+      "rvas": [
+        "0x611ba50"
+      ]
+    },
+    {
+      "kind": "method",
+      "source": "examples/first-person/native/camera_runtime.inc",
+      "line": 146,
+      "key": "player_controller.get_main_character",
+      "asm": "Gameplay.Beyond.dll",
+      "cls": "Beyond.Gameplay.Core.PlayerController",
+      "name": "GetMainCharacter",
+      "expected": [
+        "nullptr",
+        "nullptr",
+        "0"
+      ],
+      "status": "matched",
+      "rvas": [
+        "0x923bf68"
+      ]
+    },
+    {
+      "kind": "method",
+      "source": "examples/first-person/native/camera_runtime.inc",
+      "line": 149,
+      "key": "entity.get_model_com",
+      "asm": "Gameplay.Beyond.dll",
+      "cls": "Beyond.Gameplay.Core.Entity",
+      "name": "get_modelCom",
+      "expected": [
+        "nullptr",
+        "nullptr",
+        "0"
+      ],
+      "status": "matched",
+      "rvas": [
+        "0x723b240"
+      ]
+    },
+    {
+      "kind": "method",
+      "source": "examples/first-person/native/camera_runtime.inc",
+      "line": 152,
+      "key": "base_model_component.get_model_go",
+      "asm": "Gameplay.Beyond.dll",
+      "cls": "Beyond.Gameplay.View.BaseModelComponent",
+      "name": "GetModelGo",
+      "expected": [
+        "nullptr",
+        "\"UnityEngine.GameObject\"",
+        "0"
+      ],
+      "status": "matched",
+      "rvas": [
+        "0x5cd77c0"
+      ]
+    },
+    {
+      "kind": "method",
+      "source": "examples/first-person/native/camera_runtime.inc",
+      "line": 156,
+      "key": "fp.entity.rotation",
+      "asm": "Gameplay.Beyond.dll",
+      "cls": "Beyond.Gameplay.Core.Entity",
+      "name": "get_rotation",
+      "expected": [
+        "nullptr",
+        "\"UnityEngine.Quaternion\"",
+        "0"
+      ],
+      "status": "matched",
+      "rvas": [
+        "0x5332350"
+      ]
+    },
+    {
+      "kind": "method",
+      "source": "examples/first-person/native/camera_runtime.inc",
+      "line": 159,
+      "key": "fp.entity.alive",
+      "asm": "Gameplay.Beyond.dll",
+      "cls": "Beyond.Gameplay.Core.Entity",
+      "name": "get_alive",
+      "expected": [
+        "nullptr",
+        "\"System.Boolean\"",
+        "0"
+      ],
+      "status": "matched",
+      "rvas": [
+        "0x55270b0"
+      ]
+    },
+    {
+      "kind": "method",
+      "source": "examples/first-person/native/camera_runtime.inc",
+      "line": 162,
+      "key": "fp.entity.in_cinematic",
+      "asm": "Gameplay.Beyond.dll",
+      "cls": "Beyond.Gameplay.Core.Entity",
+      "name": "get_inCinematic",
+      "expected": [
+        "nullptr",
+        "\"System.Boolean\"",
+        "0"
+      ],
+      "status": "matched",
+      "rvas": [
+        "0x72354f0"
+      ]
+    },
+    {
+      "kind": "method",
+      "source": "examples/first-person/native/camera_runtime.inc",
+      "line": 165,
+      "key": "fp.entity.rotator",
+      "asm": "Gameplay.Beyond.dll",
+      "cls": "Beyond.Gameplay.Core.Entity",
+      "name": "get_rotateCom",
+      "expected": [
+        "nullptr",
+        "\"Beyond.Gameplay.Core.RotatorComponent\"",
+        "0"
+      ],
+      "status": "matched",
+      "rvas": [
+        "0x723b5c0"
+      ]
+    },
+    {
+      "kind": "method",
+      "source": "examples/first-person/native/camera_runtime.inc",
+      "line": 168,
+      "key": "fp.entity.movement",
+      "asm": "Gameplay.Beyond.dll",
+      "cls": "Beyond.Gameplay.Core.Entity",
+      "name": "get_movementComponent",
+      "expected": [
+        "nullptr",
+        "\"Beyond.Gameplay.Core.MovementComponent\"",
+        "0"
+      ],
+      "status": "matched",
+      "rvas": [
+        "0x723c030"
+      ]
+    },
+    {
+      "kind": "method",
+      "source": "examples/first-person/native/camera_runtime.inc",
+      "line": 171,
+      "key": "fp.entity.ability",
+      "asm": "Gameplay.Beyond.dll",
+      "cls": "Beyond.Gameplay.Core.Entity",
+      "name": "get_abilityCom",
+      "expected": [
+        "nullptr",
+        "\"Beyond.Gameplay.Core.AbilitySystem\"",
+        "0"
+      ],
+      "status": "matched",
+      "rvas": [
+        "0x723b5d0"
+      ]
+    },
+    {
+      "kind": "method",
+      "source": "examples/first-person/native/camera_runtime.inc",
+      "line": 174,
+      "key": "fp.rotator.is_rotating",
+      "asm": "Gameplay.Beyond.dll",
+      "cls": "Beyond.Gameplay.Core.RotatorComponent",
+      "name": "get_isRotating",
+      "expected": [
+        "nullptr",
+        "\"System.Boolean\"",
+        "0"
+      ],
+      "status": "matched",
+      "rvas": [
+        "0x723ef90"
+      ]
+    },
+    {
+      "kind": "method",
+      "source": "examples/first-person/native/camera_runtime.inc",
+      "line": 177,
+      "key": "fp.rotator.lock_to_camera",
+      "asm": "Gameplay.Beyond.dll",
+      "cls": "Beyond.Gameplay.Core.RotatorComponent",
+      "name": "get_lockToCamera",
+      "expected": [
+        "nullptr",
+        "\"System.Boolean\"",
+        "0"
+      ],
+      "status": "matched",
+      "rvas": [
+        "0x91ce0ac"
+      ]
+    },
+    {
+      "kind": "method",
+      "source": "examples/first-person/native/camera_runtime.inc",
+      "line": 180,
+      "key": "fp.rotator.set_rotation",
+      "asm": "Gameplay.Beyond.dll",
+      "cls": "Beyond.Gameplay.Core.RotatorComponent",
+      "name": "SetRotation",
+      "expected": [
+        "\"UnityEngine.Quaternion\"",
+        "\"System.Void\"",
+        "1"
+      ],
+      "status": "matched",
+      "rvas": [
+        "0x55880f0"
+      ]
+    },
+    {
+      "kind": "method",
+      "source": "examples/first-person/native/camera_runtime.inc",
+      "line": 183,
+      "key": "fp.movement.is_moving",
+      "asm": "Gameplay.Beyond.dll",
+      "cls": "Beyond.Gameplay.Core.MovementComponent",
+      "name": "get_isMoving",
+      "expected": [
+        "nullptr",
+        "\"System.Boolean\"",
+        "0"
+      ],
+      "status": "matched",
+      "rvas": [
+        "0x517dda0"
+      ]
+    },
+    {
+      "kind": "method",
+      "source": "examples/first-person/native/camera_runtime.inc",
+      "line": 186,
+      "key": "fp.movement.is_in_air",
+      "asm": "Gameplay.Beyond.dll",
+      "cls": "Beyond.Gameplay.Core.MovementComponent",
+      "name": "get_isInAir",
+      "expected": [
+        "nullptr",
+        "\"System.Boolean\"",
+        "0"
+      ],
+      "status": "matched",
+      "rvas": [
+        "0x55260f0"
+      ]
+    },
+    {
+      "kind": "method",
+      "source": "examples/first-person/native/camera_runtime.inc",
+      "line": 189,
+      "key": "fp.movement.root_motion_rotation",
+      "asm": "Gameplay.Beyond.dll",
+      "cls": "Beyond.Gameplay.Core.MovementComponent",
+      "name": "get_appliedRootMotionRotLastFrame",
+      "expected": [
+        "nullptr",
+        "\"System.Boolean\"",
+        "0"
+      ],
+      "status": "matched",
+      "rvas": [
+        "0x723f080"
+      ]
+    },
+    {
+      "kind": "method",
+      "source": "examples/first-person/native/camera_runtime.inc",
+      "line": 192,
+      "key": "fp.movement.root_motion_data",
+      "asm": "Gameplay.Beyond.dll",
+      "cls": "Beyond.Gameplay.Core.MovementComponent",
+      "name": "get_rootMotionData",
+      "expected": [
+        "nullptr",
+        "\"Beyond.Gameplay.Core.MovementComponent.RootMotionData\"",
+        "0"
+      ],
+      "status": "matched",
+      "rvas": [
+        "0x723bf70"
+      ]
+    },
+    {
+      "kind": "method",
+      "source": "examples/first-person/native/camera_runtime.inc",
+      "line": 195,
+      "key": "fp.root_motion.has_motion",
+      "asm": "Gameplay.Beyond.dll",
+      "cls": "Beyond.Gameplay.Core.MovementComponent.RootMotionData",
+      "name": "get_hasRootMotion",
+      "expected": [
+        "nullptr",
+        "\"System.Boolean\"",
+        "0"
+      ],
+      "status": "matched",
+      "rvas": [
+        "0x5584e40"
+      ]
+    },
+    {
+      "kind": "method",
+      "source": "examples/first-person/native/camera_runtime.inc",
+      "line": 198,
+      "key": "fp.ability.in_skill",
+      "asm": "Gameplay.Beyond.dll",
+      "cls": "Beyond.Gameplay.Core.AbilitySystem",
+      "name": "get_inSkill",
+      "expected": [
+        "nullptr",
+        "\"System.Boolean\"",
+        "0"
+      ],
+      "status": "matched",
+      "rvas": [
+        "0x513af80"
+      ]
+    },
+    {
+      "kind": "method",
+      "source": "examples/first-person/native/camera_runtime.inc",
+      "line": 201,
+      "key": "fp.ability.immobilized",
+      "asm": "Gameplay.Beyond.dll",
+      "cls": "Beyond.Gameplay.Core.AbilitySystem",
+      "name": "get_isImmobilized",
+      "expected": [
+        "nullptr",
+        "\"System.Boolean\"",
+        "0"
+      ],
+      "status": "matched",
+      "rvas": [
+        "0x8e3cce8"
+      ]
+    },
+    {
+      "kind": "method",
+      "source": "examples/first-person/native/camera_runtime.inc",
+      "line": 204,
+      "key": "cinemachine.push_state",
+      "asm": "Cinemachine.dll",
+      "cls": "Cinemachine.CinemachineBrain",
+      "name": "PushStateToUnityCamera",
+      "expected": [
+        "\"Cinemachine.CameraState&\"",
+        "\"System.Void\"",
+        "1"
+      ],
+      "status": "matched",
+      "rvas": [
+        "0x5608830"
+      ]
+    },
+    {
+      "kind": "method",
+      "source": "examples/first-person/native/camera_runtime.inc",
+      "line": 208,
+      "key": "snapshot.set_first_person",
+      "asm": "Gameplay.Beyond.dll",
+      "cls": "Beyond.Gameplay.View.SnapshotCameraController",
+      "name": "SetFirstPerson",
+      "expected": [
+        "\"System.Boolean\"",
+        "\"System.Void\"",
+        "1"
+      ],
+      "status": "matched",
+      "rvas": [
+        "0x8d8e55c"
+      ]
+    },
+    {
+      "kind": "method",
+      "source": "examples/first-person/native/camera_runtime.inc",
+      "line": 211,
+      "key": "snapshot.show_char",
+      "asm": "Gameplay.Beyond.dll",
+      "cls": "Beyond.Gameplay.View.SnapshotCameraController",
+      "name": "_ShowChar",
+      "expected": [
+        "nullptr",
+        "\"System.Void\"",
+        "0"
+      ],
+      "status": "matched",
+      "rvas": [
+        "0x8d8eca0"
+      ]
+    },
+    {
+      "kind": "method",
+      "source": "examples/first-person/native/camera_runtime.inc",
+      "line": 214,
+      "key": "snapshot.clear_first_person",
+      "asm": "Gameplay.Beyond.dll",
+      "cls": "Beyond.Gameplay.View.SnapshotCameraController",
+      "name": "_ClearFirstPersonStatus",
+      "expected": [
+        "nullptr",
+        "\"System.Void\"",
+        "0"
+      ],
+      "status": "matched",
+      "rvas": [
+        "0x8d8e980"
+      ]
+    },
+    {
+      "kind": "method",
+      "source": "examples/first-person/native/camera_runtime.inc",
+      "line": 217,
+      "key": "unity.camera.main",
+      "asm": "UnityEngine.CoreModule.dll",
+      "cls": "UnityEngine.Camera",
+      "name": "get_main",
+      "expected": [
+        "nullptr",
+        "\"UnityEngine.Camera\"",
+        "0"
+      ],
+      "status": "matched",
+      "rvas": [
+        "0x5158dc0"
+      ]
+    },
+    {
+      "kind": "method",
+      "source": "examples/first-person/native/camera_runtime.inc",
+      "line": 220,
+      "key": "unity.camera.fov.get",
+      "asm": "UnityEngine.CoreModule.dll",
+      "cls": "UnityEngine.Camera",
+      "name": "get_fieldOfView",
+      "expected": [
+        "nullptr",
+        "\"System.Single\"",
+        "0"
+      ],
+      "status": "matched",
+      "rvas": [
+        "0x51b00f0"
+      ]
+    },
+    {
+      "kind": "method",
+      "source": "examples/first-person/native/camera_runtime.inc",
+      "line": 223,
+      "key": "unity.component.transform",
+      "asm": "UnityEngine.CoreModule.dll",
+      "cls": "UnityEngine.Component",
+      "name": "get_transform",
+      "expected": [
+        "nullptr",
+        "\"UnityEngine.Transform\"",
+        "0"
+      ],
+      "status": "matched",
+      "rvas": [
+        "0x509ed00"
+      ]
+    },
+    {
+      "kind": "method",
+      "source": "examples/first-person/native/camera_runtime.inc",
+      "line": 226,
+      "key": "unity.component.game_object",
+      "asm": "UnityEngine.CoreModule.dll",
+      "cls": "UnityEngine.Component",
+      "name": "get_gameObject",
+      "expected": [
+        "nullptr",
+        "\"UnityEngine.GameObject\"",
+        "0"
+      ],
+      "status": "matched",
+      "rvas": [
+        "0x5029f60"
+      ]
+    },
+    {
+      "kind": "method",
+      "source": "examples/first-person/native/camera_runtime.inc",
+      "line": 229,
+      "key": "unity.game_object.transform",
+      "asm": "UnityEngine.CoreModule.dll",
+      "cls": "UnityEngine.GameObject",
+      "name": "get_transform",
+      "expected": [
+        "nullptr",
+        "\"UnityEngine.Transform\"",
+        "0"
+      ],
+      "status": "matched",
+      "rvas": [
+        "0x509f1f0"
+      ]
+    },
+    {
+      "kind": "method",
+      "source": "examples/first-person/native/camera_runtime.inc",
+      "line": 232,
+      "key": "unity.game_object.get_component",
+      "asm": "UnityEngine.CoreModule.dll",
+      "cls": "UnityEngine.GameObject",
+      "name": "GetComponent",
+      "expected": [
+        "\"System.Type\"",
+        "\"UnityEngine.Component\"",
+        "1"
+      ],
+      "status": "matched",
+      "rvas": [
+        "0x5dfd5d0"
+      ]
+    },
+    {
+      "kind": "method",
+      "source": "examples/first-person/native/camera_runtime.inc",
+      "line": 235,
+      "key": "unity.game_object.get_components",
+      "asm": "UnityEngine.CoreModule.dll",
+      "cls": "UnityEngine.GameObject",
+      "name": "GetComponents",
+      "expected": [
+        "\"System.Type\"",
+        "\"UnityEngine.Component[]\"",
+        "1"
+      ],
+      "status": "matched",
+      "rvas": [
+        "0xd500ea8"
+      ]
+    },
+    {
+      "kind": "method",
+      "source": "examples/first-person/native/camera_runtime.inc",
+      "line": 238,
+      "key": "system.array.get_length",
+      "asm": "mscorlib.dll",
+      "cls": "System.Array",
+      "name": "GetLength",
+      "expected": [
+        "\"System.Int32\"",
+        "\"System.Int32\"",
+        "1"
+      ],
+      "status": "matched",
+      "rvas": [
+        "0x78358d8"
+      ]
+    },
+    {
+      "kind": "method",
+      "source": "examples/first-person/native/camera_runtime.inc",
+      "line": 241,
+      "key": "system.array.get_value",
+      "asm": "mscorlib.dll",
+      "cls": "System.Array",
+      "name": "GetValue",
+      "expected": [
+        "\"System.Int32\"",
+        "\"System.Object\"",
+        "1"
+      ],
+      "status": "matched",
+      "rvas": [
+        "0x54eb770"
+      ]
+    },
+    {
+      "kind": "method",
+      "source": "examples/first-person/native/camera_runtime.inc",
+      "line": 244,
+      "key": "unity.renderer.enabled.get",
+      "asm": "UnityEngine.CoreModule.dll",
+      "cls": "UnityEngine.Renderer",
+      "name": "get_enabled",
+      "expected": [
+        "nullptr",
+        "\"System.Boolean\"",
+        "0"
+      ],
+      "status": "matched",
+      "rvas": [
+        "0x5029f20"
+      ]
+    },
+    {
+      "kind": "method",
+      "source": "examples/first-person/native/camera_runtime.inc",
+      "line": 247,
+      "key": "unity.renderer.enabled.set",
+      "asm": "UnityEngine.CoreModule.dll",
+      "cls": "UnityEngine.Renderer",
+      "name": "set_enabled",
+      "expected": [
+        "\"System.Boolean\"",
+        "\"System.Void\"",
+        "1"
+      ],
+      "status": "matched",
+      "rvas": [
+        "0x5241680"
+      ]
+    },
+    {
+      "kind": "method",
+      "source": "examples/first-person/native/camera_runtime.inc",
+      "line": 250,
+      "key": "unity.renderer.shadow_mode.get",
+      "asm": "UnityEngine.CoreModule.dll",
+      "cls": "UnityEngine.Renderer",
+      "name": "get_shadowCastingMode",
+      "expected": [
+        "nullptr",
+        "\"UnityEngine.Rendering.ShadowCastingMode\"",
+        "0"
+      ],
+      "status": "matched",
+      "rvas": [
+        "0x55ab780"
+      ]
+    },
+    {
+      "kind": "method",
+      "source": "examples/first-person/native/camera_runtime.inc",
+      "line": 253,
+      "key": "unity.renderer.shadow_mode.set",
+      "asm": "UnityEngine.CoreModule.dll",
+      "cls": "UnityEngine.Renderer",
+      "name": "set_shadowCastingMode",
+      "expected": [
+        "\"UnityEngine.Rendering.ShadowCastingMode\"",
+        "\"System.Void\"",
+        "1"
+      ],
+      "status": "matched",
+      "rvas": [
+        "0x55aa990"
+      ]
+    },
+    {
+      "kind": "method",
+      "source": "examples/first-person/native/camera_runtime.inc",
+      "line": 256,
+      "key": "unity.object.find_object_of_type",
+      "asm": "UnityEngine.CoreModule.dll",
+      "cls": "UnityEngine.Object",
+      "name": "FindObjectOfType",
+      "expected": [
+        "\"System.Type|System.Boolean\"",
+        "\"UnityEngine.Object\"",
+        "2"
+      ],
+      "status": "matched",
+      "rvas": [
+        "0x52d8d10"
+      ]
+    },
+    {
+      "kind": "method",
+      "source": "examples/first-person/native/camera_runtime.inc",
+      "line": 259,
+      "key": "unity.object.name.get",
+      "asm": "UnityEngine.CoreModule.dll",
+      "cls": "UnityEngine.Object",
+      "name": "get_name",
+      "expected": [
+        "nullptr",
+        "\"System.String\"",
+        "0"
+      ],
+      "status": "matched",
+      "rvas": [
+        "0x51058d0"
+      ]
+    },
+    {
+      "kind": "method",
+      "source": "examples/first-person/native/camera_runtime.inc",
+      "line": 262,
+      "key": "unity.skinned_mesh_renderer.shared_mesh.get",
+      "asm": "UnityEngine.CoreModule.dll",
+      "cls": "UnityEngine.SkinnedMeshRenderer",
+      "name": "get_sharedMesh",
+      "expected": [
+        "nullptr",
+        "\"UnityEngine.Mesh\"",
+        "0"
+      ],
+      "status": "matched",
+      "rvas": [
+        "0x55ab110"
+      ]
+    },
+    {
+      "kind": "method",
+      "source": "examples/first-person/native/camera_runtime.inc",
+      "line": 265,
+      "key": "unity.mesh.vertex_count.get",
+      "asm": "UnityEngine.CoreModule.dll",
+      "cls": "UnityEngine.Mesh",
+      "name": "get_vertexCount",
+      "expected": [
+        "nullptr",
+        "\"System.Int32\"",
+        "0"
+      ],
+      "status": "matched",
+      "rvas": [
+        "0x55ae6b0"
+      ]
+    },
+    {
+      "kind": "method",
+      "source": "examples/first-person/native/camera_runtime.inc",
+      "line": 268,
+      "key": "fp.model.id",
+      "asm": "Gameplay.Beyond.dll",
+      "cls": "Beyond.Gameplay.View.BaseModelComponent",
+      "name": "get_modelId",
+      "expected": [
+        "nullptr",
+        "\"System.String\"",
+        "0"
+      ],
+      "status": "matched",
+      "rvas": [
+        "0x59b0d10"
+      ]
+    },
+    {
+      "kind": "method",
+      "source": "examples/first-person/native/camera_runtime.inc",
+      "line": 271,
+      "key": "fp.mesh.readable",
+      "asm": "UnityEngine.CoreModule.dll",
+      "cls": "UnityEngine.Mesh",
+      "name": "get_isReadable",
+      "expected": [
+        "nullptr",
+        "\"System.Boolean\"",
+        "0"
+      ],
+      "status": "matched",
+      "rvas": [
+        "0xd4f0d00"
+      ]
+    },
+    {
+      "kind": "method",
+      "source": "examples/first-person/native/camera_runtime.inc",
+      "line": 273,
+      "key": "fp.mesh.vertices",
+      "asm": "UnityEngine.CoreModule.dll",
+      "cls": "UnityEngine.Mesh",
+      "name": "get_vertices",
+      "expected": [
+        "nullptr",
+        "\"UnityEngine.Vector3[]\"",
+        "0"
+      ],
+      "status": "matched",
+      "rvas": [
+        "0x783b988"
+      ]
+    },
+    {
+      "kind": "method",
+      "source": "examples/first-person/native/camera_runtime.inc",
+      "line": 275,
+      "key": "fp.mesh.weights",
+      "asm": "UnityEngine.CoreModule.dll",
+      "cls": "UnityEngine.Mesh",
+      "name": "get_boneWeights",
+      "expected": [
+        "nullptr",
+        "\"UnityEngine.BoneWeight[]\"",
+        "0"
+      ],
+      "status": "matched",
+      "rvas": [
+        "0xd4f0c80"
+      ]
+    },
+    {
+      "kind": "method",
+      "source": "examples/first-person/native/camera_runtime.inc",
+      "line": 277,
+      "key": "fp.mesh.attributes.count",
+      "asm": "UnityEngine.CoreModule.dll",
+      "cls": "UnityEngine.Mesh",
+      "name": "get_vertexAttributeCount",
+      "expected": [
+        "nullptr",
+        "\"System.Int32\"",
+        "0"
+      ],
+      "status": "matched",
+      "rvas": [
+        "0xd4f0dfc"
+      ]
+    },
+    {
+      "kind": "method",
+      "source": "examples/first-person/native/camera_runtime.inc",
+      "line": 279,
+      "key": "fp.mesh.attribute",
+      "asm": "UnityEngine.CoreModule.dll",
+      "cls": "UnityEngine.Mesh",
+      "name": "GetVertexAttribute",
+      "expected": [
+        "\"System.Int32\"",
+        "\"UnityEngine.Rendering.VertexAttributeDescriptor\"",
+        "1"
+      ],
+      "status": "matched",
+      "rvas": [
+        "0xd4ef9f8"
+      ]
+    },
+    {
+      "kind": "method",
+      "source": "examples/first-person/native/camera_runtime.inc",
+      "line": 281,
+      "key": "fp.mesh.submeshes.get",
+      "asm": "UnityEngine.CoreModule.dll",
+      "cls": "UnityEngine.Mesh",
+      "name": "get_subMeshCount",
+      "expected": [
+        "nullptr",
+        "\"System.Int32\"",
+        "0"
+      ],
+      "status": "matched",
+      "rvas": [
+        "0x55ac230"
+      ]
+    },
+    {
+      "kind": "method",
+      "source": "examples/first-person/native/camera_runtime.inc",
+      "line": 283,
+      "key": "fp.mesh.submeshes.set",
+      "asm": "UnityEngine.CoreModule.dll",
+      "cls": "UnityEngine.Mesh",
+      "name": "set_subMeshCount",
+      "expected": [
+        "\"System.Int32\"",
+        "\"System.Void\"",
+        "1"
+      ],
+      "status": "matched",
+      "rvas": [
+        "0xd4f0f28"
+      ]
+    },
+    {
+      "kind": "method",
+      "source": "examples/first-person/native/camera_runtime.inc",
+      "line": 285,
+      "key": "fp.mesh.index_format.get",
+      "asm": "UnityEngine.CoreModule.dll",
+      "cls": "UnityEngine.Mesh",
+      "name": "get_indexFormat",
+      "expected": [
+        "nullptr",
+        "\"UnityEngine.Rendering.IndexFormat\"",
+        "0"
+      ],
+      "status": "matched",
+      "rvas": [
+        "0xd4f0ccc"
+      ]
+    },
+    {
+      "kind": "method",
+      "source": "examples/first-person/native/camera_runtime.inc",
+      "line": 287,
+      "key": "fp.mesh.index_format.set",
+      "asm": "UnityEngine.CoreModule.dll",
+      "cls": "UnityEngine.Mesh",
+      "name": "set_indexFormat",
+      "expected": [
+        "\"UnityEngine.Rendering.IndexFormat\"",
+        "\"System.Void\"",
+        "1"
+      ],
+      "status": "matched",
+      "rvas": [
+        "0xd4f0ee8"
+      ]
+    },
+    {
+      "kind": "method",
+      "source": "examples/first-person/native/camera_runtime.inc",
+      "line": 289,
+      "key": "fp.mesh.submesh",
+      "asm": "UnityEngine.CoreModule.dll",
+      "cls": "UnityEngine.Mesh",
+      "name": "GetSubMesh",
+      "expected": [
+        "\"System.Int32\"",
+        "\"UnityEngine.Rendering.SubMeshDescriptor\"",
+        "1"
+      ],
+      "status": "optional-missing-with-indices-fallback"
+    },
+    {
+      "kind": "method",
+      "source": "examples/first-person/native/camera_runtime.inc",
+      "line": 291,
+      "key": "fp.mesh.indices.set",
+      "asm": "UnityEngine.CoreModule.dll",
+      "cls": "UnityEngine.Mesh",
+      "name": "SetIndices",
+      "expected": [
+        "\"System.Int32[]|UnityEngine.MeshTopology|System.Int32|System.Boolean|System.Int32\"",
+        "\"System.Void\"",
+        "5"
+      ],
+      "status": "matched",
+      "rvas": [
+        "0xd4f0078"
+      ]
+    },
+    {
+      "kind": "method",
+      "source": "examples/first-person/native/camera_runtime.inc",
+      "line": 293,
+      "key": "fp.mesh.indices.get",
+      "asm": "UnityEngine.CoreModule.dll",
+      "cls": "UnityEngine.Mesh",
+      "name": "GetIndices",
+      "expected": [
+        "\"System.Int32|System.Boolean\"",
+        "\"System.Int32[]\"",
+        "2"
+      ],
+      "status": "matched",
+      "rvas": [
+        "0xd4ef42c"
+      ]
+    },
+    {
+      "kind": "method",
+      "source": "examples/first-person/native/camera_runtime.inc",
+      "line": 295,
+      "key": "fp.mesh.upload",
+      "asm": "UnityEngine.CoreModule.dll",
+      "cls": "UnityEngine.Mesh",
+      "name": "UploadMeshData",
+      "expected": [
+        "\"System.Boolean\"",
+        "\"System.Void\"",
+        "1"
+      ],
+      "status": "matched",
+      "rvas": [
+        "0x55ae5f0"
+      ]
+    },
+    {
+      "kind": "method",
+      "source": "examples/first-person/native/camera_runtime.inc",
+      "line": 297,
+      "key": "fp.object.clone",
+      "asm": "UnityEngine.CoreModule.dll",
+      "cls": "UnityEngine.Object",
+      "name": "Internal_CloneSingle",
+      "expected": [
+        "\"UnityEngine.Object\"",
+        "\"UnityEngine.Object\"",
+        "1"
+      ],
+      "status": "matched",
+      "rvas": [
+        "0x5e66030"
+      ]
+    },
+    {
+      "kind": "method",
+      "source": "examples/first-person/native/camera_runtime.inc",
+      "line": 299,
+      "key": "fp.array.create",
+      "asm": "mscorlib.dll",
+      "cls": "System.Array",
+      "name": "CreateInstance",
+      "expected": [
+        "\"System.Type|System.Int32\"",
+        "\"System.Array\"",
+        "2"
+      ],
+      "status": "matched",
+      "rvas": [
+        "0x4fde830"
+      ]
+    },
+    {
+      "kind": "method",
+      "source": "examples/first-person/native/camera_runtime.inc",
+      "line": 303,
+      "key": "fp.mesh.index_start",
+      "asm": "UnityEngine.CoreModule.dll",
+      "cls": "UnityEngine.Mesh",
+      "name": "GetIndexStart",
+      "expected": [
+        "\"System.Int32\"",
+        "\"System.UInt32\"",
+        "1"
+      ],
+      "status": "optional-missing-with-indices-fallback"
+    },
+    {
+      "kind": "method",
+      "source": "examples/first-person/native/camera_runtime.inc",
+      "line": 305,
+      "key": "fp.mesh.index_count",
+      "asm": "UnityEngine.CoreModule.dll",
+      "cls": "UnityEngine.Mesh",
+      "name": "GetIndexCount",
+      "expected": [
+        "\"System.Int32\"",
+        "\"System.UInt32\"",
+        "1"
+      ],
+      "status": "matched",
+      "rvas": [
+        "0xd4ef33c"
+      ]
+    },
+    {
+      "kind": "method",
+      "source": "examples/first-person/native/camera_runtime.inc",
+      "line": 307,
+      "key": "fp.mesh.base_vertex",
+      "asm": "UnityEngine.CoreModule.dll",
+      "cls": "UnityEngine.Mesh",
+      "name": "GetBaseVertex",
+      "expected": [
+        "\"System.Int32\"",
+        "\"System.UInt32\"",
+        "1"
+      ],
+      "status": "matched",
+      "rvas": [
+        "0xd4eee14"
+      ]
+    },
+    {
+      "kind": "method",
+      "source": "examples/first-person/native/camera_runtime.inc",
+      "line": 310,
+      "key": "fp.renderer.bones.set",
+      "asm": "UnityEngine.CoreModule.dll",
+      "cls": "UnityEngine.SkinnedMeshRenderer",
+      "name": "set_bones",
+      "expected": [
+        "\"UnityEngine.Transform[]\"",
+        "\"System.Void\"",
+        "1"
+      ],
+      "status": "matched",
+      "rvas": [
+        "0xd4f55a4"
+      ]
+    },
+    {
+      "kind": "method",
+      "source": "examples/first-person/native/camera_runtime.inc",
+      "line": 313,
+      "key": "fp.array.clone",
+      "asm": "mscorlib.dll",
+      "cls": "System.Array",
+      "name": "Clone",
+      "expected": [
+        "nullptr",
+        "\"System.Object\"",
+        "0"
+      ],
+      "status": "matched",
+      "rvas": [
+        "0x5a39c10"
+      ]
+    },
+    {
+      "kind": "method",
+      "source": "examples/first-person/native/camera_runtime.inc",
+      "line": 315,
+      "key": "fp.array.set_value",
+      "asm": "mscorlib.dll",
+      "cls": "System.Array",
+      "name": "SetValue",
+      "expected": [
+        "\"System.Object|System.Int32\"",
+        "\"System.Void\"",
+        "2"
+      ],
+      "status": "matched",
+      "rvas": [
+        "0x585d400"
+      ]
+    },
+    {
+      "kind": "method",
+      "source": "examples/first-person/native/camera_runtime.inc",
+      "line": 317,
+      "key": "fp.game_object.ctor",
+      "asm": "UnityEngine.CoreModule.dll",
+      "cls": "UnityEngine.GameObject",
+      "name": ".ctor",
+      "expected": [
+        "\"System.String\"",
+        "\"System.Void\"",
+        "1"
+      ],
+      "status": "matched",
+      "rvas": [
+        "0x528c3e0"
+      ]
+    },
+    {
+      "kind": "method",
+      "source": "examples/first-person/native/camera_runtime.inc",
+      "line": 319,
+      "key": "fp.transform.set_parent",
+      "asm": "UnityEngine.CoreModule.dll",
+      "cls": "UnityEngine.Transform",
+      "name": "SetParent",
+      "expected": [
+        "\"UnityEngine.Transform|System.Boolean\"",
+        "\"System.Void\"",
+        "2"
+      ],
+      "status": "matched",
+      "rvas": [
+        "0x5416a00"
+      ]
+    },
+    {
+      "kind": "method",
+      "source": "examples/first-person/native/camera_runtime.inc",
+      "line": 322,
+      "key": "fp.transform.local_position.set",
+      "asm": "UnityEngine.CoreModule.dll",
+      "cls": "UnityEngine.Transform",
+      "name": "set_localPosition",
+      "expected": [
+        "\"UnityEngine.Vector3\"",
+        "\"System.Void\"",
+        "1"
+      ],
+      "status": "matched",
+      "rvas": [
+        "0x7835880"
+      ]
+    },
+    {
+      "kind": "method",
+      "source": "examples/first-person/native/camera_runtime.inc",
+      "line": 325,
+      "key": "fp.transform.local_rotation.set",
+      "asm": "UnityEngine.CoreModule.dll",
+      "cls": "UnityEngine.Transform",
+      "name": "set_localRotation",
+      "expected": [
+        "\"UnityEngine.Quaternion\"",
+        "\"System.Void\"",
+        "1"
+      ],
+      "status": "matched",
+      "rvas": [
+        "0x7834d60"
+      ]
+    },
+    {
+      "kind": "method",
+      "source": "examples/first-person/native/camera_runtime.inc",
+      "line": 328,
+      "key": "fp.transform.local_scale.get",
+      "asm": "UnityEngine.CoreModule.dll",
+      "cls": "UnityEngine.Transform",
+      "name": "get_localScale",
+      "expected": [
+        "nullptr",
+        "\"UnityEngine.Vector3\"",
+        "0"
+      ],
+      "status": "matched",
+      "rvas": [
+        "0x56a00a0"
+      ]
+    },
+    {
+      "kind": "method",
+      "source": "examples/first-person/native/camera_runtime.inc",
+      "line": 331,
+      "key": "fp.transform.local_scale.set",
+      "asm": "UnityEngine.CoreModule.dll",
+      "cls": "UnityEngine.Transform",
+      "name": "set_localScale",
+      "expected": [
+        "\"UnityEngine.Vector3\"",
+        "\"System.Void\"",
+        "1"
+      ],
+      "status": "matched",
+      "rvas": [
+        "0x7834d1c"
+      ]
+    },
+    {
+      "kind": "method",
+      "source": "examples/first-person/native/camera_runtime.inc",
+      "line": 334,
+      "key": "unity.object.destroy",
+      "asm": "UnityEngine.CoreModule.dll",
+      "cls": "UnityEngine.Object",
+      "name": "Destroy",
+      "expected": [
+        "\"UnityEngine.Object\"",
+        "\"System.Void\"",
+        "1"
+      ],
+      "status": "matched",
+      "rvas": [
+        "0x528be40"
+      ]
+    },
+    {
+      "kind": "method",
+      "source": "examples/first-person/native/camera_runtime.inc",
+      "line": 337,
+      "key": "unity.mesh.bindposes.get",
+      "asm": "UnityEngine.CoreModule.dll",
+      "cls": "UnityEngine.Mesh",
+      "name": "get_bindposes",
+      "expected": [
+        "nullptr",
+        "\"UnityEngine.Matrix4x4[]\"",
+        "0"
+      ],
+      "status": "matched",
+      "rvas": [
+        "0xd4f0c4c"
+      ]
+    },
+    {
+      "kind": "method",
+      "source": "examples/first-person/native/camera_runtime.inc",
+      "line": 340,
+      "key": "unity.skinned_mesh_renderer.bones.get",
+      "asm": "UnityEngine.CoreModule.dll",
+      "cls": "UnityEngine.SkinnedMeshRenderer",
+      "name": "get_bones",
+      "expected": [
+        "nullptr",
+        "\"UnityEngine.Transform[]\"",
+        "0"
+      ],
+      "status": "matched",
+      "rvas": [
+        "0xd4f5404"
+      ]
+    },
+    {
+      "kind": "method",
+      "source": "examples/first-person/native/camera_runtime.inc",
+      "line": 343,
+      "key": "unity.transform.parent.get",
+      "asm": "UnityEngine.CoreModule.dll",
+      "cls": "UnityEngine.Transform",
+      "name": "get_parent",
+      "expected": [
+        "nullptr",
+        "\"UnityEngine.Transform\"",
+        "0"
+      ],
+      "status": "matched",
+      "rvas": [
+        "0x51c7780"
+      ]
+    },
+    {
+      "kind": "method",
+      "source": "examples/first-person/native/camera_runtime.inc",
+      "line": 346,
+      "key": "unity.object.op_equality",
+      "asm": "UnityEngine.CoreModule.dll",
+      "cls": "UnityEngine.Object",
+      "name": "op_Equality",
+      "expected": [
+        "\"UnityEngine.Object|UnityEngine.Object\"",
+        "\"System.Boolean\"",
+        "2"
+      ],
+      "status": "matched",
+      "rvas": [
+        "0x4f9d9c0"
+      ]
+    },
+    {
+      "kind": "method",
+      "source": "examples/first-person/native/camera_runtime.inc",
+      "line": 349,
+      "key": "unity.animator.get_bone_transform",
+      "asm": "UnityEngine.AnimationModule.dll",
+      "cls": "UnityEngine.Animator",
+      "name": "GetBoneTransform",
+      "expected": [
+        "\"UnityEngine.HumanBodyBones\"",
+        "\"UnityEngine.Transform\"",
+        "1"
+      ],
+      "status": "matched",
+      "rvas": [
+        "0xd4c3920"
+      ]
+    },
+    {
+      "kind": "method",
+      "source": "examples/first-person/native/camera_runtime.inc",
+      "line": 353,
+      "key": "unity.transform.position.get",
+      "asm": "UnityEngine.CoreModule.dll",
+      "cls": "UnityEngine.Transform",
+      "name": "get_position",
+      "expected": [
+        "nullptr",
+        "\"UnityEngine.Vector3\"",
+        "0"
+      ],
+      "status": "matched",
+      "rvas": [
+        "0x5027dc0"
+      ]
+    },
+    {
+      "kind": "method",
+      "source": "examples/first-person/native/camera_runtime.inc",
+      "line": 356,
+      "key": "unity.transform.rotation.get",
+      "asm": "UnityEngine.CoreModule.dll",
+      "cls": "UnityEngine.Transform",
+      "name": "get_rotation",
+      "expected": [
+        "nullptr",
+        "\"UnityEngine.Quaternion\"",
+        "0"
+      ],
+      "status": "matched",
+      "rvas": [
+        "0x50285c0"
+      ]
+    },
+    {
+      "kind": "method",
+      "source": "examples/first-person/native/camera_runtime.inc",
+      "line": 359,
+      "key": "unity.transform.child_count.get",
+      "asm": "UnityEngine.CoreModule.dll",
+      "cls": "UnityEngine.Transform",
+      "name": "get_childCount",
+      "expected": [
+        "nullptr",
+        "\"System.Int32\"",
+        "0"
+      ],
+      "status": "matched",
+      "rvas": [
+        "0x51c6530"
+      ]
+    },
+    {
+      "kind": "method",
+      "source": "examples/first-person/native/camera_runtime.inc",
+      "line": 362,
+      "key": "unity.transform.get_child",
+      "asm": "UnityEngine.CoreModule.dll",
+      "cls": "UnityEngine.Transform",
+      "name": "GetChild",
+      "expected": [
+        "\"System.Int32\"",
+        "\"UnityEngine.Transform\"",
+        "1"
+      ],
+      "status": "matched",
+      "rvas": [
+        "0x51c7970"
+      ]
+    },
+    {
+      "kind": "method",
+      "source": "examples/first-person/native/camera_runtime.inc",
+      "line": 365,
+      "key": "unity.transform.find",
+      "asm": "UnityEngine.CoreModule.dll",
+      "cls": "UnityEngine.Transform",
+      "name": "Find",
+      "expected": [
+        "\"System.String\"",
+        "\"UnityEngine.Transform\"",
+        "1"
+      ],
+      "status": "matched",
+      "rvas": [
+        "0x4fb0cf0"
+      ]
+    },
+    {
+      "kind": "method",
+      "source": "examples/first-person/native/camera_runtime.inc",
+      "line": 368,
+      "key": "unity.time.unscaled_delta.get",
+      "asm": "UnityEngine.CoreModule.dll",
+      "cls": "UnityEngine.Time",
+      "name": "get_unscaledDeltaTime",
+      "expected": [
+        "nullptr",
+        "\"System.Single\"",
+        "0"
+      ],
+      "status": "matched",
+      "rvas": [
+        "0x5150ef0"
+      ]
+    },
+    {
+      "kind": "field",
+      "source": "examples/first-person/native/camera_runtime.inc",
+      "line": 374,
+      "key": "unity.vector3.x",
+      "asm": "UnityEngine.CoreModule.dll",
+      "cls": "UnityEngine.Vector3",
+      "name": "x",
+      "expected": [
+        "\"System.Single\""
+      ],
+      "status": "matched",
+      "offset": 16
+    },
+    {
+      "kind": "field",
+      "source": "examples/first-person/native/camera_runtime.inc",
+      "line": 377,
+      "key": "cinemachine.state.raw_position",
+      "asm": "Cinemachine.dll",
+      "cls": "Cinemachine.CameraState",
+      "name": "RawPosition",
+      "expected": [
+        "\"UnityEngine.Vector3\""
+      ],
+      "status": "matched",
+      "offset": 180
+    },
+    {
+      "kind": "field",
+      "source": "examples/first-person/native/camera_runtime.inc",
+      "line": 380,
+      "key": "cinemachine.state.raw_orientation",
+      "asm": "Cinemachine.dll",
+      "cls": "Cinemachine.CameraState",
+      "name": "RawOrientation",
+      "expected": [
+        "\"UnityEngine.Quaternion\""
+      ],
+      "status": "matched",
+      "offset": 192
+    },
+    {
+      "kind": "field",
+      "source": "examples/first-person/native/camera_runtime.inc",
+      "line": 383,
+      "key": "cinemachine.state.position_correction",
+      "asm": "Cinemachine.dll",
+      "cls": "Cinemachine.CameraState",
+      "name": "PositionCorrection",
+      "expected": [
+        "\"UnityEngine.Vector3\""
+      ],
+      "status": "matched",
+      "offset": 224
+    },
+    {
+      "kind": "field",
+      "source": "examples/first-person/native/camera_runtime.inc",
+      "line": 386,
+      "key": "cinemachine.state.orientation_correction",
+      "asm": "Cinemachine.dll",
+      "cls": "Cinemachine.CameraState",
+      "name": "OrientationCorrection",
+      "expected": [
+        "\"UnityEngine.Quaternion\""
+      ],
+      "status": "matched",
+      "offset": 236
+    },
+    {
+      "kind": "field",
+      "source": "examples/first-person/native/camera_runtime.inc",
+      "line": 389,
+      "key": "cinemachine.state.lens",
+      "asm": "Cinemachine.dll",
+      "cls": "Cinemachine.CameraState",
+      "name": "Lens",
+      "expected": [
+        "\"Cinemachine.LensSettings\""
+      ],
+      "status": "matched",
+      "offset": 84
+    },
+    {
+      "kind": "field",
+      "source": "examples/first-person/native/camera_runtime.inc",
+      "line": 392,
+      "key": "cinemachine.lens.field_of_view",
+      "asm": "Cinemachine.dll",
+      "cls": "Cinemachine.LensSettings",
+      "name": "FieldOfView",
+      "expected": [
+        "\"System.Single\""
+      ],
+      "status": "matched",
+      "offset": 16
+    },
+    {
+      "kind": "field",
+      "source": "examples/first-person/native/camera_runtime.inc",
+      "line": 395,
+      "key": "cinemachine.lens.near_clip",
+      "asm": "Cinemachine.dll",
+      "cls": "Cinemachine.LensSettings",
+      "name": "NearClipPlane",
+      "expected": [
+        "\"System.Single\""
+      ],
+      "status": "matched",
+      "offset": 24
+    },
+    {
+      "kind": "field",
+      "source": "examples/first-person/native/camera_runtime.inc",
+      "line": 398,
+      "key": "cinemachine.lens.dutch",
+      "asm": "Cinemachine.dll",
+      "cls": "Cinemachine.LensSettings",
+      "name": "Dutch",
+      "expected": [
+        "\"System.Single\""
+      ],
+      "status": "matched",
+      "offset": 32
+    },
+    {
+      "kind": "field",
+      "source": "examples/first-person/native/camera_runtime.inc",
+      "line": 401,
+      "key": "snapshot.is_first_person",
+      "asm": "Gameplay.Beyond.dll",
+      "cls": "Beyond.Gameplay.View.SnapshotCameraController",
+      "name": "<isFirstPerson>k__BackingField",
+      "expected": [
+        "\"System.Boolean\""
+      ],
+      "status": "matched",
+      "offset": 320
+    },
+    {
+      "kind": "field",
+      "source": "examples/first-person/native/camera_runtime.inc",
+      "line": 404,
+      "key": "snapshot.pending_first_person_exit",
+      "asm": "Gameplay.Beyond.dll",
+      "cls": "Beyond.Gameplay.View.SnapshotCameraController",
+      "name": "m_hasPendingFirstPersonExit",
+      "expected": [
+        "\"System.Boolean\""
+      ],
+      "status": "matched",
+      "offset": 336
+    },
+    {
+      "kind": "field",
+      "source": "examples/first-person/native/camera_runtime.inc",
+      "line": 407,
+      "key": "snapshot.post_rotation",
+      "asm": "Gameplay.Beyond.dll",
+      "cls": "Beyond.Gameplay.View.SnapshotCameraController",
+      "name": "m_postRotation",
+      "expected": [
+        "\"Beyond.Gameplay.View.CameraPostRotation\""
+      ],
+      "status": "matched",
+      "offset": 240
+    },
+    {
+      "kind": "field",
+      "source": "examples/first-person/native/camera_runtime.inc",
+      "line": 410,
+      "key": "snapshot.camera_offset",
+      "asm": "Gameplay.Beyond.dll",
+      "cls": "Beyond.Gameplay.View.SnapshotCameraController",
+      "name": "m_cameraOffset",
+      "expected": [
+        "\"CinemachineCameraOffset\""
+      ],
+      "status": "matched",
+      "offset": 248
+    },
+    {
+      "kind": "field",
+      "source": "examples/first-person/native/first_person_runtime.inc",
+      "line": 172,
+      "key": null,
+      "asm": "UnityEngine.CoreModule.dll",
+      "cls": "UnityEngine.Vector3",
+      "name": "x",
+      "expected": [
+        "\"System.Single\""
+      ],
+      "status": "matched",
+      "offset": 16
+    }
+  ],
+  "native_layouts": [
+    {
+      "cls": "UnityEngine.Vector3",
+      "name": "x",
+      "expected": 16,
+      "actual": 16,
+      "matched": true
+    },
+    {
+      "cls": "UnityEngine.Vector3",
+      "name": "y",
+      "expected": 20,
+      "actual": 20,
+      "matched": true
+    },
+    {
+      "cls": "UnityEngine.Vector3",
+      "name": "z",
+      "expected": 24,
+      "actual": 24,
+      "matched": true
+    },
+    {
+      "cls": "UnityEngine.BoneWeight",
+      "name": "m_Weight0",
+      "expected": 16,
+      "actual": 16,
+      "matched": true
+    },
+    {
+      "cls": "UnityEngine.BoneWeight",
+      "name": "m_Weight1",
+      "expected": 20,
+      "actual": 20,
+      "matched": true
+    },
+    {
+      "cls": "UnityEngine.BoneWeight",
+      "name": "m_Weight2",
+      "expected": 24,
+      "actual": 24,
+      "matched": true
+    },
+    {
+      "cls": "UnityEngine.BoneWeight",
+      "name": "m_Weight3",
+      "expected": 28,
+      "actual": 28,
+      "matched": true
+    },
+    {
+      "cls": "UnityEngine.BoneWeight",
+      "name": "m_BoneIndex0",
+      "expected": 32,
+      "actual": 32,
+      "matched": true
+    },
+    {
+      "cls": "UnityEngine.BoneWeight",
+      "name": "m_BoneIndex1",
+      "expected": 36,
+      "actual": 36,
+      "matched": true
+    },
+    {
+      "cls": "UnityEngine.BoneWeight",
+      "name": "m_BoneIndex2",
+      "expected": 40,
+      "actual": 40,
+      "matched": true
+    },
+    {
+      "cls": "UnityEngine.BoneWeight",
+      "name": "m_BoneIndex3",
+      "expected": 44,
+      "actual": 44,
+      "matched": true
+    },
+    {
+      "cls": "UnityEngine.Rendering.AsyncGPUReadbackRequest",
+      "name": "m_Ptr",
+      "expected": 16,
+      "actual": 16,
+      "matched": true
+    },
+    {
+      "cls": "UnityEngine.Rendering.AsyncGPUReadbackRequest",
+      "name": "m_Version",
+      "expected": 24,
+      "actual": 24,
+      "matched": true
+    },
+    {
+      "cls": "UnityEngine.Rendering.SubMeshDescriptor",
+      "name": "<bounds>k__BackingField",
+      "expected": 16,
+      "actual": 16,
+      "matched": true
+    },
+    {
+      "cls": "UnityEngine.Rendering.SubMeshDescriptor",
+      "name": "<topology>k__BackingField",
+      "expected": 40,
+      "actual": 40,
+      "matched": true
+    },
+    {
+      "cls": "UnityEngine.Rendering.SubMeshDescriptor",
+      "name": "<indexStart>k__BackingField",
+      "expected": 44,
+      "actual": 44,
+      "matched": true
+    },
+    {
+      "cls": "UnityEngine.Rendering.SubMeshDescriptor",
+      "name": "<indexCount>k__BackingField",
+      "expected": 48,
+      "actual": 48,
+      "matched": true
+    },
+    {
+      "cls": "UnityEngine.Rendering.SubMeshDescriptor",
+      "name": "<baseVertex>k__BackingField",
+      "expected": 52,
+      "actual": 52,
+      "matched": true
+    },
+    {
+      "cls": "UnityEngine.Rendering.SubMeshDescriptor",
+      "name": "<firstVertex>k__BackingField",
+      "expected": 56,
+      "actual": 56,
+      "matched": true
+    },
+    {
+      "cls": "UnityEngine.Rendering.SubMeshDescriptor",
+      "name": "<vertexCount>k__BackingField",
+      "expected": 60,
+      "actual": 60,
+      "matched": true
+    }
+  ],
+  "failures": []
+}

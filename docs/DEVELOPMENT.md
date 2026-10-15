@@ -8,7 +8,7 @@
 ./scripts/Build.ps1
 ```
 
-可使用 `-CMake <cmake.exe>`、`-Dotnet <dotnet.exe>` 指定工具。当前自包含桌面分发目录为 `build/package/windows-0.1.2/`，原生构建目录为 `build/native/windows-0.1.2/`，入口为 `EModLoader.exe`。主程序合并 .NET 程序集，EML 启动组件集中放在 `runtime/`；不分发 PDB 与 WebView2 XML 文档。`scripts/BuildCompatibilityTest.ps1` 保留为普通构建的旧入口。
+可使用 `-CMake <cmake.exe>`、`-Dotnet <dotnet.exe>` 指定工具。当前自包含桌面分发目录为 `build/package/windows-0.1.3/`，原生构建目录为 `build/native/windows-0.1.3/`，入口为 `EModLoader.exe`。主程序合并 .NET 程序集，EML 启动组件集中放在 `runtime/`；不分发 PDB 与 WebView2 XML 文档。`scripts/BuildCompatibilityTest.ps1` 保留为普通构建的旧入口。
 
 ## Android
 
@@ -55,18 +55,22 @@ python scripts/PackageFirstPerson.py --android build/examples/first-person-andro
 
 ## 验证
 
+先运行 Windows 构建，再显式编译受控启动和官方父进程验证目标。这两个目标设置为 `EXCLUDE_FROM_ALL`，不会随普通构建生成，也不会进入产品安装包：
+
 ```powershell
+cmake --build build/native/windows-0.1.3 --config Release --target EMLControlledLauncher EMLOfficialParentTests
+build/native/windows-0.1.3/Release/EMLOfficialParentTests.exe <空的测试目录>
 dotnet run --project tests/EModLoader.CoreTests -c Release -- <EchoZIP> <OfflineHost.exe>
 dotnet run --project tests/EModLoader.DesktopTests -c Release -- <EchoZIP> <OfflineHost.exe> <输出目录>
 dotnet run --project tests/EModLoader.DesktopTests -c Release -- <第一人称ZIP> <OfflineHost.exe> <输出目录> first-person
-ctest --test-dir build/native/windows-0.1.2 -C Release --output-on-failure
+ctest --test-dir build/native/windows-0.1.3 -C Release --output-on-failure
 ctest --test-dir build/examples/first-person-windows -C Release --output-on-failure
-python tests/verify_launch.py --native-bin build/native/windows-0.1.2/Release
-python tests/verify_proxy.py --native-bin build/native/windows-0.1.2/Release
-python tests/verify_xinput_compatibility.py --native-bin build/native/windows-0.1.2/Release
-dotnet run --project tests/EModLoader.LaunchTests -c Release -- build/native/windows-0.1.2/Release
+python tests/verify_launch.py --native-bin build/native/windows-0.1.3/Release
+python tests/verify_proxy.py --native-bin build/native/windows-0.1.3/Release
+python tests/verify_xinput_compatibility.py --native-bin build/native/windows-0.1.3/Release
+dotnet run --project tests/EModLoader.LaunchTests -c Release -- build/native/windows-0.1.3/Release
 node tests/verify_bridge.js
 python tests/android/verify_materializer.py --json-jar <org.json.jar>
 ```
 
-开发测试可用 `EML_DATA_ROOT` 指定独立数据目录。桌面测试运行实际 WebView2、路径保存及 DLL 部署；启动测试只使用自有受控进程，覆盖注入器和 DLL 自启动。提权决策与取消处理使用模拟结果，未执行交互式 UAC。Android 资源准备使用 JVM 适配器；当前测试不覆盖真实游戏和 Android 设备运行。
+开发测试可用 `EML_DATA_ROOT` 指定独立数据目录。桌面测试运行实际 WebView2、路径保存及 DLL 部署；启动测试只使用自有受控进程，覆盖注入器和 DLL 自启动。`verify_launch.py`、`verify_proxy.py` 与 `EModLoader.LaunchTests` 仅在临时测试 runtime 内将 `EMLControlledLauncher.exe` 复制为 `EModLoader.Launcher.exe`，实际产品启动器始终保留官方启动器发现与签名验证。部署和 XInput 冲突保护仍使用产品启动器。提权决策与取消处理使用模拟结果，未执行交互式 UAC。Android 资源准备使用 JVM 适配器；当前测试不覆盖真实游戏和 Android 设备运行。

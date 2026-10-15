@@ -24,7 +24,7 @@ foreach($taskObsolete in @('IMPLEMENTATION_0_1.md','COMPATIBILITY_PLAN.md','FIRS
     $taskOldDocument=Join-Path $taskPackage "docs/$taskObsolete"
     if(Test-Path -LiteralPath $taskOldDocument -PathType Leaf){Remove-Item -LiteralPath $taskOldDocument}
 }
-foreach($taskDocument in @('USER_GUIDE.md','DEVELOPMENT.md','SDK.md','COMPATIBILITY.md','XINPUT_COEXISTENCE.md')) {
+foreach($taskDocument in @('USER_GUIDE.md','DEVELOPMENT.md','SDK.md','COMPATIBILITY.md','XINPUT_COEXISTENCE.md','VALIDATION_1_6_3.md')) {
     Copy-Item -LiteralPath (Join-Path $taskRepoRoot "docs/$taskDocument") -Destination (Join-Path $taskPackage 'docs') -Force
 }
 $taskExampleDocs=Join-Path $taskPackage 'examples/first-person'

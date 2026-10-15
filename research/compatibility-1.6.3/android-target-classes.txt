@@ -1,0 +1,1 @@
+AbilitySystem,Animator,Array,AsyncGPUReadbackRequest,BaseModelComponent,BoneWeight,Camera,CameraManager,CameraMono,CameraState,CinemachineBrain,Component,Entity,GameObject,LensSettings,Mesh,MovementComponent,Object,PlayerController,Renderer,RootMotionData,RotatorComponent,SkinnedMeshRenderer,SnapshotCameraController,SubMeshDescriptor,Time,Transform,Vector3

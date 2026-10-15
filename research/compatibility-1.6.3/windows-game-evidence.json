@@ -1,0 +1,96 @@
+{
+  "date": "2026-10-15",
+  "client": "CN_WIN_REL_1.6.3_C10781849_E10704668",
+  "explicit_official_parent": false,
+  "normal_windows_uac": true,
+  "processes": {
+    "launcher": 30336,
+    "official_parent": 10268,
+    "game": 6068
+  },
+  "official_check": {
+    "time": "10:36:45.170",
+    "message": "Parent process check success:10268",
+    "inner_code": 0
+  },
+  "runtime_sample": {
+    "time": "2026-10-15T10:37:23.417745",
+    "host": {
+      "callback_thread": "worker",
+      "connected": true,
+      "host_product": "Endfield Mod Loader",
+      "mode": "game",
+      "modules": [
+        {
+          "enabled": true,
+          "error": "",
+          "id": "example.echo",
+          "logs": [
+            "Echo sample initialized without game addresses",
+            "Third-party module started (worker callbacks)"
+          ],
+          "requested_enabled": true,
+          "restart_required": false,
+          "status": "ready"
+        },
+        {
+          "enabled": true,
+          "error": "",
+          "id": "example.first-person",
+          "logs": [
+            "First-person example waiting for game helpers; offline mode does not alter a game.",
+            "Third-party module started (worker callbacks)"
+          ],
+          "requested_enabled": true,
+          "restart_required": false,
+          "status": "ready"
+        }
+      ],
+      "protocol": 1
+    },
+    "echo": {
+      "body": {
+        "configuration": {
+          "label": "Echo"
+        },
+        "counter": 29,
+        "echo": {
+          "validation": "Windows game runtime"
+        },
+        "runtime_helper_ready": true
+      },
+      "kind": "reply",
+      "request_id": "b841db84-931d-4abf-b5ae-f864cf13a4b3",
+      "result": 0
+    },
+    "first_person": {
+      "body": {
+        "active": false,
+        "cleanup_pending": false,
+        "detail": "",
+        "enabled": true,
+        "exit_pending": false,
+        "game_validation": "not_run",
+        "head_patches": 0,
+        "model_id": "",
+        "patched_frames": 0,
+        "phase": "ready",
+        "target_valid": false,
+        "toggle_pending": false
+      },
+      "kind": "reply",
+      "request_id": "41c5a821-c6ec-4034-adad-dc21f1dee68a",
+      "result": 0
+    },
+    "launcher_exit_code": null
+  },
+  "summary": {
+    "initialization_passed": true,
+    "ready_samples": 22,
+    "observed_launcher_exit_code": 0,
+    "scene_effects_validated": false
+  },
+  "owned_processes_remaining": false,
+  "game_files_modified": false,
+  "xinput_proxy_installed": false
+}

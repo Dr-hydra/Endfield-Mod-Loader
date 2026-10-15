@@ -4,7 +4,7 @@ E Mod Loader 的独立第一人称示例，模块 ID 为 `example.first-person`�
 
 [下载模块](https://github.com/Dr-hydra/Endfield-Mod-Loader/releases/tag/v0.1.0-dev) · [加载器使用指南](../../docs/USER_GUIDE.md) · [模块 SDK](../../docs/SDK.md)
 
-当前为开发预览，真实游戏和 Android 设备运行尚未验证。
+当前为开发预览。已在 Windows 1.6.3 的真实游戏宿主验证方法解析和 Hook 初始化；Windows 1.6.3 与 Android 1.6.4 的方法及字段静态审计通过。场景内视角、头部隐藏和恢复，以及 Android 设备运行仍待验证，详见 [本轮验证记录](../../docs/VALIDATION_1_6_3.md)。
 
 ## 安装与控制
 

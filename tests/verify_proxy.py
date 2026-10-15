@@ -5,6 +5,7 @@ import ctypes
 import hashlib
 import json
 import os
+import shutil
 import socket
 import subprocess
 import tempfile
@@ -15,6 +16,9 @@ parser=argparse.ArgumentParser()
 parser.add_argument('--native-bin',type=Path,required=True)
 args=parser.parse_args()
 binary=args.native_bin.resolve()
+controlled_launcher=binary/'EMLControlledLauncher.exe'
+if not controlled_launcher.is_file():
+    parser.error('Build the test-only EMLControlledLauncher CMake target before running controlled proxy startup tests.')
 workspace=Path(__file__).resolve().parents[1]
 test_directory=workspace/'build/tests';test_directory.mkdir(parents=True,exist_ok=True)
 kernel=ctypes.WinDLL('kernel32',use_last_error=True)
@@ -34,7 +38,12 @@ with tempfile.TemporaryDirectory(prefix='eml-proxy-',dir=test_directory) as temp
     token='a'*64
     index=root/'index.json';index.write_text(json.dumps({'schema':1,'port':port,'token':token,'modules':[]}))
     host=binary/'EModLoader.Host.dll';proxy=binary/'EModLoader.XInputProxy.dll'
+    # Deployment still exercises the shipped launcher; only the controlled
+    # process startup uses the separately compiled, non-installed fixture.
     launcher=binary/'EModLoader.Launcher.exe'
+    runtime=root/'controlled runtime';runtime.mkdir()
+    startup_launcher=runtime/'EModLoader.Launcher.exe'
+    shutil.copy2(controlled_launcher,startup_launcher)
     def deploy(install=True):
         return subprocess.run([str(launcher),'--game',str(game),'--index',str(index),'--host',str(host),
             '--proxy',str(proxy),'--operation','install-proxy' if install else 'remove-proxy'],capture_output=True,text=True,timeout=20)
@@ -51,7 +60,7 @@ with tempfile.TemporaryDirectory(prefix='eml-proxy-',dir=test_directory) as temp
         process=None;pid=None
         try:
             if through_launcher:
-                started=subprocess.run([str(launcher),'--game',str(game),'--index',str(index),'--host',str(host)],env=env,capture_output=True,text=True,timeout=30)
+                started=subprocess.run([str(startup_launcher),'--game',str(game),'--index',str(index),'--host',str(host)],env=env,capture_output=True,text=True,timeout=30)
                 check(started.returncode==0,'Owned proxy blocked EML startup: '+started.stderr)
                 pid=int(started.stdout.strip())
             else:

@@ -11,6 +11,8 @@
 
 Windows 会保存选择的 `Endfield.exe`，下次启动直接使用。未保存或路径失效时，从卸载注册表和常见安装目录自动查找；多个安装需手动选择，也可以使用“选择…”指定路径。游戏路径与 XInput 共存开关位于数据目录的 `launcher.json`。
 
+Windows 0.1.3-dev 的直接启动会自动查找并验证官方启动器 `Games.exe`，因此需要保留官方启动器安装。新版客户端的官方父进程检查由启动桥满足，游戏退出后自动清理本次桥接进程。自动发现失败时，可在 `launcher.json` 的 `official_parent` 指定真实官方 `Games.exe` 的完整路径；无需针对游戏版本填写参数。
+
 0.1.2 新增“保留其他 XInput DLL 并加载 EML”，位于游戏路径下方。默认关闭，勾选或取消会自动保存。游戏目录已有其他工具的 `xinput1_4.dll` 时，开启后点击“启动游戏”，EML 保留原 DLL，再额外加载自己的 Host。详情见 [XInput 共存设置](XINPUT_COEXISTENCE.md)。
 
 Windows ZIP 内置 .NET 运行时，主程序旁仅保留 `runtime` 中的四个启动组件和说明、许可文件。完整解压并保留目录结构即可使用。

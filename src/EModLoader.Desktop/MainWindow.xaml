@@ -12,7 +12,7 @@
           <Button Content="项目仓库 ↗" Click="Repository_Click" Margin="0,0,0,10"/>
           <Button Content="打开数据目录" Click="DataDirectory_Click" Margin="0,0,0,10"/>
         </StackPanel>
-        <StackPanel DockPanel.Dock="Bottom" VerticalAlignment="Bottom"><TextBlock x:Name="BuildLabel" Text="开发预览 · 0.1.2" Foreground="{StaticResource MutedBrush}"/><TextBlock Text="原 BE V1 模块包兼容" Foreground="{StaticResource MutedBrush}" FontSize="11" Margin="0,6,0,0"/></StackPanel>
+        <StackPanel DockPanel.Dock="Bottom" VerticalAlignment="Bottom"><TextBlock x:Name="BuildLabel" Text="开发预览 · 0.1.3" Foreground="{StaticResource MutedBrush}"/><TextBlock Text="原 BE V1 模块包兼容" Foreground="{StaticResource MutedBrush}" FontSize="11" Margin="0,6,0,0"/></StackPanel>
       </DockPanel>
     </Border>
     <Grid Grid.Column="1" Margin="28,26">

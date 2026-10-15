@@ -12,7 +12,8 @@ internal sealed record LaunchReport(
     [property: JsonPropertyName("exit_code")] int ExitCode,
     [property: JsonPropertyName("win32_error")] int Win32Error,
     [property: JsonPropertyName("process_id")] int ProcessId,
-    [property: JsonPropertyName("error")] string Error);
+    [property: JsonPropertyName("error")] string Error,
+    [property: JsonPropertyName("watching_game")] bool WatchingGame = false);
 
 public static class GameLauncher
 {
@@ -20,7 +21,7 @@ public static class GameLauncher
         LaunchAsync(store, game, ProductPaths.RuntimeDirectory, progress, allowXInputConflict: allowXInputConflict);
 
     internal static async Task<int> LaunchAsync(ModuleStore store, string game, string runtimeDirectory,
-        Action<string>? progress = null, Func<bool, Task<LaunchReport>>? run = null, bool allowXInputConflict = false)
+        Action<string>? progress = null, Func<bool, Task<LaunchReport>>? run = null, bool allowXInputConflict = false, string? officialParent = null)
     {
         await store.EnsureAsync();
         string launcher = Path.GetFullPath(Path.Combine(runtimeDirectory, "EModLoader.Launcher.exe"));
@@ -32,8 +33,13 @@ public static class GameLauncher
         if (foreignXInput && !allowXInputConflict)
             throw new InvalidOperationException("游戏目录已有其他 XInput DLL，可勾选“保留其他 XInput DLL 并加载 EML”后启动。");
         if (foreignXInput) progress?.Invoke("保留现有 XInput DLL，并显式注入 EML Host。");
+        // Discovery and signature verification live in the native helper, including
+        // direct CLI launches. An existing path setting remains an optional override.
+        officialParent ??= new GamePathSettings().LoadOfficialParent();
+        if (string.IsNullOrWhiteSpace(officialParent)) officialParent = null;
+        progress?.Invoke("正在查找官方启动器，并通过启动桥加载 EML。");
         return await LaunchWithElevationAsync(run ?? (elevated => RunAsync(launcher, game, store.IndexPath, library, elevated,
-            allowXInputConflict: allowXInputConflict)), progress);
+            allowXInputConflict: allowXInputConflict, officialParent: officialParent)), progress);
     }
 
     internal static async Task<int> LaunchWithElevationAsync(Func<bool, Task<LaunchReport>> run, Action<string>? progress)
@@ -81,7 +87,7 @@ public static class GameLauncher
     }
 
     private static async Task<LaunchReport> RunAsync(string launcher, string game, string index, string library, bool elevated,
-        string? operation = null, string? proxy = null, bool allowXInputConflict = false)
+        string? operation = null, string? proxy = null, bool allowXInputConflict = false, string? officialParent = null)
     {
         if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException("游戏启动仅支持 Windows。");
         string pipeName = "EML.Launch." + Guid.NewGuid().ToString("N");
@@ -99,6 +105,7 @@ public static class GameLauncher
             foreach (string argument in new[] { "--game", game, "--index", index, "--host", library, "--result-pipe", pipeName })
                 info.ArgumentList.Add(argument);
             if (allowXInputConflict) { info.ArgumentList.Add("--allow-xinput-conflict"); info.ArgumentList.Add("true"); }
+            if (officialParent is not null) { info.ArgumentList.Add("--official-parent"); info.ArgumentList.Add(officialParent); }
             if (operation is not null) { info.ArgumentList.Add("--operation"); info.ArgumentList.Add(operation); info.ArgumentList.Add("--proxy"); info.ArgumentList.Add(proxy!); }
             using var process = Process.Start(info) ?? throw new InvalidOperationException("无法启动游戏加载器。");
             Task exited = process.WaitForExitAsync(timeout.Token);
@@ -113,8 +120,11 @@ public static class GameLauncher
             if (length is <= 0 or > 16384) throw new InvalidDataException("启动组件响应长度无效。");
             byte[] data = new byte[length]; await pipe.ReadExactlyAsync(data, timeout.Token);
             var report = JsonSerializer.Deserialize<LaunchReport>(data) ?? throw new InvalidDataException("启动组件响应无效。");
-            await exited;
-            if (report.ExitCode != process.ExitCode) throw new InvalidDataException("启动组件退出状态不一致。");
+            if (!report.WatchingGame || report.ExitCode != 0)
+            {
+                await exited;
+                if (report.ExitCode != process.ExitCode) throw new InvalidDataException("启动组件退出状态不一致。");
+            }
             return report;
         }
         catch (OperationCanceledException error)

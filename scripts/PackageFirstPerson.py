@@ -4,6 +4,8 @@ import argparse
 import hashlib
 import json
 import re
+from urllib.parse import quote
+import xml.etree.ElementTree as ET
 import zipfile
 
 root=Path(__file__).resolve().parents[1]
@@ -11,7 +13,15 @@ parser=argparse.ArgumentParser()
 parser.add_argument('--windows',type=Path,default=root/'build/examples/first-person-windows/package')
 parser.add_argument('--android',type=Path)
 parser.add_argument('--output',type=Path,default=root/'releases/first-person/0.1.0-dev/example.first-person-0.1.0-dev.zip')
+parser.add_argument('--source-ref',help='Git tag or commit for README source links; defaults to v<Directory.Build.props Version>-dev.')
+parser.add_argument('--hash-assets',action='store_true',help='Explicitly generate a SHA-256 record; disabled by default.')
 args=parser.parse_args()
+if args.source_ref is None:
+    version=ET.parse(root/'Directory.Build.props').findtext('.//Version')
+    if not version:raise ValueError('Directory.Build.props does not define Version')
+    args.source_ref='v'+(version if '-' in version else version+'-dev')
+if not args.source_ref.strip():raise ValueError('Source ref cannot be empty')
+source_url='https://github.com/Dr-hydra/Endfield-Mod-Loader/blob/'+quote(args.source_ref,safe='')+'/'
 example=root/'examples/first-person'
 manifest=json.loads((example/'module.json').read_text(encoding='utf-8'))
 libraries={}
@@ -40,10 +50,11 @@ with zipfile.ZipFile(args.output,'w',zipfile.ZIP_DEFLATED,compresslevel=6) as pa
     # This guide sits at ZIP root, so source-relative documentation links must
     # resolve to the published source tree instead of escaping the package.
     guide=re.sub(r'\]\(\.\./\.\./([^\)]+)\)',
-        r'](https://github.com/Dr-hydra/Endfield-Mod-Loader/blob/v0.1.0-dev/\1)',guide)
+        lambda match:']('+source_url+match.group(1)+')',guide)
     package.writestr('README.md',guide)
     package.write(root/'LICENSE','LICENSE')
-record={'file':args.output.name,'bytes':args.output.stat().st_size,'sha256':hashlib.sha256(args.output.read_bytes()).hexdigest(),
+record={'file':args.output.name,'bytes':args.output.stat().st_size,
         'platforms':list(libraries),'game_validation':'not_run','android_device_validation':'not_run'}
+if args.hash_assets:record['sha256']=hashlib.sha256(args.output.read_bytes()).hexdigest()
 args.output.with_suffix('.json').write_text(json.dumps(record,indent=2)+'\n',encoding='utf-8')
 print(json.dumps(record,indent=2))

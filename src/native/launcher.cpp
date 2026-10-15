@@ -9,9 +9,35 @@
 #include <string>
 #include <vector>
 #include "proxy/deployment.h"
+#include "official_parent.h"
 
 namespace {
 HANDLE resultPipe=INVALID_HANDLE_VALUE;
+bool watchingGame=false;
+std::string Utf8(const std::wstring& value) {
+    if(value.empty())return {};
+    const int length=WideCharToMultiByte(CP_UTF8,0,value.data(),static_cast<int>(value.size()),nullptr,0,nullptr,nullptr);
+    std::string result(length,'\0');
+    WideCharToMultiByte(CP_UTF8,0,value.data(),static_cast<int>(value.size()),result.data(),length,nullptr,nullptr);
+    return result;
+}
+class OwnedGameStartup {
+    PROCESS_INFORMATION process_;
+    bool complete_=false;
+public:
+    explicit OwnedGameStartup(const PROCESS_INFORMATION& process):process_(process){}
+    OwnedGameStartup(const OwnedGameStartup&)=delete;
+    OwnedGameStartup& operator=(const OwnedGameStartup&)=delete;
+    ~OwnedGameStartup(){
+        if(!complete_&&WaitForSingleObject(process_.hProcess,0)==WAIT_TIMEOUT){
+            if(TerminateProcess(process_.hProcess,1))WaitForSingleObject(process_.hProcess,5000);
+        }
+        if(process_.hThread)CloseHandle(process_.hThread);
+        CloseHandle(process_.hProcess);
+    }
+    void CloseThread(){if(process_.hThread){CloseHandle(process_.hThread);process_.hThread=nullptr;}}
+    void Complete(){complete_=true;CloseThread();}
+};
 bool OpenResultPipe(const std::wstring& name) {
     constexpr std::wstring_view prefix=L"EML.Launch.";
     if(!name.starts_with(prefix)||name.size()!=prefix.size()+32||
@@ -28,7 +54,7 @@ bool WriteAll(const void* bytes,DWORD size) {
 int Finish(int code,DWORD error=0,DWORD pid=0,const std::string& message={}) {
     if(resultPipe!=INVALID_HANDLE_VALUE) {
         auto data=nlohmann::json{{"protocol","eml.launch.v1"},{"exit_code",code},{"win32_error",error},
-            {"process_id",pid},{"error",message}}.dump();
+            {"process_id",pid},{"error",message},{"watching_game",watchingGame&&code==0}}.dump();
         const auto length=static_cast<uint32_t>(data.size());
         if(WriteAll(&length,sizeof(length))&&WriteAll(data.data(),length))FlushFileBuffers(resultPipe);
         CloseHandle(resultPipe);resultPipe=INVALID_HANDLE_VALUE;
@@ -56,8 +82,8 @@ std::vector<wchar_t> Environment(const std::filesystem::path& index) {
     for(const auto& [key,value]:values){auto item=key+L"="+value;result.insert(result.end(),item.begin(),item.end());result.push_back(0);}result.push_back(0);return result;
 }
 }
-int wmain(int argc,wchar_t** argv) {
-    std::filesystem::path game,index,host,proxy;
+int RunLauncher(int argc,wchar_t** argv) {
+    std::filesystem::path game,index,host,proxy,officialParentPath;
     std::wstring pipe,operation;
     bool allowXInputConflict=false;
     if((argc-1)%2)return Finish(2,ERROR_INVALID_PARAMETER,0,"Invalid launcher arguments");
@@ -65,7 +91,7 @@ int wmain(int argc,wchar_t** argv) {
         const std::wstring_view value(argv[i+1]);
         if(value!=L"true"&&value!=L"false")return Finish(2,ERROR_INVALID_PARAMETER,0,"Invalid XInput compatibility setting");
         allowXInputConflict=value==L"true";
-    }else return Finish(2,ERROR_INVALID_PARAMETER,0,"Unknown launcher option");}
+    }else if(option==L"--official-parent")officialParentPath=argv[i+1];else return Finish(2,ERROR_INVALID_PARAMETER,0,"Unknown launcher option");}
     // Establish the app-owned response channel before starting any process.
     if(!pipe.empty()&&!OpenResultPipe(pipe))return Finish(9,GetLastError(),0,"Launch result channel unavailable");
     if(!operation.empty()) {
@@ -80,25 +106,70 @@ int wmain(int argc,wchar_t** argv) {
     const bool hasXInput=std::filesystem::exists(game.parent_path()/L"xinput1_4.dll");
     const bool ownedProxy=hasXInput&&EML::Proxy::Owned(game.parent_path());
     if(hasXInput&&!ownedProxy&&!allowXInputConflict)return Finish(3,0,0,"Existing XInput loader conflicts with explicit launch");
-    auto environment=Environment(index);std::wstring command=L"\""+game.wstring()+L"\"";
-    STARTUPINFOW startup{};startup.cb=sizeof(startup);PROCESS_INFORMATION process{};
-    if(!CreateProcessW(game.c_str(),command.data(),nullptr,nullptr,FALSE,CREATE_SUSPENDED|CREATE_UNICODE_ENVIRONMENT,environment.data(),game.parent_path().c_str(),&startup,&process)) {
-        const auto error=GetLastError();return Finish(4,error,0,"CreateProcess failed: "+std::to_string(error));
+    auto environment=Environment(index);
+    EML::Launch::OfficialParent parent;
+    EML::Launch::VerifiedLauncher launcher;
+    std::wstring launchError;DWORD error=0;
+    bool useParent=true;
+#ifdef EML_LAUNCH_TESTS
+    // Only the separately named, non-installed fixture binary can use unsigned
+    // controlled parents or omit the bridge. The product has no bypass switch.
+    useParent=!officialParentPath.empty();
+    if(useParent){
+        launcher.executable=std::filesystem::absolute(officialParentPath);
+        launcher.file.reset(CreateFileW(launcher.executable.c_str(),GENERIC_READ,FILE_SHARE_READ,nullptr,OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL,nullptr));
+        if(launcher.file.get()==INVALID_HANDLE_VALUE)return Finish(4,GetLastError(),0,"Controlled parent missing");
     }
-    if(ResumeThread(process.hThread)==DWORD(-1)){const auto error=GetLastError();CloseHandle(process.hThread);CloseHandle(process.hProcess);return Finish(5,error,0,"Could not resume game process");}CloseHandle(process.hThread);
+#else
+    if(!EML::Launch::FindOfficialLauncher(officialParentPath,launcher,launchError))
+        return Finish(4,0,0,Utf8(launchError));
+#endif
+    PROCESS_INFORMATION process{};
+    if(useParent){
+        if(!parent.Start(launcher,launchError,error))return Finish(4,error,0,Utf8(launchError));
+        launcher.file.reset();
+        if(!parent.CreateGame(game,{},CREATE_SUSPENDED|CREATE_UNICODE_ENVIRONMENT,process,launchError,error,environment.data()))
+            return Finish(4,error,0,Utf8(launchError));
+        watchingGame=true;
+    }else{
+        STARTUPINFOW startup{};startup.cb=sizeof(startup);
+        auto command=EML::Launch::QuoteArgument(game.wstring());
+        if(!CreateProcessW(game.c_str(),command.data(),nullptr,nullptr,FALSE,CREATE_SUSPENDED|CREATE_UNICODE_ENVIRONMENT|CREATE_NO_WINDOW,
+            environment.data(),game.parent_path().c_str(),&startup,&process)){
+            error=GetLastError();return Finish(4,error,0,"CreateProcess failed: "+std::to_string(error));
+        }
+    }
+    OwnedGameStartup ownedGame(process);
+    if(ResumeThread(process.hThread)==DWORD(-1))return Finish(5,GetLastError(),0,"Could not resume game process");
+    ownedGame.CloseThread();
+    const auto complete=[&](){
+        ownedGame.Complete();
+        const auto code=Finish(0,0,process.dwProcessId);
+        if(useParent){
+            DWORD gameExit=0;
+            if(!EML::Launch::WaitForGame(process.hProcess,gameExit,launchError)){std::cerr<<Utf8(launchError)<<'\n';return 11;}
+            return static_cast<int>(gameExit);
+        }
+        return code;
+    };
     // An installed EML proxy owns startup; do not inject a second Host.
-    if(ownedProxy){CloseHandle(process.hProcess);return Finish(0,0,process.dwProcessId);}
+    if(ownedProxy)return complete();
     void* load=nullptr;for(int i=0;i<50&&!load;++i){load=TargetLoadLibrary(process.dwProcessId);if(!load)Sleep(100);}
-    if(!load){CloseHandle(process.hProcess);return Finish(5,0,0,"Target loader unavailable");}
+    if(!load)return Finish(5,0,0,"Target loader unavailable");
     const auto library=host.wstring();const SIZE_T bytes=(library.size()+1)*sizeof(wchar_t);
     void* remote=VirtualAllocEx(process.hProcess,nullptr,bytes,MEM_COMMIT|MEM_RESERVE,PAGE_READWRITE);SIZE_T copied=0;
-    if(!remote||!WriteProcessMemory(process.hProcess,remote,library.c_str(),bytes,&copied)||copied!=bytes){const auto error=GetLastError();if(remote)VirtualFreeEx(process.hProcess,remote,0,MEM_RELEASE);CloseHandle(process.hProcess);return Finish(6,error,0,"Host path transfer failed: "+std::to_string(error));}
+    if(!remote||!WriteProcessMemory(process.hProcess,remote,library.c_str(),bytes,&copied)||copied!=bytes){const auto transferError=GetLastError();if(remote)VirtualFreeEx(process.hProcess,remote,0,MEM_RELEASE);return Finish(6,transferError,0,"Host path transfer failed: "+std::to_string(transferError));}
     HANDLE thread=CreateRemoteThread(process.hProcess,nullptr,0,reinterpret_cast<LPTHREAD_START_ROUTINE>(load),remote,0,nullptr);
-    if(!thread){const auto error=GetLastError();VirtualFreeEx(process.hProcess,remote,0,MEM_RELEASE);CloseHandle(process.hProcess);return Finish(7,error,0,"Host loader thread failed: "+std::to_string(error));}
+    if(!thread){const auto threadError=GetLastError();VirtualFreeEx(process.hProcess,remote,0,MEM_RELEASE);return Finish(7,threadError,0,"Host loader thread failed: "+std::to_string(threadError));}
     const auto wait=WaitForSingleObject(thread,30000);CloseHandle(thread);
     // A timed-out loader may still read the path: leave its allocation alive.
     if(wait==WAIT_OBJECT_0)VirtualFreeEx(process.hProcess,remote,0,MEM_RELEASE);
-    const bool loaded=wait==WAIT_OBJECT_0&&ModuleBase(process.dwProcessId,host.filename().c_str());CloseHandle(process.hProcess);
+    const bool loaded=wait==WAIT_OBJECT_0&&ModuleBase(process.dwProcessId,host.filename().c_str());
     if(!loaded)return Finish(8,0,0,"Host load failed");
-    return Finish(0,0,process.dwProcessId);
+    return complete();
+}
+int wmain(int argc,wchar_t** argv){
+    try{return RunLauncher(argc,argv);}
+    catch(const std::filesystem::filesystem_error& error){return Finish(4,static_cast<DWORD>(error.code().value()),0,"Launch file operation failed");}
+    catch(const std::exception&){return Finish(4,0,0,"Launch initialization failed");}
 }
